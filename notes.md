@@ -9,7 +9,7 @@ Cons:
 
 ### Zabbix
 Cons:
-1. hard configuration - takes time to all setup
+1. hard configuration - takes time to all setup - have to install and configure server, database and agents 
 1. hard to use - reviews tell, that documentation is bad and you have to use it for long time to understand it
 1. uses database to store configuration and data - more difficult to manipulate with it
 
@@ -20,6 +20,9 @@ Cons:
 
 ### Munin
 Cons:
+1. set time interval between logs?
+1. key-value plugin?
+1. mainly for visualisation in graphs - cannot sort messages like DEBUG, INFO, ERR. and cannot set watchdogs (if is value > x - tell me about it in some general log file)
 
 
 find info about modules and extending functionality
