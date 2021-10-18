@@ -35,6 +35,10 @@ find info about modules and extending functionality
 # TODO
  Zpracovat přehled nástrojů Linuxu pro diagnostiku HW/SW systému (od nízkoúrovňových a specializovaných, např. HardInfo, Checkbox, CPUBurn, MPrime, Memtest86+, lsvpd, až po nástroje typu Zabbix, Nagios, ...) a propojit je s požadavky firmy. 
 
+# Process libraries:
+POCO, Boost, 
+Not updated (10 months ago): https://gitlab.com/eidheim/tiny-process-library
+
 
 # Implementation tasks
 Create core app, that will create agent, creates TCP connection with it and send data in both directions.
