@@ -1,11 +1,29 @@
-# Small tools
-### HardInfo
-Cons:
-1. cannot add functionality
-1. cannot collect and save specific logs in time 
+# TODO
 
+1. Write, why is our solution different
+2. Create Latex folder
+3. Add Honza and Smrz to Github!
+4. Create architecture diagram
 
-# Complex tools
+--- 
+
+# Implementation tasks
+
+1. Our app will have each monitoring agent as a process, so we need to find out, how to create/stop processes.
+   Agents will be executed from main app, which will be called Core.
+   We can look for some light-weighted library to manage it - we have to, if library offers handle to process, if we would like to add them in process groups.
+   We will call these processes agents and they will collect system info in the future.
+2. We want our agents to communicate with core app via TCP/IP on localhost. When agent fails, we need to know it. We can use some library, which doesn't have too much dependencies and is not too large (look at boost::asio / POCO project).
+3. We need to send various messege types like msg::log, msg::config or msg::log. We have to check, if agent is not freezed with sending control messages and agent has to respond to it. We will also have to think about communication protocol between agent and core.
+   Agent will also automatically send some random log messages.
+4. We want to create two agents - one to monitor temperature, second to monitor internet connection.
+   We will write and use config files for these agents (like how often send logs, what is max temperature etc.).
+   Agents will then collect logs, send them to core app and core app will save these logs in folder.
+   If agent sends some error message, core app will point on it from general log file.
+
+---
+
+# Already existing tools - research
 
 ### Zabbix
 Cons:
@@ -28,45 +46,31 @@ Cons:
 Cons:
 1. paid
 
+---
+
+# Which libraries to use - research
+
+### Process handling libraries
+**sheredom/subprocess.h**
+
+- Is header-only
+- No ability to send SIGTERM
+- No error if starting not existing script
+
+**eidheim/tiny-process-library**
+
+- Last commit 10 months ago - not too much updated
+- doesn't look too profi
+
+**boost, POCO**
+
+- too huge
+
+**DaanDeMeyer/reproc**
+
+- seems pretty good
 
 
-find info about modules and extending functionality
-
-# TODO
- Zpracovat přehled nástrojů Linuxu pro diagnostiku HW/SW systému (od nízkoúrovňových a specializovaných, např. HardInfo, Checkbox, CPUBurn, MPrime, Memtest86+, lsvpd, až po nástroje typu Zabbix, Nagios, ...) a propojit je s požadavky firmy. 
-
-# Process libraries:
-POCO, Boost, 
-Not updated (10 months ago): https://gitlab.com/eidheim/tiny-process-library
 
 
-# Implementation tasks
-Create core app, that will create agent, creates TCP connection with it and send data in both directions.
-
-Manage agent - if fails, then print some info and restart and if freezes, then print and restart
-	- Core has to send agents ACK requests (if they are not freezed)
-
-Receive log message from agent and log it. Processes will communicate in json format and logs from agent will be in format:
-{
-	PID:...
-	logType: ERR/INFO/DEBUG
-	Key:...
-	Value:...
-	AdditionalInfo:(some message)	
-	timestamp
-}
-if error log received or agent fails/freeze, then give info in general_log.txt and points to folder, where will be more info
-Log tree:
-- general_log.txt
-- Agent1Folder
-	- ...
-- Agent2Folder
-	- ...
-
-Create more agents (depending on config file and send them their config) and manage them (check if their fail is logged etc.)
-
-Create/restart agents in runtime with cmd
-
-
- 
 
