@@ -1,2 +1,12 @@
+thesis-text/*.dvi
+thesis-text/*.log
+thesis-text/*.blg
+thesis-text/*.bbl
+thesis-text/*.toc
+thesis-text/*.aux
+thesis-text/*.out
+thesis-text/*.lof
+thesis-text/*.ptc
+
 cmake-build-debug/
 .idea/
