@@ -1,9 +1,9 @@
+In folder `thesis-text` will be LaTex and also generated .pdf text of thesis. In this README file will be my notes, TODO list and later documentation for final program.
+
 # TODO
 
 1. Write, why is our solution different
-2. Create Latex folder
-3. Add Honza and Smrz to Github!
-4. Create architecture diagram
+2. Create architecture diagram
 
 --- 
 
