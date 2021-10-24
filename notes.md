@@ -1,9 +1,7 @@
 # TODO
 
 1. Write, why is our solution different
-2. Create Latex folder
-3. Add Honza and Smrz to Github!
-4. Create architecture diagram
+2. Create architecture diagram
 
 --- 
 
