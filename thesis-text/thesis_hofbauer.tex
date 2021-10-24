@@ -11,11 +11,11 @@
 % zpracování / processing: make, make pdf, make clean
 %==============================================================================
 % Soubory, které je nutné upravit nebo smazat: / Files which have to be edited or deleted:
-%   projekt-20-literatura-bibliography.bib - literatura / bibliography
-%   projekt-01-kapitoly-chapters.tex - obsah práce / the thesis content
-%   projekt-01-kapitoly-chapters-en.tex - obsah práce v angličtině / the thesis content in English
-%   projekt-30-prilohy-appendices.tex - přílohy / appendices
-%   projekt-30-prilohy-appendices-en.tex - přílohy v angličtině / appendices in English
+%   thesis_hofbauer-20-literatura-bibliography.bib - literatura / bibliography
+%   thesis_hofbauer-01-kapitoly-chapters.tex - obsah práce / the thesis content
+%   thesis_hofbauer-01-kapitoly-chapters-en.tex - obsah práce v angličtině / the thesis content in English
+%   thesis_hofbauer-30-prilohy-appendices.tex - přílohy / appendices
+%   thesis_hofbauer-30-prilohy-appendices-en.tex - přílohy v angličtině / appendices in English
 %==============================================================================
 \documentclass[]{fitthesis} % bez zadání - pro začátek práce, aby nebyl problém s překladem
 %\documentclass[english]{fitthesis} % without assignment - for the work start to avoid compilation problem
@@ -235,9 +235,9 @@ Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých
   % Text prace / Thesis text
   % ----------------------------------------------
   \ifenglish
-    \input{projekt-01-kapitoly-chapters-en}
+    \input{thesis_hofbauer-01-kapitoly-chapters-en}
   \else
-    \input{projekt-01-kapitoly-chapters}
+    \input{thesis_hofbauer-01-kapitoly-chapters}
   \fi
   
   % Kompilace po částech (viz výše, nutno odkomentovat)
@@ -269,7 +269,7 @@ Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých
   \fi
 \fi
   \begin{flushleft}
-  \bibliography{projekt-20-literatura-bibliography}
+  \bibliography{thesis_hofbauer-20-literatura-bibliography}
   \end{flushleft}
 
   % vynechani stranky v oboustrannem rezimu
@@ -329,13 +329,13 @@ Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých
   
   % Přílohy / Appendices
   \ifenglish
-    \input{projekt-30-prilohy-appendices-en}
+    \input{thesis_hofbauer-30-prilohy-appendices-en}
   \else
-    \input{projekt-30-prilohy-appendices}
+    \input{thesis_hofbauer-30-prilohy-appendices}
   \fi
   
   % Kompilace po částech (viz výše, nutno odkomentovat)
   % Compilation piecewise (see above, it is necessary to uncomment it)
-  %\subfile{projekt-30-prilohy-appendices}
+  %\subfile{thesis_hofbauer-30-prilohy-appendices}
   
 \end{document}
