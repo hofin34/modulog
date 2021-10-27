@@ -6,6 +6,7 @@
 #include <utility>
 #include <vector>
 #include <cstring>
+#include <filesystem>
 
 struct Agent{
     Agent(std::string name, int terminate_timeout, std::shared_ptr<reproc::process>& process):
@@ -18,7 +19,7 @@ struct Agent{
     }
     // -------
     std::string name;
-    std::string path;
+    std::filesystem::path path;
     std::shared_ptr<reproc::process> process;
     reproc::options process_options;
 };
@@ -28,7 +29,10 @@ void cleanup(int signum){
     std::cout << "cleanup..." << std::endl;
     for(auto &agent : running_agents){
         std::cout << "Stopping " << agent.name << " PID: " << agent.process->pid().first << std::endl;
-        agent.process->stop(agent.process_options.stop);
+        std::error_code ec;
+        int status;
+        std::tie(status, ec) = agent.process->stop(agent.process_options.stop);
+
     }
     exit(0);
 }
@@ -63,9 +67,6 @@ int main(int argc, const char **argv) {
     running_agents.push_back(std::move(agent));
     unsigned int microsecond = 1000000;
     usleep(1 * microsecond);//sleeps for 3 second
-
     while(true);
-
-    return 0;
 
 }
