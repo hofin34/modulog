@@ -14,8 +14,26 @@ FetchContent_Declare(
         GIT_REPOSITORY https://github.com/DaanDeMeyer/reproc.git
         GIT_TAG        v14.2.3
 )
-
 FetchContent_MakeAvailable(reproc++)
 
+
+FetchContent_Declare(asio
+        GIT_REPOSITORY git@github.com:chriskohlhoff/asio.git
+        GIT_TAG  asio-1-20-0
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND ""
+        )
+FetchContent_GetProperties(asio)
+if(NOT asio_POPULATED)
+    FetchContent_Populate(asio)
+endif()
+add_library(asio INTERFACE)
+target_include_directories(asio INTERFACE ${asio_SOURCE_DIR}/asio/include)
+find_package(Threads)
+target_link_libraries(asio INTERFACE Threads::Threads)
+
+
 target_link_libraries(sys-logger reproc++)
+target_link_libraries(sys-logger asio)
+target_link_libraries(process1 asio)
 

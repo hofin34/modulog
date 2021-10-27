@@ -7,6 +7,7 @@
 #include <vector>
 #include <cstring>
 #include <filesystem>
+#include <asio.hpp>
 
 struct Agent{
     Agent(std::string name, int terminate_timeout, std::shared_ptr<reproc::process>& process):
@@ -36,8 +37,38 @@ void cleanup(int signum){
     }
     exit(0);
 }
+std::string make_daytime_string()
+{
+    using namespace std; // For time_t, time and ctime;
+    time_t now = time(0);
+    return ctime(&now);
+}
 
 int main(int argc, const char **argv) {
+    try
+    {
+        asio::io_context io_context;
+        asio::ip::tcp::acceptor acceptor(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), 13));
+
+        for (;;)
+        {
+            asio::ip::tcp::socket socket(io_context);
+            acceptor.accept(socket);
+            for(;;){
+                std::string message = make_daytime_string();
+                asio::error_code ignored_error;
+                asio::write(socket, asio::buffer(message), ignored_error);
+                std::cout << ignored_error.value() << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            }
+
+        }
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+    /*
     struct sigaction act{};
     memset(&act, 0, sizeof(act));
     act.sa_handler = cleanup;
@@ -68,5 +99,6 @@ int main(int argc, const char **argv) {
     unsigned int microsecond = 1000000;
     usleep(1 * microsecond);//sleeps for 3 second
     while(true);
+     */
 
 }
