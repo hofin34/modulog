@@ -3,25 +3,26 @@
 #include <csignal>
 #include <cstring>
 
-void func_sigterm(int signum)
+void signal_handler(int signum)
 {
-    printf("Caught!\n");
+    std::cout << "Caught signal "<< signum << std::endl;
 }
 
 int main(){
-    struct sigaction action;
+
+    struct sigaction action{};
     memset(&action, 0, sizeof(action));
-    action.sa_handler = func_sigterm;
-    sigaction(SIGTERM, &action, NULL);
+    action.sa_handler = signal_handler;
+    sigaction(SIGTERM, &action, nullptr);
+    sigaction(SIGINT, &action, nullptr);
 
 
     int i = 0;
     while(true){
         i++;
         unsigned int microsecond = 1000000;
-        usleep(1 * microsecond);//sleeps for 3 second
+        usleep(1 * microsecond);//sleeps for 1 second
         std::cout << "hello" << i << std::endl;
     }
-    return 8;
 }
 
