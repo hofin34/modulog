@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <asio.hpp>
 
+
 struct Agent{
     Agent(std::string name, int terminate_timeout, std::shared_ptr<reproc::process>& process):
     name(std::move(name)),
@@ -37,37 +38,126 @@ void cleanup(int signum){
     }
     exit(0);
 }
-std::string make_daytime_string()
-{
-    using namespace std; // For time_t, time and ctime;
-    time_t now = time(0);
-    return ctime(&now);
-}
 
+using asio::ip::tcp;
+class tcp_connection
+        : public std::enable_shared_from_this<tcp_connection>
+{
+public:
+    typedef std::shared_ptr<tcp_connection> pointer;
+
+    static pointer create(asio::io_context& io_context)
+    {
+        return pointer(new tcp_connection(io_context));
+    }
+
+    tcp::socket& socket()
+    {
+        return socket_;
+    }
+
+    void start_write()
+    {
+        message_ = "Are you alive?\n";
+        asio::async_write(socket_, asio::buffer(message_),
+                          std::bind(&tcp_connection::handle_write, shared_from_this(),
+                                    std::placeholders::_1, // error
+                                    std::placeholders::_2)); // bytes_transfered
+    }
+
+    void start_read()
+    {
+        // Set a deadline for the read operation.
+        //deadline_.expires_from_now(boost::posix_time::seconds(30));
+
+        // Start an asynchronous operation to read a newline-delimited message.
+        asio::async_read_until(socket_, input_buffer_, '\n',
+                                      std::bind(&tcp_connection::handle_read, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+    }
+
+private:
+    tcp_connection(asio::io_context& io_context)
+            : socket_(io_context)
+    {
+    }
+
+    void handle_write(const asio::error_code& error,
+                      size_t bytes_transferred)
+    {
+        std::cout << "Transfered " << bytes_transferred << " B." << std::endl;
+        if(error.value() != 0){ // client disconnected
+            std::cerr << "Some error in write: " << error.message() << std::endl;
+        }else{
+            std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+            start_write();
+        }
+    }
+    void handle_read(const asio::error_code& error,
+                      size_t bytes_transferred)
+    {
+        std::cout << "Read err_code: " << error << " Msg:  " << error.message() << std::endl;
+        std::string line;
+        std::istream is(&input_buffer_);
+        std::getline(is, line);
+        std::cout << "Rec data: " << line << std::endl;
+        start_read();
+    }
+
+    tcp::socket socket_;
+    std::string message_;
+    asio::streambuf input_buffer_;
+};
+
+class tcp_server
+{
+public:
+    tcp_server(asio::io_context& io_context)
+            : io_context_(io_context),
+              acceptor_(io_context, tcp::endpoint(tcp::v4(), 13))
+    {
+        start_accept();
+    }
+
+private:
+    void start_accept()
+    {
+        tcp_connection::pointer new_connection =
+                tcp_connection::create(io_context_);
+
+        acceptor_.async_accept(new_connection->socket(),
+                               std::bind(&tcp_server::handle_accept, this, new_connection,
+                                           std::placeholders::_1));
+    }
+
+    void handle_accept(tcp_connection::pointer new_connection,
+                       const asio::error_code& error)
+    {
+        if (!error)
+        {
+            std::cout << "Starting new connection..." << std::endl;
+            new_connection->start_write();
+            new_connection->start_read();
+        }
+
+        start_accept();
+    }
+
+    asio::io_context& io_context_;
+    tcp::acceptor acceptor_;
+};
 int main(int argc, const char **argv) {
     try
     {
         asio::io_context io_context;
-        asio::ip::tcp::acceptor acceptor(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), 13));
-
-        for (;;)
-        {
-            asio::ip::tcp::socket socket(io_context);
-            acceptor.accept(socket);
-            for(;;){
-                std::string message = make_daytime_string();
-                asio::error_code ignored_error;
-                asio::write(socket, asio::buffer(message), ignored_error);
-                std::cout << ignored_error.value() << std::endl;
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            }
-
-        }
+        tcp_server server(io_context);
+        io_context.run();
     }
     catch (std::exception& e)
     {
         std::cerr << e.what() << std::endl;
     }
+
+    return 0;
     /*
     struct sigaction act{};
     memset(&act, 0, sizeof(act));

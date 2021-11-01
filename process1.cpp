@@ -9,20 +9,21 @@ void signal_handler(int signum)
 }
 
 int main(){
-    try
-    {
+    try {
         asio::io_context io_context;
-
-        asio::ip::tcp::resolver resolver(io_context);
-        asio::ip::tcp::resolver::results_type endpoints =
-                resolver.resolve("localhost", "daytime");
-
         asio::ip::tcp::socket socket(io_context);
-        asio::connect(socket, endpoints);
-
+        asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 13);
+        socket.connect(endpoint);
+        int counter = 0;
         for (;;)
         {
-            //char buf[128];
+            counter ++;
+            if(counter == 3){
+                asio::error_code errorWrite;
+                std::cout << "sending message..." << std::endl;
+                asio::write(socket, asio::buffer(std::string("Some message from client...\n")), errorWrite);
+                std::cout << "err write: " << errorWrite << std::endl;
+            }
             asio::error_code error;
             std::vector<char> buf(128);
             size_t len = socket.read_some(asio::buffer(buf), error);
@@ -31,12 +32,11 @@ int main(){
                 break; // Connection closed cleanly by peer.
             else if (error)
                 throw asio::system_error(error); // Some other error.
-            //std::cout.write(buf.data(), len);
             std::cout << "DATA: " << buf.data() << std::endl;
         }
     }
     catch (std::exception& e) {
-        std::cerr << e.what() << std::endl;
+        std::cerr << "Exception: " << e.what() << std::endl;
     }
     /*
     struct sigaction action{};
