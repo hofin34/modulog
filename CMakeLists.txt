@@ -6,7 +6,7 @@ project(bachelor_hofbauer)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(sys-logger main.cpp)
-add_executable(process1 process1.cpp)
+add_executable(process1 process1.cpp Client.h Client.cpp)
 
 set(REPROC++ ON)
 FetchContent_Declare(

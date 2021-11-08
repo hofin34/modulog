@@ -58,6 +58,7 @@ public:
 
     void start_write()
     {
+        std::cout << "start_write()" << std::endl;
         message_ = "Are you alive?\n";
         asio::async_write(socket_, asio::buffer(message_),
                           std::bind(&tcp_connection::handle_write, shared_from_this(),
@@ -67,9 +68,6 @@ public:
 
     void start_read()
     {
-        // Set a deadline for the read operation.
-        //deadline_.expires_from_now(boost::posix_time::seconds(30));
-
         // Start an asynchronous operation to read a newline-delimited message.
         asio::async_read_until(socket_, input_buffer_, '\n',
                                       std::bind(&tcp_connection::handle_read, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
@@ -84,11 +82,14 @@ private:
     void handle_write(const asio::error_code& error,
                       size_t bytes_transferred)
     {
-        std::cout << "Transfered " << bytes_transferred << " B." << std::endl;
+        //std::cout << "Transfered " << bytes_transferred << " B." << std::endl;
         if(error.value() != 0){ // client disconnected
             std::cerr << "Some error in write: " << error.message() << std::endl;
         }else{
-            std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+            std::cout << "Transferedx " << bytes_transferred << " B." << std::endl;
+            //isAliveTimer_.async_wait(std::bind(&tcp_connection::start_write, this));
+            //isAliveTimer_.wait();
+            std::this_thread::sleep_for(std::chrono::milliseconds(3000));
             start_write();
         }
     }
@@ -107,7 +108,7 @@ private:
     std::string message_;
     asio::streambuf input_buffer_;
 };
-
+// ------------------------
 class tcp_server
 {
 public:
@@ -135,10 +136,9 @@ private:
         if (!error)
         {
             std::cout << "Starting new connection..." << std::endl;
-            new_connection->start_write();
             new_connection->start_read();
+            new_connection->start_write();
         }
-
         start_accept();
     }
 
@@ -150,7 +150,12 @@ int main(int argc, const char **argv) {
     {
         asio::io_context io_context;
         tcp_server server(io_context);
-        io_context.run();
+
+        std::thread thread1{[&io_context](){ io_context.run(); }};
+        std::thread thread2{[&io_context](){ io_context.run(); }};
+        thread1.join();
+        thread2.join();
+       // io_context.run();
     }
     catch (std::exception& e)
     {

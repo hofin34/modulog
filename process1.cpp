@@ -3,17 +3,24 @@
 #include <csignal>
 #include <cstring>
 #include <asio.hpp>
+#include "Client.h"
+#include <thread>
 void signal_handler(int signum)
 {
     std::cout << "Caught signal "<< signum << std::endl;
 }
 
 int main(){
+
     try {
         asio::io_context io_context;
+        auto client = std::make_shared<Client>(io_context);
+        std::cout << "here" << std::endl;
+        return 0;
         asio::ip::tcp::socket socket(io_context);
         asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 13);
         socket.connect(endpoint);
+
         int counter = 0;
         for (;;)
         {
