@@ -1,4 +1,5 @@
 #include "Client.h"
+#include "MessageHandler.h"
 
 Client::Client(asio::io_context& io_context) : socket_(io_context), ioContext_(io_context){
     try{
@@ -61,6 +62,12 @@ void Client::handle_read(const asio::error_code &error, size_t bytes_transferred
     std::string line;
     std::istream is(&input_buffer_);
     std::getline(is, line);
+    MessageHandler msgHandler(line);
+    if(msgHandler.getMessageType() == MessageHandler::msg_type::CONTROL){
+        if(msgHandler.getControlMessage().getType() == ControlMessage::IS_ALIVE){
+            //Response with ACK...
+        }
+    }
     std::cout << "Rec data: " << line << std::endl;
     start_read();
 }
