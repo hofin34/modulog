@@ -18,8 +18,9 @@ private:
     void start_read();
     void handle_read(const asio::error_code& error,
                      size_t bytes_transferred);
-
+    void handle_read_msg_size(const asio::error_code &error, size_t bytes_transferred);
     asio::streambuf input_buffer_;
+    uint32_t msgLength;
     asio::io_context &ioContext_;
     asio::ip::tcp::socket socket_;
     std::string msg_to_send_;

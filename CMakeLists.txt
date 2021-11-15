@@ -5,8 +5,8 @@ project(bachelor_hofbauer)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(sys-logger main.cpp Client.h Client.cpp LogMessage.cpp LogMessage.h ControlMessage.cpp ControlMessage.h TcpConnection.cpp TcpConnection.h TcpServer.cpp TcpServer.h Message.cpp Message.h MessageHandler.cpp MessageHandler.h)
-add_executable(process1 process1.cpp Client.h Client.cpp LogMessage.cpp LogMessage.h ControlMessage.cpp ControlMessage.h TcpConnection.cpp TcpConnection.h Message.cpp Message.h MessageHandler.cpp MessageHandler.h)
+add_executable(sys-logger main.cpp Client.h Client.cpp LogMessage.cpp LogMessage.h ControlMessage.cpp ControlMessage.h TcpConnection.cpp TcpConnection.h TcpServer.cpp TcpServer.h Message.cpp Message.h MessageSerializer.cpp MessageSerializer.h MessageDeserializer.cpp MessageDeserializer.h Agent.cpp Agent.h AgentHandler.cpp AgentHandler.h)
+add_executable(process1 process1.cpp Client.h Client.cpp LogMessage.cpp LogMessage.h ControlMessage.cpp ControlMessage.h TcpConnection.cpp TcpConnection.h Message.cpp Message.h)
 
 # ----------- nlohmann json library
 # TODO downloads too long?

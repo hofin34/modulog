@@ -1,6 +1,6 @@
 #include <iostream>
 #include "TcpConnection.h"
-#include "MessageHandler.h"
+#include "MessageSerializer.h"
 
 TcpConnection::pointer TcpConnection::create(asio::io_context& io_context)
 {
@@ -21,11 +21,12 @@ void TcpConnection::start_alive_writer(){
 void TcpConnection::send_alive(){
     asio::error_code errorWrite;
     std::cout << "sending message..." << std::endl;
-    ControlMessage aliveControlMsg; //TODO end message with special character.
-    aliveControlMsg.setType(ControlMessage::IS_ALIVE);
-    MessageHandler msgHandler;
-    msgHandler.setControlMessage(aliveControlMsg);
-    asio::write(socket_, asio::buffer(msgHandler.serialize()), errorWrite);
+    auto aliveControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTOL_MSG_TYPE::IS_ALIVE, "") ; //TODO end message with special character.
+    MessageSerializer messageSerializer(aliveControlMsg);
+    std::string msgToSend = messageSerializer.serialize();
+    uint32_t  msgSize = msgToSend.length();
+    asio::write(socket_, asio::buffer(&msgSize, sizeof(msgSize)), errorWrite);
+    asio::write(socket_, asio::buffer(msgToSend), errorWrite);
     std::cout << "err write: " << errorWrite << std::endl;
     waitingForACKAlive = true;
     aliveResponseTimer_.expires_from_now(asio::chrono::seconds(2));

@@ -5,13 +5,15 @@
 
 class ControlMessage : public Message{
 public:
-    enum control_msg_t{CONFIG, ACK, IS_ALIVE};
-    control_msg_t getType();
-    void setType(control_msg_t type);
+    enum CONTOL_MSG_TYPE{CONFIG, ACK, IS_ALIVE};
+    ControlMessage(std::string jsonInit);
+    ControlMessage(CONTOL_MSG_TYPE msgType, std::string value);
+    CONTOL_MSG_TYPE getType();
+    void setType(CONTOL_MSG_TYPE type);
     void setValue(std::string value);
     std::string serialize() override;
 private:
-    control_msg_t type_;
+    CONTOL_MSG_TYPE type_;
     std::string value_;
     ControlMessage deserialize(std::string toDeserialize);
 };
