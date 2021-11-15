@@ -1,6 +1,5 @@
-#include <iostream>
 #include "TcpConnection.h"
-#include "MessageSerializer.h"
+
 
 TcpConnection::pointer TcpConnection::create(asio::io_context& io_context)
 {
@@ -21,7 +20,7 @@ void TcpConnection::start_alive_writer(){
 void TcpConnection::send_alive(){
     asio::error_code errorWrite;
     std::cout << "sending message..." << std::endl;
-    auto aliveControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTOL_MSG_TYPE::IS_ALIVE, "") ; //TODO end message with special character.
+    auto aliveControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE, "") ; //TODO end message with special character.
     MessageSerializer messageSerializer(aliveControlMsg);
     std::string msgToSend = messageSerializer.serialize();
     uint32_t  msgSize = msgToSend.length();

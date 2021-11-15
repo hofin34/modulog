@@ -55,12 +55,13 @@ void Client::start_read() {
     std::cout << "start_read()" << std::endl;
     asio::async_read(socket_, asio::buffer(&msgLength, sizeof(msgLength)),
                      std::bind(&Client::handle_read_msg_size, this, std::placeholders::_1, std::placeholders::_2) );
-    asio::async_read_until(socket_, input_buffer_, '\n',
-                           std::bind(&Client::handle_read, this, std::placeholders::_1, std::placeholders::_2)); //TODO should be shared_from_this instead of this?
+    //asio::async_read_until(socket_, input_buffer_, '\n',
+      //                     std::bind(&Client::handle_read, this, std::placeholders::_1, std::placeholders::_2)); //TODO should be shared_from_this instead of this?
 }
 
 void Client::handle_read_msg_size(const asio::error_code &error, size_t bytes_transferred) {
-
+    std::cout << "Msg size: " << msgLength;
+    // TODO start read content
 }
 
 void Client::handle_read(const asio::error_code &error, size_t bytes_transferred) {
@@ -70,7 +71,7 @@ void Client::handle_read(const asio::error_code &error, size_t bytes_transferred
     std::getline(is, line);
     MessageDeserializer messageDeserializer(line);
     if(messageDeserializer.getMsgType() == Message::MSG_TYPE::CONTROL_MSG){
-        if(messageDeserializer.getControlMessage()->getType() == ControlMessage::CONTOL_MSG_TYPE::IS_ALIVE)
+        if(messageDeserializer.getControlMessage()->getType() == ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE)
         {
             //TODO response with ACK
         }

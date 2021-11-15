@@ -1,6 +1,9 @@
 #pragma once
 #include <asio.hpp>
 #include "ControlMessage.h"
+#include "MessageSerializer.h"
+#include <iostream>
+
 class TcpConnection: public std::enable_shared_from_this<TcpConnection> {
 public:
     typedef std::shared_ptr<TcpConnection> pointer;

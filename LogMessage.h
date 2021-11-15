@@ -1,6 +1,6 @@
 #pragma once
 #include "Message.h"
-class LogMessage : Message{
+class LogMessage : public Message{
 public:
     enum class LOG_MSG_TYPE{LOG, ERROR, DEBUG};
     LogMessage(std::string jsonInit);
