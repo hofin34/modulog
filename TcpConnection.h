@@ -16,11 +16,14 @@ public:
 
 private:
     TcpConnection(asio::io_context& io_context) : socket_(io_context), aliveTimer_(io_context), aliveResponseTimer_(io_context){}
-    void handle_read(const asio::error_code& error, size_t bytes_transferred);
+    void handle_read_msg_size(const asio::error_code& error, size_t bytes_transferred);
+    void handle_read_msg_content(const asio::error_code& error, size_t bytes_transferred);
     // ------ Attributes
     bool waitingForACKAlive = false;
     asio::steady_timer aliveTimer_;
     asio::steady_timer aliveResponseTimer_;
     asio::ip::tcp::socket socket_;
-    asio::streambuf input_buffer_;
+    uint32_t msgLength;
+    std::vector<char> lastMessageBuffer;
+
 };

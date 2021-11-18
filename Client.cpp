@@ -1,9 +1,10 @@
 #include "Client.h"
 #include "MessageDeserializer.h"
+#include "MessageSerializer.h"
 
 Client::Client(asio::io_context& io_context) : socket_(io_context), ioContext_(io_context){
     try{
-        asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 13);
+        asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 1234);
         socket_.connect(endpoint);
         start_read();
         std::thread thread1{[&io_context](){ io_context.run(); }};
@@ -22,6 +23,7 @@ void Client::send_log(std::string& msg) {
     start_write(msg);
 }
 
+// TODO replace binds with std::function
 void Client::start_write(std::string& msg)
 {
     std::cout << "start_write()" << std::endl;
@@ -55,16 +57,31 @@ void Client::start_read() {
     std::cout << "start_read()" << std::endl;
     asio::async_read(socket_, asio::buffer(&msgLength, sizeof(msgLength)),
                      std::bind(&Client::handle_read_msg_size, this, std::placeholders::_1, std::placeholders::_2) );
-    //asio::async_read_until(socket_, input_buffer_, '\n',
-      //                     std::bind(&Client::handle_read, this, std::placeholders::_1, std::placeholders::_2)); //TODO should be shared_from_this instead of this?
 }
 
 void Client::handle_read_msg_size(const asio::error_code &error, size_t bytes_transferred) {
     std::cout << "Msg size: " << msgLength;
-    // TODO start read content
+    // start read real content:
+    asio::error_code content_read_err;
+    std::vector<char> buf(msgLength);
+    size_t len = socket_.read_some(asio::buffer(buf), content_read_err);
+    if(len != msgLength){
+        std::cerr << "!!!WARNING!!!" << std::endl << "Received different number of bytes than header said!" << std::endl;
+    }
+    if (content_read_err == asio::error::eof)
+        return; // Connection closed cleanly by peer.
+    else if (content_read_err)
+        throw asio::system_error(error); // Some other error.
+    std::cout << "DATA: " << buf.data() << std::endl;
+
+    auto controlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, "Is Alive ACK...");
+    MessageSerializer messageSerializer(controlMsg);
+    std::string msgToSend = messageSerializer.serialize();
+    start_write(msgToSend);
+
 }
 
-void Client::handle_read(const asio::error_code &error, size_t bytes_transferred) {
+void Client::handle_read_content(const asio::error_code &error, size_t bytes_transferred) {
     std::cout << "Read err_code: " << error << " Msg:  " << error.message() << std::endl;
     std::string line;
     std::istream is(&input_buffer_);
@@ -76,6 +93,7 @@ void Client::handle_read(const asio::error_code &error, size_t bytes_transferred
             //TODO response with ACK
         }
     }
+
     std::cout << "Rec data: " << line << std::endl;
     start_read();
 }

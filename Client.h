@@ -16,7 +16,7 @@ private:
     void handle_write(const asio::error_code& error,
                               size_t bytes_transferred);
     void start_read();
-    void handle_read(const asio::error_code& error,
+    void handle_read_content(const asio::error_code& error,
                      size_t bytes_transferred);
     void handle_read_msg_size(const asio::error_code &error, size_t bytes_transferred);
     asio::streambuf input_buffer_;
