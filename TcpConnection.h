@@ -24,6 +24,7 @@ private:
     asio::steady_timer aliveResponseTimer_;
     asio::ip::tcp::socket socket_;
     uint32_t msgLength;
-    std::vector<char> lastMessageBuffer;
+    std::vector<uint8_t> lastMessageBuffer;
+    asio::streambuf msgBuffer;
 
 };

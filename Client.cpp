@@ -6,6 +6,15 @@ Client::Client(asio::io_context& io_context) : socket_(io_context), ioContext_(i
     try{
         asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 1234);
         socket_.connect(endpoint);
+
+        asio::error_code errorWrite;
+        std::string msgToSend = "Hello Lorem ipsum some random text.\n";
+        uint32_t  msgSize = msgToSend.length();
+        std::cout << "sending message: " << msgToSend << std::endl;
+        asio::write(socket_, asio::buffer(&msgSize, sizeof(msgSize)), errorWrite);
+        asio::write(socket_, asio::buffer(msgToSend), errorWrite);
+        std::cout << errorWrite << std::endl;
+        return;
         start_read();
         std::thread thread1{[&io_context](){ io_context.run(); }};
         //std::thread thread2{[&io_context](){ io_context.run(); }};
@@ -74,10 +83,12 @@ void Client::handle_read_msg_size(const asio::error_code &error, size_t bytes_tr
         throw asio::system_error(error); // Some other error.
     std::cout << "DATA: " << buf.data() << std::endl;
 
+    /*
     auto controlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, "Is Alive ACK...");
     MessageSerializer messageSerializer(controlMsg);
     std::string msgToSend = messageSerializer.serialize();
     start_write(msgToSend);
+    */
 
 }
 

@@ -4,7 +4,6 @@
 TcpConnection::pointer TcpConnection::create(asio::io_context& io_context)
 {
     return pointer(new TcpConnection(io_context)); //TODO refactor creation...
-
 }
 
 asio::ip::tcp::socket& TcpConnection::get_socket()
@@ -34,9 +33,6 @@ void TcpConnection::send_alive(){
     //start_alive_writer();
 }
 
-void read_msg_size(){
-
-}
 
 void TcpConnection::alive_handler(){ // if is saved response -> check number -> if correct -> start_alive_writer() else send_alive
     if(waitingForACKAlive){
@@ -49,38 +45,33 @@ void TcpConnection::alive_handler(){ // if is saved response -> check number -> 
 void TcpConnection::start_read()
 {
     // Start an asynchronous operation to read a newline-delimited message.
-    //asio::async_read(socket_, asio::buffer(&msgLength, sizeof(msgLength)),
-       //                    std::bind(&TcpConnection::handle_read_msg_size, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
-
-    return;
-       asio::error_code readErr;
-    std::cout << "Starting read msg size..." << std::endl;
-    uint32_t  msgSize;
-    socket_.read_some(asio::buffer(&msgSize, sizeof(msgSize)), readErr);
-    std::vector<char> buf(msgSize);
-    std::cout << "Starting read msg data..." << std::endl;
-    socket_.read_some(asio::buffer(buf), readErr);
-    if (readErr == asio::error::eof)
-        return; // Connection closed cleanly by peer.
-    else if (readErr)
-        throw asio::system_error(readErr); // Some other error.
-    std::cout << "DATA: " << buf.data() << std::endl;
-
+    asio::async_read(socket_, asio::buffer(&msgLength, sizeof(msgLength)),
+                           std::bind(&TcpConnection::handle_read_msg_size, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
 void TcpConnection::handle_read_msg_size(const asio::error_code& error,
                                          size_t bytes_transferred)
 {
-    std::cout << "Msg size: " << msgLength;
-    lastMessageBuffer = std::vector<char>(msgLength);
-    asio::async_read(socket_, asio::buffer(lastMessageBuffer, msgLength),
-                            std::bind(&TcpConnection::handle_read_msg_content, this, std::placeholders::_1, std::placeholders::_2));
-    std::cout << "Read err_code: " << error << " Msg:  " << error.message() << std::endl;
+    std::cout << "Transfered: " << bytes_transferred << std::endl;
+    std::cout << "Msg size: " << msgLength << std::endl;
 
-    std::cout << "Rec data: " << lastMessageBuffer.data() << std::endl; //TODO if isAliveAck -> isWaiting = false
-    start_read();
+    // https://www.boost.org/doc/libs/1_40_0/doc/html/boost_asio/example/http/client/async_client.cpp
+    asio::async_read(socket_, asio::dynamic_buffer(lastMessageBuffer, msgLength),
+                     [&] (asio::error_code error, std::size_t bytes_transferred){
+        std::cout << error.message() << ", transf.:" << bytes_transferred << "\n";
+    });
+
+    //lastMessageBuffer = std::vector<char>(msgLength);
+
+    //asio::async_read(socket_,  asio::buffer(lastMessageBuffer, msgLength),
+     //                       std::bind(&TcpConnection::handle_read_msg_content, this, std::placeholders::_1, std::placeholders::_2));
+    //std::cout << "Read err_code: " << error << " Msg:  " << error.message() << std::endl;
 }
 
 void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_t bytes_transferred) {
-
+    std::cout << "Err:" << error.message() << std::endl;
+    std::cout << "Cont. transfered: " << bytes_transferred << std::endl;
+    std::cout << "Receiving msg content: " << lastMessageBuffer.data() << std::endl;
+    // TODO save msg to messages buffer
+    //start_read();
 }

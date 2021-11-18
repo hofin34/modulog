@@ -18,8 +18,8 @@ void TcpServer::handle_accept(TcpConnection::pointer new_connection,
     if (!error)
     {
         std::cout << "Starting new connection..." << std::endl;
+        //new_connection->start_alive_writer();
         new_connection->start_read();
-        new_connection->start_alive_writer();
     }
     start_accept();
 }
