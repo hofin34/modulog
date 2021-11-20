@@ -44,7 +44,6 @@ void TcpConnection::alive_handler(){ // if is saved response -> check number -> 
 
 void TcpConnection::start_read()
 {
-    // Start an asynchronous operation to read a newline-delimited message.
     asio::async_read(socket_, asio::buffer(&msgLength, sizeof(msgLength)),
                            std::bind(&TcpConnection::handle_read_msg_size, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
@@ -52,26 +51,27 @@ void TcpConnection::start_read()
 void TcpConnection::handle_read_msg_size(const asio::error_code& error,
                                          size_t bytes_transferred)
 {
-    std::cout << "Transfered: " << bytes_transferred << std::endl;
-    std::cout << "Msg size: " << msgLength << std::endl;
+    if(!error){
+        std::cout << "Msg size: " << msgLength << std::endl;
 
-    // https://www.boost.org/doc/libs/1_40_0/doc/html/boost_asio/example/http/client/async_client.cpp
-    asio::async_read(socket_, asio::dynamic_buffer(lastMessageBuffer, msgLength),
-                     [&] (asio::error_code error, std::size_t bytes_transferred){
-        std::cout << error.message() << ", transf.:" << bytes_transferred << "\n";
-    });
+        asio::async_read(socket_,  msgBuffer, asio::transfer_at_least(1),
+                         std::bind(&TcpConnection::handle_read_msg_content, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 
-    //lastMessageBuffer = std::vector<char>(msgLength);
-
-    //asio::async_read(socket_,  asio::buffer(lastMessageBuffer, msgLength),
-     //                       std::bind(&TcpConnection::handle_read_msg_content, this, std::placeholders::_1, std::placeholders::_2));
-    //std::cout << "Read err_code: " << error << " Msg:  " << error.message() << std::endl;
-}
+    }else{
+        throw std::runtime_error("Err in reading msg size: " + error.message());
+    }
+ }
 
 void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_t bytes_transferred) {
-    std::cout << "Err:" << error.message() << std::endl;
-    std::cout << "Cont. transfered: " << bytes_transferred << std::endl;
-    std::cout << "Receiving msg content: " << lastMessageBuffer.data() << std::endl;
-    // TODO save msg to messages buffer
-    //start_read();
+    if(!error){
+        if(bytes_transferred != msgLength){
+            std::cerr << "Transfered: " << bytes_transferred << std::endl;
+            throw std::runtime_error("Transfered bytes is different than message length in header!");
+        }
+        std::istream istream(&msgBuffer);
+        std::string s(std::istreambuf_iterator<char>(istream), {});
+        messagesVector_.push_back(s);
+    }else{
+        throw std::runtime_error("Error in reading msg content: " + error.message());
+    }
 }
