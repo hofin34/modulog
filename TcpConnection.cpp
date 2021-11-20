@@ -53,24 +53,32 @@ void TcpConnection::handle_read_msg_size(const asio::error_code& error,
 {
     if(!error){
         std::cout << "Msg size: " << msgLength << std::endl;
-
-        asio::async_read(socket_,  msgBuffer, asio::transfer_at_least(1),
-                         std::bind(&TcpConnection::handle_read_msg_content, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
-
+        read_msg_content();
     }else{
         throw std::runtime_error("Err in reading msg size: " + error.message());
     }
  }
 
+ void TcpConnection::read_msg_content(){
+     asio::async_read(socket_, msgBuffer_, asio::transfer_at_least(1),
+                      std::bind(&TcpConnection::handle_read_msg_content, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+}
+
 void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_t bytes_transferred) {
     if(!error){
-        if(bytes_transferred != msgLength){
-            std::cerr << "Transfered: " << bytes_transferred << std::endl;
-            throw std::runtime_error("Transfered bytes is different than message length in header!");
-        }
-        std::istream istream(&msgBuffer);
+        alreadyRead_ += bytes_transferred;
+        std::cout << "Content bytes read: " << alreadyRead_ << "/" << msgLength <<std::endl;
+        std::istream istream(&msgBuffer_);
         std::string s(std::istreambuf_iterator<char>(istream), {});
-        messagesVector_.push_back(s);
+        finalMessage_ += s;
+        if(alreadyRead_ != msgLength){
+            read_msg_content();
+        }else{
+            alreadyRead_ = 0;
+            messagesVector_.push_back(finalMessage_);
+            std::cout << "Received: " << finalMessage_ << std::endl;
+            finalMessage_ = "";
+        }
     }else{
         throw std::runtime_error("Error in reading msg content: " + error.message());
     }

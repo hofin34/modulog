@@ -15,8 +15,10 @@ public:
     static pointer create(asio::io_context& io_context);
 
 private:
-    TcpConnection(asio::io_context& io_context) : socket_(io_context), aliveTimer_(io_context), aliveResponseTimer_(io_context){}
+    TcpConnection(asio::io_context& io_context) : socket_(io_context), aliveTimer_(io_context),
+                                                  msgBuffer_(128), aliveResponseTimer_(io_context){} //TODO specify buff size
     void handle_read_msg_size(const asio::error_code& error, size_t bytes_transferred);
+    void read_msg_content();
     void handle_read_msg_content(const asio::error_code& error, size_t bytes_transferred);
     // ------ Attributes
     bool waitingForACKAlive = false;
@@ -24,9 +26,10 @@ private:
     asio::steady_timer aliveResponseTimer_;
     asio::ip::tcp::socket socket_;
     uint32_t msgLength;
-    asio::streambuf msgBuffer;
-   // uint8_t msgBuffer_ [128];
+    asio::streambuf msgBuffer_;
     std::vector<std::string> messagesVector_;
+    int alreadyRead_ = 0;
+    std::string finalMessage_;
 
 
 };
