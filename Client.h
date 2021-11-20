@@ -12,6 +12,8 @@ public:
     void start_write(std::string& msg);
     void log();
     void send_log(std::string& msg);
+
+    void send_msg(std::string& msg);
 private:
     void handle_write(const asio::error_code& error,
                               size_t bytes_transferred);

@@ -7,6 +7,7 @@
 class TcpConnection: public std::enable_shared_from_this<TcpConnection> {
 public:
     typedef std::shared_ptr<TcpConnection> pointer;
+    void send_message(std::string& msg);
     void start_read();
     void alive_handler();
     void send_alive();

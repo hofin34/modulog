@@ -69,8 +69,8 @@ void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_
         alreadyRead_ += bytes_transferred;
         std::cout << "Content bytes read: " << alreadyRead_ << "/" << msgLength <<std::endl;
         std::istream istream(&msgBuffer_);
-        std::string s(std::istreambuf_iterator<char>(istream), {});
-        finalMessage_ += s;
+        std::string msgPart(std::istreambuf_iterator<char>(istream), {});
+        finalMessage_ += msgPart;
         if(alreadyRead_ != msgLength){
             read_msg_content();
         }else{
@@ -81,5 +81,15 @@ void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_
         }
     }else{
         throw std::runtime_error("Error in reading msg content: " + error.message());
+    }
+}
+
+void TcpConnection::send_message(std::string& msg) { //TODO not tested
+    asio::error_code errorWrite;
+    uint32_t msgSize = msg.length();
+    asio::write(socket_, asio::buffer(&msgSize, sizeof(msgSize)), errorWrite);
+    asio::write(socket_, asio::buffer(msg), errorWrite);
+    if(errorWrite){
+        throw std::runtime_error("Error in sending: " + errorWrite.message());
     }
 }
