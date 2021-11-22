@@ -9,21 +9,26 @@ public:
 
 
     void run();
-    void start_write(std::string& msg);
-    void log();
-    void send_log(std::string& msg);
-
     void send_msg(std::string& msg);
-private:
-    void handle_write(const asio::error_code& error,
-                              size_t bytes_transferred);
+    std::string getFrontMessage();
+    std::string popMessage();
+    std::vector<std::string> getMessagesVector();
+
+        private:
     void start_read();
-    void handle_read_content(const asio::error_code& error,
-                     size_t bytes_transferred);
     void handle_read_msg_size(const asio::error_code &error, size_t bytes_transferred);
-    asio::streambuf input_buffer_;
+    void read_msg_content();
+    void handle_read_msg_content(const asio::error_code &error, size_t bytes_transferred);
+
+
+        asio::streambuf input_buffer_;
     uint32_t msgLength;
     asio::io_context &ioContext_;
     asio::ip::tcp::socket socket_;
     std::string msg_to_send_;
+
+    asio::streambuf msgBuffer_;
+    std::vector<std::string> messagesVector_;
+    int alreadyRead_ = 0;
+    std::string finalMessage_;
 };

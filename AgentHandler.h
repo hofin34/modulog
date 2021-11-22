@@ -4,7 +4,11 @@
 #include "Agent.h"
 
 class AgentHandler {
-    std::vector<Agent> running_agents;
+public:
+    std::shared_ptr<Agent> createNextAgent();
+
+private:
+    std::vector<std::shared_ptr<Agent>> running_agents;
     static void cleanup(int sigNum);
     int createAgents();
 };

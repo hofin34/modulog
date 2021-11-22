@@ -6,28 +6,27 @@
 
 class TcpConnection: public std::enable_shared_from_this<TcpConnection> {
 public:
+    const int MAX_PACKET_SIZE = 512;
     typedef std::shared_ptr<TcpConnection> pointer;
     void send_message(std::string& msg);
     void start_read();
-    void alive_handler();
-    void send_alive();
-    void start_alive_writer();
     asio::ip::tcp::socket& get_socket();
     static pointer create(asio::io_context& io_context);
+    std::vector<std::string> getMessagesVector();
+    std::string getFrontMessage();
+    std::string popMessage();
 
 private:
-    TcpConnection(asio::io_context& io_context) : socket_(io_context), aliveTimer_(io_context),
-                                                  msgBuffer_(128), aliveResponseTimer_(io_context){} //TODO specify buff size
+    TcpConnection(asio::io_context& io_context) : socket_(io_context){
+        msgBuffer_ = std::make_shared<asio::streambuf>(128);
+    } //TODO specify buff size
     void handle_read_msg_size(const asio::error_code& error, size_t bytes_transferred);
     void read_msg_content();
     void handle_read_msg_content(const asio::error_code& error, size_t bytes_transferred);
     // ------ Attributes
-    bool waitingForACKAlive = false;
-    asio::steady_timer aliveTimer_;
-    asio::steady_timer aliveResponseTimer_;
     asio::ip::tcp::socket socket_;
-    uint32_t msgLength;
-    asio::streambuf msgBuffer_;
+    uint32_t msgLength = 0;
+    std::shared_ptr<asio::streambuf> msgBuffer_;
     std::vector<std::string> messagesVector_;
     int alreadyRead_ = 0;
     std::string finalMessage_;

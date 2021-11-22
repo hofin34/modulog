@@ -5,7 +5,7 @@
 #include "Agent.h"
 
 std::string Agent::getName() {
-    return name_;
+    return id_;
 }
 
 std::filesystem::path Agent::getPath() {
@@ -18,4 +18,16 @@ std::shared_ptr<reproc::process> Agent::getProcess() {
 
 std::shared_ptr<reproc::options> Agent::getProcessOptions() {
     return processOptions_;
+}
+
+void Agent::setTcpConnection(const TcpConnection::pointer& connection) {
+    tcpConnection_ = connection;
+}
+
+TcpConnection::pointer Agent::getConnection() {
+    return tcpConnection_;
+}
+
+int Agent::getProcessPid() {
+    return process_->pid().first;
 }

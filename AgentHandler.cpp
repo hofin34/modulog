@@ -23,6 +23,11 @@ void AgentHandler::cleanup(int sigNum) {
 }
 
 int AgentHandler::createAgents() {
+    //TODO
+    return 0;
+}
+
+std::shared_ptr<Agent> AgentHandler::createNextAgent() {
     struct sigaction act{};
     memset(&act, 0, sizeof(act));
     act.sa_handler = &AgentHandler::cleanup;
@@ -30,7 +35,7 @@ int AgentHandler::createAgents() {
     sigaction(SIGTERM, &act, nullptr);
 
     // Agent definition:
-    std::string ag1Name = "Agent 1";
+    std::string ag1Id = "Agent-1";
     std::string ag1Path = "./process1";
     int ag1TerminateTimeout = 2000;
     // ---
@@ -42,15 +47,12 @@ int AgentHandler::createAgents() {
     v.emplace_back(ag1Path);
     std::error_code ec = process->start(v, options);
     if (ec == std::errc::no_such_file_or_directory) {
-        std::cerr << "Program not found. Make sure it's available from the PATH.";
-        return ec.value();
+        throw std::runtime_error("Program not found. Make sure it's available from the PATH");
     } else if (ec) {
-        std::cout << "HERE..." << std::endl;
-        return ec.value();
+        throw std::runtime_error("Agent creation err:" + ec.message());
     }
-    Agent agent(ag1Name, ag1TerminateTimeout, process);
-    running_agents.push_back(std::move(agent));
-    unsigned int microsecond = 1000000;
-    usleep(1 * microsecond);//sleeps for 3 second
-    while(true);
+    auto agent = std::make_shared<Agent>(ag1Id, ag1TerminateTimeout, process);
+    std::cout << "Created agent with PID: " << agent->getProcessPid() << std::endl;
+    running_agents.push_back(agent);
+    return agent;
 }
