@@ -16,8 +16,7 @@ int main(){
         asio::io_context io_context;
         auto client = std::make_shared<Client>(io_context);
         std::thread clientThread{[&io_context]() { io_context.run(); }};
-
-        while (client->getMessagesVector().empty());
+        while (client->getMessagesVector()->empty());
         auto initMsg = client->getFrontMessage();
         std::cout << "in: " << initMsg << std::endl;
         std::string initResponse = "response to init msg";

@@ -20,9 +20,8 @@ void TcpServer::handle_accept(TcpConnection::pointer new_connection,
         std::cout << "Starting new connection..." << std::endl;
         allConnectionsVector.push_back(new_connection);
         lastConnectionsVector.push_back(new_connection);
-        new_connection->start_read();
-        //std::string msg = "Hello from server.";
-        //new_connection->send_message(msg);
+
+
     }
     start_accept();
 }

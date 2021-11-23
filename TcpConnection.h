@@ -12,12 +12,13 @@ public:
     void start_read();
     asio::ip::tcp::socket& get_socket();
     static pointer create(asio::io_context& io_context);
-    std::vector<std::string> getMessagesVector();
+    std::shared_ptr<std::vector<std::string>> getMessagesVector();
     std::string getFrontMessage();
     std::string popMessage();
 
 private:
     TcpConnection(asio::io_context& io_context) : socket_(io_context){
+        messagesVector_ = std::make_shared<std::vector<std::string>>();
         msgBuffer_ = std::make_shared<asio::streambuf>(128);
     } //TODO specify buff size
     void handle_read_msg_size(const asio::error_code& error, size_t bytes_transferred);
@@ -27,7 +28,7 @@ private:
     asio::ip::tcp::socket socket_;
     uint32_t msgLength = 0;
     std::shared_ptr<asio::streambuf> msgBuffer_;
-    std::vector<std::string> messagesVector_;
+    std::shared_ptr<std::vector<std::string>> messagesVector_;
     int alreadyRead_ = 0;
     std::string finalMessage_;
 

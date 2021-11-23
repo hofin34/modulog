@@ -14,7 +14,6 @@ void Core::start() {
         TcpServer server(io_context);
         server.start_accept();
         std::thread serverThread{[&io_context](){ io_context.run(); }};
-        serverThread.join(); //TODO remove
 
         //Creates agent:
         std::shared_ptr<Agent> agent = agentHandler.createNextAgent();
@@ -26,12 +25,13 @@ void Core::start() {
         auto agentConnection = server.popConnection();
         if(agentConnection == nullptr)
             throw std::runtime_error("Agent didnt connect.");
+        agentConnection->start_read();
         //TODO check if it is agent:
         ControlMessage controlMessage(ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE, "");
         std::string toSend = controlMessage.serialize();
         agentConnection->send_message(toSend);
         std::cout << "Waiting for agent response..." << std::endl;
-        while(agentConnection->getMessagesVector().empty()); // Waiting for response from agent
+        while(agentConnection->getMessagesVector()->empty()); // Waiting for response from agent
         std::string response = agentConnection->getFrontMessage();
         agentConnection->popMessage();
         std::cout << "Response: " << response << std::endl;

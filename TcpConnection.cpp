@@ -21,9 +21,7 @@ void TcpConnection::handle_read_msg_size(const asio::error_code& error,
                                          size_t bytes_transferred)
 {
     if(error == asio::error::eof){
-        std::cerr << "Server: received eof." << std::endl;
         start_read();
-        return;
     }
     if(!error){
         std::cout << "Msg size: " << msgLength << std::endl;
@@ -58,7 +56,7 @@ void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_
             read_msg_content();
         }else{
             alreadyRead_ = 0;
-            messagesVector_.push_back(finalMessage_);
+            messagesVector_->push_back(finalMessage_);
             std::cout << "Server received: " << finalMessage_ << std::endl;
             finalMessage_ = "";
             start_read();
@@ -79,16 +77,16 @@ void TcpConnection::send_message(std::string& msg) { //TODO not tested
     }
 }
 
-std::vector<std::string> TcpConnection::getMessagesVector() {
+std::shared_ptr<std::vector<std::string>> TcpConnection::getMessagesVector() {
     return messagesVector_;
 }
 
 std::string TcpConnection::getFrontMessage() {
-    return messagesVector_.front();
+    return messagesVector_->front();
 }
 
 std::string TcpConnection::popMessage() {
     auto msgToReturn = getFrontMessage();
-    messagesVector_.erase(messagesVector_.begin());
+    messagesVector_->erase(messagesVector_->begin());
     return msgToReturn;
 }
