@@ -20,7 +20,7 @@ void TcpServer::handle_accept(TcpConnection::pointer new_connection,
         std::cout << "Starting new connection..." << std::endl;
         allConnectionsVector.push_back(new_connection);
         lastConnectionsVector.push_back(new_connection);
-
+        //new_connection->start_read();
 
     }
     start_accept();

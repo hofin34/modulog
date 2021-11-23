@@ -9,6 +9,7 @@ public:
     ControlMessage(std::string jsonInit);
     ControlMessage(CONTROL_MSG_TYPE msgType, std::string value);
     CONTROL_MSG_TYPE getType();
+    std::string getValue();
     std::string serialize() override;
 private:
     CONTROL_MSG_TYPE type_;

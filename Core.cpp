@@ -4,6 +4,7 @@
 
 #include "Core.h"
 #include "TcpServer.h"
+#include "MessageDeserializer.h"
 
 void Core::start() {
     try
@@ -26,14 +27,26 @@ void Core::start() {
         if(agentConnection == nullptr)
             throw std::runtime_error("Agent didnt connect.");
         agentConnection->start_read();
+
         //TODO check if it is agent:
-        ControlMessage controlMessage(ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE, "");
-        std::string toSend = controlMessage.serialize();
+        auto controlMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::CONFIG, "SomeConfigJSON...");
+        MessageSerializer msgSerializer(controlMessage);
+        std::string toSend = msgSerializer.serialize();
         agentConnection->send_message(toSend);
         std::cout << "Waiting for agent response..." << std::endl;
         while(agentConnection->getMessagesVector()->empty()); // Waiting for response from agent
         std::string response = agentConnection->getFrontMessage();
         agentConnection->popMessage();
+        //Now expecting ACK response with agent name...
+
+        //MessageDeserializer messageDeserializer(response); //TODO this is causing bug!
+        /*
+        if(messageDeserializer.getMsgType() == Message::MSG_TYPE::CONTROL_MSG){
+            auto respControlMessage = messageDeserializer.getControlMessage();
+            if(respControlMessage->getType() == ControlMessage::CONTROL_MSG_TYPE::ACK){
+                std::string agentName = respControlMessage->getValue();
+            }
+        }*/
         std::cout << "Response: " << response << std::endl;
 
 

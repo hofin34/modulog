@@ -34,7 +34,8 @@ void Client::handle_read_msg_size(const asio::error_code& error,
                                          size_t bytes_transferred)
 {
     if(error == asio::error::eof){
-        start_read();
+        std::cerr << "Client err: " << error.message() << " (maybe connection closed?)";
+        return;
     }
     if(!error){
         std::cout << "Client Msg size: " << msgLength << std::endl;

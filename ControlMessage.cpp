@@ -4,7 +4,9 @@
 
 #include "ControlMessage.h"
 ControlMessage::ControlMessage(std::string jsonInit) {
-    //TODO
+    nlohmann::json jsonObj = nlohmann::json::parse(jsonInit);
+    type_ = jsonObj["controlMsgType"];
+    value_ = jsonObj["value"]; // TODO check if correct type
 
 }
 ControlMessage::ControlMessage(ControlMessage::CONTROL_MSG_TYPE msgType, std::string value) {
@@ -13,11 +15,15 @@ ControlMessage::ControlMessage(ControlMessage::CONTROL_MSG_TYPE msgType, std::st
 }
 
 std::string ControlMessage::serialize() {
-    return nlohmann::json{{"type", type_}, {"value", value_}}.dump();
+    return nlohmann::json{{"controlMsgType", type_}, {"value", value_}}.dump();
 }
 
 ControlMessage::CONTROL_MSG_TYPE ControlMessage::getType() {
     return type_;
+}
+
+std::string ControlMessage::getValue() {
+    return value_;
 }
 
 
