@@ -17,11 +17,13 @@ public:
         };
     }
     // -------
-    std::string getName();
+    std::string getId();
+    void setId(const std::string& id);
+
     std::filesystem::path getPath();
     std::shared_ptr<reproc::process> getProcess();
     std::shared_ptr<reproc::options> getProcessOptions();
-    void setTcpConnection(const TcpConnection::pointer& connection);
+    void setConnection(const TcpConnection::pointer& connection);
     TcpConnection::pointer getConnection();
     int getProcessPid();
 

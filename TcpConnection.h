@@ -12,9 +12,9 @@ public:
     void start_read();
     asio::ip::tcp::socket& get_socket();
     static pointer create(asio::io_context& io_context);
-    std::shared_ptr<std::vector<std::string>> getMessagesVector();
     std::string getFrontMessage();
     std::string popMessage();
+    bool isMessage();
 
 private:
     TcpConnection(asio::io_context& io_context) : socket_(io_context){

@@ -2,16 +2,17 @@
 // Created by martin on 15.11.21.
 //
 
+#include <iostream>
 #include "MessageDeserializer.h"
 
-MessageDeserializer::MessageDeserializer(std::string toDeserialize) {
+MessageDeserializer::MessageDeserializer(const std::string& toDeserialize) {
     nlohmann::json msgObj = nlohmann::json::parse(toDeserialize);
     if(msgObj["msgType"] == Message::MSG_TYPE::LOG_MSG){
         msgType_ = Message::MSG_TYPE::LOG_MSG;
-        logMessage_ = std::make_shared<LogMessage>(toDeserialize);
+        logMessage_ = std::make_shared<LogMessage>(msgObj["message"]);
     }else if(msgObj["msgType"] == Message::MSG_TYPE::CONTROL_MSG){
         msgType_ = Message::MSG_TYPE::CONTROL_MSG;
-        controlMessage_ = std::make_shared<ControlMessage>(toDeserialize);
+        controlMessage_ = std::make_shared<ControlMessage>(msgObj["message"]);
     }
 }
 

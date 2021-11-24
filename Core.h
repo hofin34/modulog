@@ -5,6 +5,7 @@
 class Core {
 public:
     void start();
+    void startSendAlive();
 
 private:
     AgentHandler agentHandler;

@@ -53,6 +53,10 @@ std::shared_ptr<Agent> AgentHandler::createNextAgent() {
     }
     auto agent = std::make_shared<Agent>(ag1Id, ag1TerminateTimeout, process);
     std::cout << "Created agent with PID: " << agent->getProcessPid() << std::endl;
-    running_agents.push_back(agent);
+    runningAgents_.push_back(agent);
     return agent;
+}
+
+const std::vector<std::shared_ptr<Agent>> &AgentHandler::getRunningAgents() {
+    return runningAgents_;
 }

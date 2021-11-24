@@ -24,6 +24,7 @@ void Core::start() {
         timer.wait();
         std::cout << "timer out..." << std::endl;
         auto agentConnection = server.popConnection();
+        agent->setConnection(agentConnection);
         if(agentConnection == nullptr)
             throw std::runtime_error("Agent didnt connect.");
         agentConnection->start_read();
@@ -34,20 +35,30 @@ void Core::start() {
         std::string toSend = msgSerializer.serialize();
         agentConnection->send_message(toSend);
         std::cout << "Waiting for agent response..." << std::endl;
-        while(agentConnection->getMessagesVector()->empty()); // Waiting for response from agent
+        while(!agentConnection->isMessage()); // Waiting for response from agent
         std::string response = agentConnection->getFrontMessage();
         agentConnection->popMessage();
         //Now expecting ACK response with agent name...
-
-        //MessageDeserializer messageDeserializer(response); //TODO this is causing bug!
-        /*
+        std::cout << "Core received.: " << response << std::endl;
+        MessageDeserializer messageDeserializer(response);
         if(messageDeserializer.getMsgType() == Message::MSG_TYPE::CONTROL_MSG){
             auto respControlMessage = messageDeserializer.getControlMessage();
             if(respControlMessage->getType() == ControlMessage::CONTROL_MSG_TYPE::ACK){
                 std::string agentName = respControlMessage->getValue();
+                agent->setId(agentName);
             }
-        }*/
-        std::cout << "Response: " << response << std::endl;
+        }
+        //TODO start send alive timer (async)
+        while(true){
+            for(auto &actAgent : agentHandler.getRunningAgents()){
+                auto actAgentConnection = actAgent->getConnection();
+                if(actAgentConnection->isMessage()){
+                    auto frontMsg = actAgentConnection->popMessage();
+                    std::cout << "CORE received:" << std::endl;
+                }
+            }
+        }
+
 
 
         //std::thread thread1{[&io_context](){ io_context.run(); }};
@@ -59,6 +70,10 @@ void Core::start() {
     }
     catch (std::exception& e)
     {
-        std::cerr << e.what() << std::endl;
+        std::cout << "Exc.:" << e.what() << std::endl;
+    }
+    catch(...){
+        std::cout << "Something bad occured." << std::endl;
     }
 }
+

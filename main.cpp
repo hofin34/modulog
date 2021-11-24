@@ -10,7 +10,7 @@ int main(int argc, const char **argv) {
         Core core;
         core.start();
     }catch(std::exception& e){
-        std::cerr << e.what() << std::endl;
+        //std::cerr << e.what() << std::endl;
     }
 
 

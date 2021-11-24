@@ -27,6 +27,13 @@ int main(){
         MessageSerializer msgSerializer(ackMessage);
         std::string initResponse = msgSerializer.serialize();
         client->send_msg(initResponse);
+        while(true){
+            auto logMessage = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "temperature=3");
+            MessageSerializer messageSerializer(logMessage);
+            std::string toSend = messageSerializer.serialize();
+            client->send_msg(toSend);
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+        }
         clientThread.join();
     }catch(std::exception& e){
         std::cerr << e.what() << std::endl;

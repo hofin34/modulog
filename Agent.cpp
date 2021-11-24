@@ -4,7 +4,7 @@
 
 #include "Agent.h"
 
-std::string Agent::getName() {
+std::string Agent::getId() {
     return id_;
 }
 
@@ -20,7 +20,7 @@ std::shared_ptr<reproc::options> Agent::getProcessOptions() {
     return processOptions_;
 }
 
-void Agent::setTcpConnection(const TcpConnection::pointer& connection) {
+void Agent::setConnection(const TcpConnection::pointer& connection) {
     tcpConnection_ = connection;
 }
 
@@ -30,4 +30,8 @@ TcpConnection::pointer Agent::getConnection() {
 
 int Agent::getProcessPid() {
     return process_->pid().first;
+}
+
+void Agent::setId(const std::string& id) {
+    id_ = id;
 }

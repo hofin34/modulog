@@ -3,10 +3,11 @@
 #include <memory>
 #include "ControlMessage.h"
 #include "LogMessage.h"
+#include <nlohmann/json.hpp>
 
 class MessageDeserializer {
 public:
-    MessageDeserializer(std::string toDeserialize);
+    MessageDeserializer(const std::string& toDeserialize);
     Message::MSG_TYPE getMsgType();
     std::shared_ptr<ControlMessage> getControlMessage();
     std::shared_ptr<LogMessage> getLogMessage();
