@@ -8,7 +8,8 @@
 int main(int argc, const char **argv) {
     try{
         std::filesystem::path agentsConfigPath = "../agents-configs/";
-        Core core(std::filesystem::absolute(agentsConfigPath));
+        auto ioContext = std::make_shared<asio::io_context>();
+        Core core(std::filesystem::absolute(agentsConfigPath), ioContext);
         core.start();
     }catch(std::exception& e){
         std::cerr << e.what() << std::endl;

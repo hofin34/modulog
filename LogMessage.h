@@ -7,6 +7,7 @@ public:
     LogMessage(LOG_MSG_TYPE logMsgType, std::string value);
     LogMessage deserialize(std::string toDeserialize);
     std::string serialize() override;
+    std::string getValue();
 private:
     std::string value_;
     LOG_MSG_TYPE logType_;

@@ -19,3 +19,7 @@ LogMessage::LogMessage(std::string jsonInit) {
 std::string LogMessage::serialize() {
     return nlohmann::json{{"logMsgType", logType_}, {"value", value_}}.dump();
 }
+
+std::string LogMessage::getValue() {
+    return value_;
+}

@@ -10,3 +10,4 @@ thesis-text/*.ptc
 
 cmake-build-debug/
 .idea/
+logs/

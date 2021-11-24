@@ -5,25 +5,28 @@
 #include "Core.h"
 #include "TcpServer.h"
 #include "MessageDeserializer.h"
+#include "LogSaver.h"
 
-Core::Core(const std::filesystem::path& pathToAgentsConfigs) : agentHandler_(pathToAgentsConfigs){}
+Core::Core(const std::filesystem::path& pathToAgentsConfigs, std::shared_ptr<asio::io_context> ioContext) : agentHandler_(pathToAgentsConfigs),
+                                                                                                            sendAliveTimer_(*ioContext){
+    ioContext_ = ioContext;
+}
 
 
 
 void Core::start() {
     try
     {
-
         // start server:
-        asio::io_context io_context;
-        TcpServer server(io_context);
+       // asio::io_context ioContext;
+        TcpServer server(*ioContext_);
         server.start_accept();
-        std::thread serverThread{[&io_context](){ io_context.run(); }};
+        std::thread serverThread{[this](){ ioContext_->run(); }};
 
         //Creates agent:
         std::shared_ptr<Agent> agent;
         while((agent = agentHandler_.createNextAgent()) != nullptr){
-            asio::steady_timer timer(io_context);
+            asio::steady_timer timer(*ioContext_);
             std::cout << "waiting for ag. connection..." << std::endl;
             timer.expires_from_now(asio::chrono::seconds(2)); // TODO make variable time
             timer.wait();
@@ -56,12 +59,19 @@ void Core::start() {
                 }
             }
             //TODO start send alive timer (async)
+            startSendAlive();
+            LogSaver logSaver("../logs");
             while(true){
                 for(auto &actAgent : agentHandler_.getRunningAgents()){
                     auto actAgentConnection = actAgent->getConnection();
                     if(actAgentConnection->isMessage()){
                         auto frontMsg = actAgentConnection->popMessage();
-                        std::cout << "CORE received:" << std::endl;
+                        MessageDeserializer deserializer (frontMsg);
+                        if(deserializer.getMsgType() == Message::MSG_TYPE::LOG_MSG){
+                            auto logMsg = deserializer.getLogMessage();
+                            logSaver.saveLog(actAgent->getId(), logMsg->getValue());
+                        }
+                        std::cout << "CORE received:" << frontMsg << std::endl;
                     }
                 }
             }
@@ -86,3 +96,10 @@ void Core::start() {
     }
 }
 
+
+void Core::startSendAlive() {
+    /*asio::steady_timer timer(ioContext);
+    timer.expires_from_now(std::chrono::seconds(5));*/
+
+
+}
