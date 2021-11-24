@@ -1,0 +1,6 @@
+{
+    "id": "temperature-logger",
+    "execPath": "../cmake-build-debug/process1",
+    "terminateTimeout": 2000,
+    "logInterval": 5
+}

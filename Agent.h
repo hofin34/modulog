@@ -8,8 +8,8 @@
 
 class Agent {
 public:
-    Agent(std::string name, int terminate_timeout, std::shared_ptr<reproc::process>& process):
-            id_(std::move(name)), process_(process) {
+    Agent(std::string id, int terminate_timeout, std::shared_ptr<reproc::process>& process, nlohmann::json config):
+            id_(std::move(id)), process_(process), config_(config) {
         processOptions_ = std::make_shared<reproc::options>();
         processOptions_->stop = {
                 { reproc::stop::terminate, reproc::milliseconds(terminate_timeout) },
@@ -18,7 +18,6 @@ public:
     }
     // -------
     std::string getId();
-    void setId(const std::string& id);
 
     std::filesystem::path getPath();
     std::shared_ptr<reproc::process> getProcess();
@@ -26,6 +25,7 @@ public:
     void setConnection(const TcpConnection::pointer& connection);
     TcpConnection::pointer getConnection();
     int getProcessPid();
+    nlohmann::json getConfig();
 
 private:
     std::string id_;
@@ -33,4 +33,5 @@ private:
     std::shared_ptr<reproc::process> process_;
     std::shared_ptr<reproc::options> processOptions_;
     TcpConnection::pointer tcpConnection_;
+    nlohmann::json config_;
 };

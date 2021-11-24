@@ -7,10 +7,12 @@
 
 int main(int argc, const char **argv) {
     try{
-        Core core;
+        std::filesystem::path agentsConfigPath = "../agents-configs/";
+        Core core(std::filesystem::absolute(agentsConfigPath));
         core.start();
     }catch(std::exception& e){
-        //std::cerr << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
     }
 
 

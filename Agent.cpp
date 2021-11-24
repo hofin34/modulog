@@ -32,6 +32,6 @@ int Agent::getProcessPid() {
     return process_->pid().first;
 }
 
-void Agent::setId(const std::string& id) {
-    id_ = id;
+nlohmann::json Agent::getConfig() {
+    return config_;
 }
