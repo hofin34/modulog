@@ -60,7 +60,7 @@ void Core::start() {
                 for(auto &actAgent : agentHandler_.getRunningAgents()){
                     auto logMsg = actAgent->popLogMessage();
                     if(logMsg != nullptr){
-                        logSaver.saveLog(actAgent->getId(), logMsg->getValue());
+                        logSaver.saveLog(actAgent->getId(), logMsg);
                         std::cout << "CORE received:" << logMsg->getValue() << std::endl;
                     }
 

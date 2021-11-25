@@ -4,7 +4,7 @@
 
 #include "LogSaver.h"
 
-void LogSaver::saveLog(const std::string& agentId, const std::string& log) {
+void LogSaver::saveLog(const std::string& agentId, const std::shared_ptr<LogMessage>& logMessage) {
     std::filesystem::path whereSave = logsPath_ / agentId;
     if(!std::filesystem::exists(whereSave))
         std::filesystem::create_directory(whereSave);
@@ -12,6 +12,6 @@ void LogSaver::saveLog(const std::string& agentId, const std::string& log) {
     std::string logFileName = agentId + ".txt";
     std::filesystem::path logFilePath = whereSave / logFileName;
     logFile.open(logFilePath, std::ios_base::app);
-    logFile << log;
+    logFile << logMessage->getValue();
     logFile.close();
 }
