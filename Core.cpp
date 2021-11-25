@@ -43,63 +43,76 @@ void Core::start() {
             std::string toSend = msgSerializer.serialize();
             agentConnection->send_message(toSend);
             std::cout << "Waiting for agent response..." << std::endl;
-            while(!agentConnection->isMessage()); // Waiting for response from agent
-            std::string response = agentConnection->getFrontMessage();
-            agentConnection->popMessage();
+            std::shared_ptr<ControlMessage> respControlMessage;
+            while((respControlMessage = agent->popControlMessage()) == nullptr); // Waiting for response from agent
             //Now expecting ACK response with agent name...
-            std::cout << "Core received.: " << response << std::endl;
-            MessageDeserializer messageDeserializer(response);
-            if(messageDeserializer.getMsgType() == Message::MSG_TYPE::CONTROL_MSG){
-                auto respControlMessage = messageDeserializer.getControlMessage();
-                if(respControlMessage->getType() == ControlMessage::CONTROL_MSG_TYPE::ACK){
-                    std::string agentName = respControlMessage->getValue();
-                    if(agentName != agent->getId()){
-                        std::cerr << "Agent must response with its name! "; // TODO pop agent/reset/something
-                    }
-                }
+            std::string agentName = respControlMessage->getValue();
+            std::cout << "Core received.: " << agentName << std::endl;
+            if(agentName != agent->getId()){
+                std::cerr << "Agent must response with its name! "; // TODO pop agent/reset/something
             }
+
+
             //TODO start send alive timer (async)
             startSendAlive();
             LogSaver logSaver("../logs");
             while(true){
                 for(auto &actAgent : agentHandler_.getRunningAgents()){
-                    auto actAgentConnection = actAgent->getConnection();
-                    if(actAgentConnection->isMessage()){
-                        auto frontMsg = actAgentConnection->popMessage();
-                        MessageDeserializer deserializer (frontMsg);
-                        if(deserializer.getMsgType() == Message::MSG_TYPE::LOG_MSG){
-                            auto logMsg = deserializer.getLogMessage();
-                            logSaver.saveLog(actAgent->getId(), logMsg->getValue());
+                    auto logMsg = actAgent->popLogMessage();
+                    if(logMsg != nullptr){
+                        logSaver.saveLog(actAgent->getId(), logMsg->getValue());
+                        std::cout << "CORE received:" << logMsg->getValue() << std::endl;
+                    }
+
+                    auto controlMsg = actAgent->popControlMessage();
+                    if(controlMsg != nullptr){
+                        if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::ACK){
+                            actAgent->setConfirmedAlive(true);
                         }
-                        std::cout << "CORE received:" << frontMsg << std::endl;
                     }
                 }
             }
         }
 
-
-
-
-        //std::thread thread1{[&io_context](){ io_context.run(); }};
-        //std::thread thread2{[&io_context](){ io_context.run(); }};
-        //thread1.join();
         serverThread.join();
 
-        //io_context.run();
     }
     catch (std::exception& e)
     {
         std::cout << "Exc.:" << e.what() << std::endl;
     }
     catch(...){
-        std::cout << "Something bad occured." << std::endl;
+        std::cout << "Something bad occurred." << std::endl;
     }
 }
 
 
 void Core::startSendAlive() {
-    /*asio::steady_timer timer(ioContext);
-    timer.expires_from_now(std::chrono::seconds(5));*/
+    sendAliveTimer_.expires_from_now(std::chrono::seconds(5));
+    sendAliveTimer_.async_wait(std::bind(&Core::sendAlive, this));
+}
 
+void Core::sendAlive() {
+    std::cout << "Core sending isAlive to all agents..." << std::endl;
+    for(auto& agent: agentHandler_.getRunningAgents()){
+        auto isAliveMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE, "");
+        MessageSerializer messageSerializer(isAliveMsg);
+        std::string toSend = messageSerializer.serialize();
+        agent->setConfirmedAlive(false);
+        agent->getConnection()->send_message(toSend);
+    }
+    sendAliveTimer_.expires_from_now(std::chrono::seconds(2));
+    sendAliveTimer_.async_wait(std::bind(&Core::checkIfAgentsAlive, this));
+}
 
+void Core::checkIfAgentsAlive() {
+    std::cout << "Core checking if all agents responded with ACK..." << std::endl;
+    for(auto& agent: agentHandler_.getRunningAgents()){
+        if(!agent->getConfirmedAlive()){
+            std::cerr << "Agent " << agent->getId() << " didn't respond on isAlive!" << std::endl; // TODO kill or something...
+        }else{
+            agent->setConfirmedAlive(false);
+        }
+    }
+    startSendAlive();
 }

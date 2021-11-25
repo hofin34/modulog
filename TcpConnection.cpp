@@ -79,12 +79,10 @@ void TcpConnection::send_message(std::string& msg) { //TODO not tested
 }
 
 
-std::string TcpConnection::getFrontMessage() {
-    return messagesVector_->front();
-}
-
-std::string TcpConnection::popMessage() {
-    auto msgToReturn = getFrontMessage();
+std::shared_ptr<std::string> TcpConnection::popMessage() {
+    if(messagesVector_->empty())
+        return nullptr;
+    auto msgToReturn = std::make_shared<std::string>(messagesVector_->front());
     messagesVector_->erase(messagesVector_->begin());
     return msgToReturn;
 }

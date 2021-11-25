@@ -6,7 +6,7 @@ project(bachelor_hofbauer)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(sys-logger main.cpp Client.h Client.cpp LogMessage.cpp LogMessage.h ControlMessage.cpp ControlMessage.h TcpConnection.cpp TcpConnection.h TcpServer.cpp TcpServer.h Message.cpp Message.h MessageSerializer.cpp MessageSerializer.h MessageDeserializer.cpp MessageDeserializer.h Agent.cpp Agent.h AgentHandler.cpp AgentHandler.h Core.cpp Core.h LogSaver.cpp LogSaver.h)
-add_executable(process1 agent-memory-logger.cpp Client.h Client.cpp LogMessage.cpp LogMessage.h ControlMessage.cpp ControlMessage.h TcpConnection.cpp TcpConnection.h Message.cpp Message.h MessageDeserializer.cpp MessageDeserializer.h MessageSerializer.cpp MessageSerializer.h)
+add_executable(ag-memory agent-memory-logger.cpp Client.h Client.cpp LogMessage.cpp LogMessage.h ControlMessage.cpp ControlMessage.h TcpConnection.cpp TcpConnection.h Message.cpp Message.h MessageDeserializer.cpp MessageDeserializer.h MessageSerializer.cpp MessageSerializer.h)
 
 # ----------- nlohmann json library
 # TODO downloads too long?
@@ -48,5 +48,5 @@ target_link_libraries(asio INTERFACE Threads::Threads)
 
 # ------------ linking
 target_link_libraries(sys-logger reproc++ asio nlohmann_json::nlohmann_json)
-target_link_libraries(process1 asio)
+target_link_libraries(ag-memory asio)
 
