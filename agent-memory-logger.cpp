@@ -7,6 +7,7 @@
 #include "MessageSerializer.h"
 #include "MessageDeserializer.h"
 #include "TcpConnection.h"
+#include "AgentClient.h"
 #include <thread>
 void signal_handler(int signum)
 {
@@ -26,68 +27,25 @@ std::string exec(const char* cmd) {
     return result;
 }
 
-void sendLog(TcpConnection::pointer& connection){
+std::string getUsedRAM(){
     std::string usedMemory =  exec("free | awk 'FNR == 2 { print $3 }'");
     usedMemory.erase(std::remove(usedMemory.begin(), usedMemory.end(), '\n'), usedMemory.end()); // remove newline
-    auto logMessage = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "usedMemory",usedMemory);
-    MessageSerializer messageSerializer(logMessage);
-    std::string toSend = messageSerializer.serialize();
-    connection->send_message(toSend);
+    return usedMemory;
 }
 
-void startSendLogs(asio::steady_timer* timer, TcpConnection::pointer& connection){
-    sendLog(connection);
-    timer->expires_from_now(std::chrono::seconds(3));
-    timer->async_wait(std::bind(startSendLogs,timer, connection));
-}
 
 int main(){
-
-    try {
-        asio::io_context io_context;
-        std::string agentName = "agent";
-        TcpConnection::pointer connection = TcpConnection::create(io_context, agentName);
-        asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 1234);
-        connection->get_socket().connect(endpoint);
-        connection->start_read();
-        std::thread clientThread{[&io_context]() { io_context.run(); }};
-
-        std::shared_ptr<std::string> configMsgString;
-        while ((configMsgString = connection->popMessage()) == nullptr);
-        std::cout << "Process received: " << *configMsgString << std::endl;
-        // received config
-        MessageDeserializer messageDeserializer(*configMsgString);
-        if(messageDeserializer.getMsgType() == Message::MSG_TYPE::CONTROL_MSG){
-            auto configMessage = messageDeserializer.getControlMessage();
-            nlohmann::json configJson = nlohmann::json::parse(configMessage->getValue());
-            //TODO parse json
-            std::string agentId = configJson["id"];
-            auto ackMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, agentId);
-            MessageSerializer msgSerializer(ackMessage);
-            std::string initResponse = msgSerializer.serialize();
-            connection->send_message(initResponse);
-        }
-        asio::steady_timer sendingTimer(io_context);
-        startSendLogs(&sendingTimer, connection);
-
-        while(true){
-            std::shared_ptr<std::string> messageString;
-            while ((messageString = connection->popMessage()) == nullptr);
-            MessageDeserializer messageDeserializer1(*messageString);
-            if(messageDeserializer1.getMsgType() == Message::MSG_TYPE::CONTROL_MSG){
-                std::shared_ptr<ControlMessage> controlMessage = messageDeserializer1.getControlMessage();
-                if(controlMessage->getType() == ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE){ // Response to isAlive
-                    auto ackAliveMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, "");
-                    MessageSerializer messageSerializer(ackAliveMsg);
-                    std::string toSend = messageSerializer.serialize();
-                    connection->send_message(toSend);
-                }
-            }
-        }
-        clientThread.join();
-    }catch(std::exception& e){
-        std::cerr << e.what() << std::endl;
+    auto ioContext = std::make_shared<asio::io_context>();
+    AgentClient agentClient(ioContext, false, "agent-memory-logger" );
+    while(true){
+        std::cout <<"ST" << std::endl;
+        auto logMsg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "usedRAM", getUsedRAM());
+        std::cout << "Ag sending: "  << std::endl;
+        agentClient.sendLog(logMsg);
+        std::cout << "sent." << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(2));
     }
-        return 0;
+
+    return 0;
 }
 

@@ -67,7 +67,7 @@ void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_
     }
 }
 
-void TcpConnection::send_message(std::string& msg) { //TODO not tested
+void TcpConnection::send_message(const std::string& msg) {
     asio::error_code errorWrite;
     uint32_t msgSize = msg.length();
     asio::write(socket_, asio::buffer(&msgSize, sizeof(msgSize)), errorWrite);

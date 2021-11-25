@@ -8,7 +8,7 @@ class TcpConnection: public std::enable_shared_from_this<TcpConnection> {
 public:
     const int MAX_PACKET_SIZE = 512;
     typedef std::shared_ptr<TcpConnection> pointer;
-    void send_message(std::string& msg);
+    void send_message(const std::string& msg);
     void start_read();
     asio::ip::tcp::socket& get_socket();
     static pointer create(asio::io_context& io_context, std::string& connectionName);
