@@ -1,9 +1,9 @@
 #include "TcpConnection.h"
 
 
-TcpConnection::pointer TcpConnection::create(asio::io_context& io_context)
+TcpConnection::pointer TcpConnection::create(asio::io_context& io_context, std::string& connectionName)
 {
-    return pointer(new TcpConnection(io_context)); //TODO refactor creation...
+    return pointer(new TcpConnection(io_context, connectionName)); //TODO refactor creation...
 }
 
 asio::ip::tcp::socket& TcpConnection::get_socket()
@@ -21,7 +21,7 @@ void TcpConnection::handle_read_msg_size(const asio::error_code& error,
                                          size_t bytes_transferred)
 {
     if(error == asio::error::eof){
-        std::cerr << "Server err: " << error.message() << " (maybe connection closed?)";
+        std::cerr << connectionName_ << " err: " << error.message() << " (maybe connection closed?)";
         return;
     }
     if(!error){
@@ -29,7 +29,7 @@ void TcpConnection::handle_read_msg_size(const asio::error_code& error,
         msgBuffer_ = std::make_shared<asio::streambuf>(msgLength);
         read_msg_content();
     }else{
-        throw std::runtime_error("Server err in reading msg size: " + error.message());
+        throw std::runtime_error(connectionName_ + " err in reading msg size: " + error.message());
     }
  }
 
@@ -58,12 +58,12 @@ void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_
         }else{
             alreadyRead_ = 0;
             messagesVector_->push_back(finalMessage_);
-            std::cout << "Server received: " << finalMessage_ << std::endl;
+            std::cout << connectionName_ << " received: " << finalMessage_ << std::endl;
             finalMessage_ = "";
             start_read();
         }
     }else{
-        throw std::runtime_error("Error in reading msg content: " + error.message());
+        throw std::runtime_error(connectionName_ + ": error in reading msg content: " + error.message());
     }
 }
 

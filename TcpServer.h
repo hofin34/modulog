@@ -17,4 +17,5 @@ private:
     asio::ip::tcp::acceptor acceptor_;
     std::vector<TcpConnection::pointer> allConnectionsVector;
     std::vector<TcpConnection::pointer> lastConnectionsVector;
+    std::string serverName_ = "server";
 };

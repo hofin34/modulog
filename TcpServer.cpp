@@ -5,7 +5,7 @@
 void TcpServer::start_accept()
 {
     TcpConnection::pointer new_connection =
-            TcpConnection::create(io_context_);
+            TcpConnection::create(io_context_, serverName_);
 
     acceptor_.async_accept(new_connection->get_socket(),
                            std::bind(&TcpServer::handle_accept, this, new_connection,

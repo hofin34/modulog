@@ -23,6 +23,10 @@ void Core::start() {
         server.start_accept();
         std::thread serverThread{[this](){ ioContext_->run(); }};
 
+        //TODO del:
+
+       // serverThread.join();
+
         //Creates agent:
         std::shared_ptr<Agent> agent;
         while((agent = agentHandler_.createNextAgent()) != nullptr){
@@ -88,7 +92,7 @@ void Core::start() {
 
 
 void Core::startSendAlive() {
-    sendAliveTimer_.expires_from_now(std::chrono::seconds(5));
+    sendAliveTimer_.expires_from_now(std::chrono::seconds(10));
     sendAliveTimer_.async_wait(std::bind(&Core::sendAlive, this));
 }
 

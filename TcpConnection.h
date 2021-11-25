@@ -11,12 +11,12 @@ public:
     void send_message(std::string& msg);
     void start_read();
     asio::ip::tcp::socket& get_socket();
-    static pointer create(asio::io_context& io_context);
+    static pointer create(asio::io_context& io_context, std::string& connectionName);
     std::shared_ptr<std::string> popMessage();
     bool isMessage();
 
 private:
-    TcpConnection(asio::io_context& io_context) : socket_(io_context){
+    TcpConnection(asio::io_context& io_context, std::string& connectionName) : socket_(io_context), connectionName_(connectionName){
         messagesVector_ = std::make_shared<std::vector<std::string>>();
         msgBuffer_ = std::make_shared<asio::streambuf>(128);
     } //TODO specify buff size
@@ -30,4 +30,5 @@ private:
     std::shared_ptr<std::vector<std::string>> messagesVector_;
     int alreadyRead_ = 0;
     std::string finalMessage_;
+    std::string connectionName_;
 };
