@@ -9,9 +9,9 @@ void LogSaver::saveLog(const std::string& agentId, const std::shared_ptr<LogMess
     if(!std::filesystem::exists(whereSave))
         std::filesystem::create_directory(whereSave);
     std::ofstream logFile;
-    std::string logFileName = agentId + ".txt";
+    std::string logFileName = logMessage->getKey() + ".txt";
     std::filesystem::path logFilePath = whereSave / logFileName;
     logFile.open(logFilePath, std::ios_base::app);
-    logFile << logMessage->getValue();
+    logFile << "[" << logMessage->getTimestamp() << "] " << logMessage->getValue() << std::endl;
     logFile.close();
 }

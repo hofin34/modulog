@@ -28,7 +28,8 @@ std::string exec(const char* cmd) {
 
 void sendLog(TcpConnection::pointer& connection){
     std::string usedMemory =  exec("free | awk 'FNR == 2 { print $3 }'");
-    auto logMessage = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, usedMemory);
+    usedMemory.erase(std::remove(usedMemory.begin(), usedMemory.end(), '\n'), usedMemory.end()); // remove newline
+    auto logMessage = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "usedMemory",usedMemory);
     MessageSerializer messageSerializer(logMessage);
     std::string toSend = messageSerializer.serialize();
     connection->send_message(toSend);
@@ -49,8 +50,6 @@ int main(){
         asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 1234);
         connection->get_socket().connect(endpoint);
         connection->start_read();
-        //std::string msg = "XXX";
-       // connection->send_message(msg);
         std::thread clientThread{[&io_context]() { io_context.run(); }};
 
         std::shared_ptr<std::string> configMsgString;

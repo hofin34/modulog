@@ -12,20 +12,13 @@ Core::Core(const std::filesystem::path& pathToAgentsConfigs, std::shared_ptr<asi
     ioContext_ = ioContext;
 }
 
-
-
 void Core::start() {
     try
     {
         // start server:
-       // asio::io_context ioContext;
         TcpServer server(*ioContext_);
         server.start_accept();
         std::thread serverThread{[this](){ ioContext_->run(); }};
-
-        //TODO del:
-
-       // serverThread.join();
 
         //Creates agent:
         std::shared_ptr<Agent> agent;

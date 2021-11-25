@@ -4,12 +4,14 @@
 
 #include "ControlMessage.h"
 ControlMessage::ControlMessage(std::string jsonInit) {
+    setTimestampNow();
     nlohmann::json jsonObj = nlohmann::json::parse(jsonInit);
     type_ = jsonObj["controlMsgType"];
     value_ = jsonObj["value"]; // TODO check if correct type
 
 }
 ControlMessage::ControlMessage(ControlMessage::CONTROL_MSG_TYPE msgType, std::string value) {
+    setTimestampNow();
     type_ = msgType;
     value_ = value;
 }
