@@ -21,7 +21,7 @@ void AgentClient::initClient() {
         asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 1234);
         connection_->get_socket().connect(endpoint);
         connection_->start_read();
-        std::thread clientThread{[this]() { ioContext_->run(); }};
+        clientThread = std::thread{[this]() { ioContext_->run(); }};
 
         std::shared_ptr<std::string> configMsgString;
         while ((configMsgString = connection_->popMessage()) == nullptr);
@@ -39,19 +39,14 @@ void AgentClient::initClient() {
             MessageSerializer msgSerializer(ackMessage);
             std::string initResponse = msgSerializer.serialize();
             connection_->send_message(initResponse);
-            std::cout <<"iiiiiiiii" << std::endl;
         }
-        std::cout <<"uuu" << std::endl;
     }catch(std::exception& e) {
-        std::cout <<"egadfiiiiiiiii" << std::endl;
         std::cerr << e.what() << std::endl;
         exit(EXIT_FAILURE);
     }catch(...){
         std::cerr << "Error in AgentClient init..." << std::endl;
         exit(EXIT_FAILURE);
     }
-    std::cout <<"iiiiiiiii" << std::endl;
-
 }
 
 void AgentClient::sendLog(const std::shared_ptr<LogMessage>& logMessage) {

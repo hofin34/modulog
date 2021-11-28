@@ -14,5 +14,6 @@ private:
     std::shared_ptr<asio::io_context> ioContext_;
     void sendAlive();
     void checkIfAgentsAlive();
+    void simulatedCommunication();
 };
 

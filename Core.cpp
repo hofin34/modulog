@@ -19,7 +19,26 @@ void Core::start() {
         TcpServer server(*ioContext_);
         server.start_accept();
         std::thread serverThread{[this](){ ioContext_->run(); }};
+        if(false){ //TODO remove - just for agent debugging...
+            TcpConnection::pointer newConnection;
+            while((newConnection = server.popConnection()) == nullptr);
+            auto controlMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::CONFIG,"{\n"
+                                                                                                            "    \"id\": \"memory-logger\",\n"
+                                                                                                            "    \"execPath\": \"../cmake-build-debug/ag-memory\",\n"
+                                                                                                            "    \"terminateTimeout\": 2000,\n"
+                                                                                                            "    \"logInterval\": 5\n"
+                                                                                                            "}");
+            MessageSerializer msgSerializer(controlMessage);
+            newConnection->send_message(msgSerializer.serialize());
+            while(true){
+                auto recMsg = newConnection->popMessage();
+                if(recMsg != nullptr){
+                    std::cout << "COrE rec.: " << recMsg << std::endl;
+                }
 
+            }
+            serverThread.join();
+        }
         //Creates agent:
         std::shared_ptr<Agent> agent;
         while((agent = agentHandler_.createNextAgent()) != nullptr){
@@ -29,9 +48,10 @@ void Core::start() {
             timer.wait();
             std::cout << "timer out..." << std::endl;
             auto agentConnection = server.popConnection();
-            agent->setConnection(agentConnection);
             if(agentConnection == nullptr)
                 throw std::runtime_error("Agent didnt connect.");
+            agent->setConnection(agentConnection);
+
             agentConnection->start_read();
 
             //TODO check if it is agent:
@@ -51,7 +71,7 @@ void Core::start() {
 
 
             //TODO start send alive timer (async)
-            startSendAlive();
+            //startSendAlive();
             LogSaver logSaver("../logs");
             while(true){
                 for(auto &actAgent : agentHandler_.getRunningAgents()){
@@ -70,9 +90,7 @@ void Core::start() {
                 }
             }
         }
-
         serverThread.join();
-
     }
     catch (std::exception& e)
     {
@@ -90,7 +108,7 @@ void Core::startSendAlive() {
 }
 
 void Core::sendAlive() {
-    std::cout << "Core sending isAlive to all agents..." << std::endl;
+    std::cout << "Core sending isAlive to all agents..." << std::endl; //TODO when sending to dead agent, core exits...
     for(auto& agent: agentHandler_.getRunningAgents()){
         auto isAliveMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE, "");
         MessageSerializer messageSerializer(isAliveMsg);
@@ -112,4 +130,8 @@ void Core::checkIfAgentsAlive() {
         }
     }
     startSendAlive();
+}
+
+void Core::simulatedCommunication() {
+
 }

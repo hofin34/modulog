@@ -38,11 +38,11 @@ int main(){
     auto ioContext = std::make_shared<asio::io_context>();
     AgentClient agentClient(ioContext, false, "agent-memory-logger" );
     while(true){
-        std::cout <<"ST" << std::endl;
         auto logMsg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "usedRAM", getUsedRAM());
         std::cout << "Ag sending: "  << std::endl;
         agentClient.sendLog(logMsg);
-        std::cout << "sent." << std::endl;
+        auto logMsg2 = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "freeSpace", "5");
+        agentClient.sendLog(logMsg2);
         std::this_thread::sleep_for(std::chrono::seconds(2));
     }
 

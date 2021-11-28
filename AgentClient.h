@@ -14,6 +14,7 @@ private:
     std::shared_ptr<asio::io_context> ioContext_;
     bool isDebug_;
     TcpConnection::pointer connection_;
+    std::thread clientThread;
     void handleResponses();
 
     //TODO end clientThread
