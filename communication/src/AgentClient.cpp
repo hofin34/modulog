@@ -30,12 +30,8 @@ void AgentClient::initClient() {
         MessageDeserializer messageDeserializer(*configMsgString);
         if(messageDeserializer.getMsgType() == Message::MSG_TYPE::CONTROL_MSG){
             auto configMessage = messageDeserializer.getControlMessage();
-            nlohmann::json configJson = nlohmann::json::parse(configMessage->getValue());
-            agentConfig_ = configMessage->getValue();
-            //TODO parse json
-            std::string agentId = configJson["id"];
-            agentName_ = agentId;
-            auto ackMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, agentId);
+            //TODO parse json - in future can be some config...
+            auto ackMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, agentName_);
             MessageSerializer msgSerializer(ackMessage);
             std::string initResponse = msgSerializer.serialize();
             connection_->send_message(initResponse);

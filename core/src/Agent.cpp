@@ -33,10 +33,6 @@ int Agent::getProcessPid() {
     return process_->pid().first;
 }
 
-nlohmann::json Agent::getConfig() {
-    return config_;
-}
-
 void Agent::processMessages(int maxCount) {
     for(int i = 0; i<maxCount; i++){
         auto msgString = tcpConnection_->popMessage();
@@ -78,5 +74,9 @@ void Agent::setConfirmedAlive(bool value) {
 
 bool Agent::getConfirmedAlive() {
     return confirmedAlive_;
+}
+
+void Agent::setId(const std::string& id) {
+    id_ = id;
 }
 

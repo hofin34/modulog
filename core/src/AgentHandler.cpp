@@ -36,23 +36,18 @@ void AgentHandler::cleanup(int sigNum) {
 
 
 std::shared_ptr<Agent> AgentHandler::createNextAgent() {
-    if(createdAgents>=agentsJsonConfigs_.size())
+    if(createdAgents>=agentsPaths_.size())
         return nullptr;
-    nlohmann::json actConfig = agentsJsonConfigs_.at(createdAgents);
-    if(!actConfig.contains("id"))
-        throw std::runtime_error("Json config not containing id");
-    if(!actConfig.contains("execPath"))
-        throw std::runtime_error("Json config not containing execPath");
-
-    // Agent definition:
-    std::string agentId = actConfig["id"];
-    std::string agentPath = actConfig["execPath"];
-    int agentTerminateTimeout;
-    if(actConfig.contains("terminateTimeout")){
-        agentTerminateTimeout = actConfig["terminateTimeout"];
-    }else {
-        agentTerminateTimeout = 2000;
+    std::filesystem::path actAgentFolder = std::filesystem::absolute(agentsPaths_.at(createdAgents));
+    std::string folderName = actAgentFolder.filename();
+    std::filesystem::path execPath = actAgentFolder/folderName;
+    if(!std::filesystem::exists(execPath)){
+        std::cerr << "Executable " << execPath << " not found" << std::endl;
+        throw std::runtime_error("Executable " + std::string(execPath) + " not found");
     }
+    // Agent definition:
+    std::string agentId = actAgentFolder; // is replaced after communication with client with real id from client side
+    std::string agentPath = execPath;
     // ---
     reproc::options options;
     options.redirect.parent = true;
@@ -66,31 +61,28 @@ std::shared_ptr<Agent> AgentHandler::createNextAgent() {
     } else if (ec) {
         throw std::runtime_error("Agent creation err:" + ec.message());
     }
-    auto agent = std::make_shared<Agent>(agentId, agentTerminateTimeout, process, actConfig);
+    auto agent = std::make_shared<Agent>(agentId, process);
     std::cout << "Created agent with PID: " << agent->getProcessPid() << std::endl;
     runningAgents_.push_back(agent);
     return agent;
+
 }
 
 const std::vector<std::shared_ptr<Agent>> &AgentHandler::getRunningAgents() {
     return runningAgents_;
 }
 
-void AgentHandler::loadAgentsConfigs(const std::filesystem::path& pathToDir) {
-    std::string path = pathToDir;
+void AgentHandler::loadAgentsConfigs(const std::filesystem::path& pathToListFile) {
     try{
-        for (const auto & entry : std::filesystem::directory_iterator(path)){
-            try{
-                std::ifstream ifs(entry.path());
-                nlohmann::json jsonConf = nlohmann::json::parse((ifs));
-                agentsJsonConfigs_.push_back(jsonConf);
-            }catch(...){
-                std::cerr << "Couldn't parse json config (or file open err)." << std::endl;
-            }
+        std::ifstream input( pathToListFile);
+        for( std::string line; getline( input, line ); )
+        {
+            //TODO if empty lines in config etc.
+            std::filesystem::path actAgentPath = line;
+            agentsPaths_.push_back(actAgentPath);
         }
-        std::cout << "parsed" << std::endl;
-    }catch(std::exception& e){
-        throw std::runtime_error("Failed parsing agents configs: " + std::string(e.what()));
+    }catch(...){
+        std::cerr << "Couldn't parse json config (or file open err)." << std::endl;
     }
 
 }

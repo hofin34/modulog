@@ -55,7 +55,7 @@ void Core::start() {
             agentConnection->start_read();
 
             //TODO check if it is agent:
-            auto controlMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::CONFIG, agent->getConfig().dump());
+            auto controlMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::CONFIG, "agent->getConfig().dump()");
             MessageSerializer msgSerializer(controlMessage);
             std::string toSend = msgSerializer.serialize();
             agentConnection->send_message(toSend);
@@ -65,9 +65,8 @@ void Core::start() {
             //Now expecting ACK response with agent name...
             std::string agentName = respControlMessage->getValue();
             std::cout << "Core received.: " << agentName << std::endl;
-            if(agentName != agent->getId()){
-                std::cerr << "Agent must response with its name! "; // TODO pop agent/reset/something
-            }
+            agent->setId(agentName); // TODO if sends empty?
+
 
 
             //TODO start send alive timer (async)

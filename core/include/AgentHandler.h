@@ -13,8 +13,8 @@ public:
 
 private:
     std::vector<std::shared_ptr<Agent>> runningAgents_;
-    std::vector<nlohmann::json> agentsJsonConfigs_;
+    std::vector<std::filesystem::path> agentsPaths_;
     static void cleanup(int sigNum);
-    void loadAgentsConfigs(const std::filesystem::path& pathToDir);
+    void loadAgentsConfigs(const std::filesystem::path& pathToListFile);
     int createdAgents = 0;
 };
