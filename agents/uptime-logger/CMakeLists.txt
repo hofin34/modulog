@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
+if(NOT TARGET CommunicationLib)
+    add_subdirectory(../../communication)
+endif()
+add_executable(uptime-logger uptime-logger.cpp)
+target_link_libraries(uptime-logger CommunicationLib)

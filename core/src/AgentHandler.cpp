@@ -77,7 +77,11 @@ void AgentHandler::loadAgentsConfigs(const std::filesystem::path& pathToListFile
         std::ifstream input( pathToListFile);
         for( std::string line; getline( input, line ); )
         {
-            //TODO if empty lines in config etc.
+            if(line.empty())
+                continue;
+            if(line.find('#') != std::string::npos) // line contains comment
+                continue;
+
             std::filesystem::path actAgentPath = line;
             agentsPaths_.push_back(actAgentPath);
         }

@@ -7,7 +7,7 @@
 
 int main(int argc, const char **argv) {
     try{
-        std::filesystem::path agentsList = "../agents-list.txt";
+        std::filesystem::path agentsList = "../agents-list.conf";
         auto ioContext = std::make_shared<asio::io_context>();
         Core core(std::filesystem::absolute(agentsList), ioContext);
         core.start();

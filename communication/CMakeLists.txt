@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.20)
 file(GLOB_RECURSE source_files "src/*")
 include(FetchContent)
 
-add_library(CommunicationXLib ${source_files})
-target_include_directories(CommunicationXLib PUBLIC "include/")
-target_include_directories(CommunicationXLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_library(CommunicationLib ${source_files})
+target_include_directories(CommunicationLib PUBLIC "include/")
+target_include_directories(CommunicationLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # ----------- asio library
 FetchContent_Declare(asio
@@ -23,4 +23,4 @@ target_include_directories(asio INTERFACE ${asio_SOURCE_DIR}/asio/include)
 find_package(Threads)
 target_link_libraries(asio INTERFACE Threads::Threads)
 # ---------------
-target_link_libraries(CommunicationXLib asio)
+target_link_libraries(CommunicationLib asio)

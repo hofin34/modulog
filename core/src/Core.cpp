@@ -66,29 +66,29 @@ void Core::start() {
             std::string agentName = respControlMessage->getValue();
             std::cout << "Core received.: " << agentName << std::endl;
             agent->setId(agentName); // TODO if sends empty?
+        }
 
 
+        //TODO start send alive timer (async)
+        //startSendAlive();
+        LogSaver logSaver("../logs");
+        while(true){
+            for(auto &actAgent : agentHandler_.getRunningAgents()){
+                auto logMsg = actAgent->popLogMessage();
+                if(logMsg != nullptr){
+                    logSaver.saveLog(actAgent->getId(), logMsg);
+                    std::cout << "CORE received f:" << logMsg->getValue() << std::endl;
+                }
 
-            //TODO start send alive timer (async)
-            //startSendAlive();
-            LogSaver logSaver("../logs");
-            while(true){
-                for(auto &actAgent : agentHandler_.getRunningAgents()){
-                    auto logMsg = actAgent->popLogMessage();
-                    if(logMsg != nullptr){
-                        logSaver.saveLog(actAgent->getId(), logMsg);
-                        std::cout << "CORE received:" << logMsg->getValue() << std::endl;
-                    }
-
-                    auto controlMsg = actAgent->popControlMessage();
-                    if(controlMsg != nullptr){
-                        if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::ACK){
-                            actAgent->setConfirmedAlive(true);
-                        }
+                auto controlMsg = actAgent->popControlMessage();
+                if(controlMsg != nullptr){
+                    if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::ACK){
+                        actAgent->setConfirmedAlive(true);
                     }
                 }
             }
         }
+
         serverThread.join();
     }
     catch (std::exception& e)

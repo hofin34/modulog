@@ -4,10 +4,11 @@ project(bachelor_hofbauer)
 
 set(CMAKE_CXX_STANDARD 20)
 
-if (NOT TARGET CommunicationXLib)
+if (NOT TARGET CommunicationLib)
     add_subdirectory(communication)
 endif()
 add_subdirectory(agents/memory-logger)
+add_subdirectory(agents/uptime-logger)
 
 
 add_executable(sys-logger main.cpp communication/src/LogMessage.cpp communication/include/LogMessage.h communication/src/ControlMessage.cpp communication/include/ControlMessage.h communication/src/TcpConnection.cpp communication/include/TcpConnection.h communication/src/TcpServer.cpp communication/include/TcpServer.h communication/src/Message.cpp communication/include/Message.h communication/src/MessageSerializer.cpp communication/include/MessageSerializer.h communication/src/MessageDeserializer.cpp communication/include/MessageDeserializer.h core/src/Agent.cpp core/include/Agent.h core/src/AgentHandler.cpp core/include/AgentHandler.h core/src/Core.cpp core/include/Core.h core/src/LogSaver.cpp core/include/LogSaver.h communication/src/AgentClient.cpp communication/include/AgentClient.h)
