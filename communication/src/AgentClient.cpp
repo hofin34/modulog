@@ -1,8 +1,8 @@
 
 #include <iostream>
-#include "AgentClient.h"
-#include "TcpConnection.h"
-#include "MessageDeserializer.h"
+#include "../include/AgentClient.h"
+#include "../include/TcpConnection.h"
+#include "../include/MessageDeserializer.h"
 
 std::string AgentClient::getAgentConfig() {
     return agentConfig_;
@@ -48,6 +48,20 @@ void AgentClient::initClient() {
         exit(EXIT_FAILURE);
     }
 }
+
+std::string AgentClient::execCommand(const std::string& cmd) {
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.c_str(), "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
+}
+
 
 void AgentClient::sendLog(const std::shared_ptr<LogMessage>& logMessage) {
     std::cout << "HERE" << std::endl;

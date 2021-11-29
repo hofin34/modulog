@@ -2,10 +2,10 @@
 // Created by martin on 22.11.21.
 //
 
-#include "Core.h"
-#include "TcpServer.h"
-#include "MessageDeserializer.h"
-#include "LogSaver.h"
+#include "../include/Core.h"
+#include "../../communication/include/TcpServer.h"
+#include "../../communication/include/MessageDeserializer.h"
+#include "../include/LogSaver.h"
 
 Core::Core(const std::filesystem::path& pathToAgentsConfigs, std::shared_ptr<asio::io_context> ioContext) : agentHandler_(pathToAgentsConfigs),
                                                                                                             sendAliveTimer_(*ioContext){

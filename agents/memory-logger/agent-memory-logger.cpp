@@ -3,32 +3,20 @@
 #include <csignal>
 #include <cstring>
 #include <asio.hpp>
-#include "ControlMessage.h"
-#include "MessageSerializer.h"
-#include "MessageDeserializer.h"
-#include "TcpConnection.h"
-#include "AgentClient.h"
+#include "../../communication/include/ControlMessage.h"
+#include "../../communication/include/MessageSerializer.h"
+#include "../../communication/include/MessageDeserializer.h"
+#include "../../communication/include/TcpConnection.h"
+#include "../../communication/include/AgentClient.h"
 #include <thread>
 void signal_handler(int signum)
 {
     std::cout << "Caught signal "<< signum << std::endl;
 }
 
-std::string exec(const char* cmd) {
-    std::array<char, 128> buffer;
-    std::string result;
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
-    if (!pipe) {
-        throw std::runtime_error("popen() failed!");
-    }
-    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-        result += buffer.data();
-    }
-    return result;
-}
 
 std::string getUsedRAM(){
-    std::string usedMemory =  exec("free | awk 'FNR == 2 { print $3 }'");
+    std::string usedMemory =  AgentClient::execCommand("free | awk 'FNR == 2 { print $3 }'");
     usedMemory.erase(std::remove(usedMemory.begin(), usedMemory.end(), '\n'), usedMemory.end()); // remove newline
     return usedMemory;
 }

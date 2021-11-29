@@ -3,8 +3,8 @@
 
 #include <string>
 #include <filesystem>
-#include <reproc++/reproc.hpp>
-#include "TcpConnection.h"
+#include "../../cmake-build-debug/_deps/reproc++-src/reproc++/include/reproc++/reproc.hpp"
+#include "../../communication/include/TcpConnection.h"
 
 class Agent {
 public:

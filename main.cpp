@@ -1,6 +1,6 @@
 #include <iostream>
-#include "TcpServer.h"
-#include "Core.h"
+#include "communication/include/TcpServer.h"
+#include "core/include/Core.h"
 #include <vector>
 #include <asio.hpp>
 

@@ -1,12 +1,16 @@
 cmake_minimum_required(VERSION 3.20)
 include(FetchContent)
-
 project(bachelor_hofbauer)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(sys-logger main.cpp LogMessage.cpp LogMessage.h ControlMessage.cpp ControlMessage.h TcpConnection.cpp TcpConnection.h TcpServer.cpp TcpServer.h Message.cpp Message.h MessageSerializer.cpp MessageSerializer.h MessageDeserializer.cpp MessageDeserializer.h Agent.cpp Agent.h AgentHandler.cpp AgentHandler.h Core.cpp Core.h LogSaver.cpp LogSaver.h AgentClient.cpp AgentClient.h)
-add_executable(ag-memory agent-memory-logger.cpp LogMessage.cpp LogMessage.h ControlMessage.cpp ControlMessage.h TcpConnection.cpp TcpConnection.h Message.cpp Message.h MessageDeserializer.cpp MessageDeserializer.h MessageSerializer.cpp MessageSerializer.h AgentClient.cpp AgentClient.h)
+if (NOT TARGET CommunicationXLib)
+    add_subdirectory(communication)
+endif()
+add_subdirectory(agents/memory-logger)
+
+
+add_executable(sys-logger main.cpp communication/src/LogMessage.cpp communication/include/LogMessage.h communication/src/ControlMessage.cpp communication/include/ControlMessage.h communication/src/TcpConnection.cpp communication/include/TcpConnection.h communication/src/TcpServer.cpp communication/include/TcpServer.h communication/src/Message.cpp communication/include/Message.h communication/src/MessageSerializer.cpp communication/include/MessageSerializer.h communication/src/MessageDeserializer.cpp communication/include/MessageDeserializer.h core/src/Agent.cpp core/include/Agent.h core/src/AgentHandler.cpp core/include/AgentHandler.h core/src/Core.cpp core/include/Core.h core/src/LogSaver.cpp core/include/LogSaver.h communication/src/AgentClient.cpp communication/include/AgentClient.h)
 
 # ----------- nlohmann json library
 # TODO downloads too long?
@@ -30,23 +34,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(reproc++)
 
-# ----------- asio library
-FetchContent_Declare(asio
-        GIT_REPOSITORY git@github.com:chriskohlhoff/asio.git
-        GIT_TAG  asio-1-20-0
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        )
-FetchContent_GetProperties(asio)
-if(NOT asio_POPULATED)
-    FetchContent_Populate(asio)
-endif()
-add_library(asio INTERFACE)
-target_include_directories(asio INTERFACE ${asio_SOURCE_DIR}/asio/include)
-find_package(Threads)
-target_link_libraries(asio INTERFACE Threads::Threads)
 
 # ------------ linking
 target_link_libraries(sys-logger reproc++ asio nlohmann_json::nlohmann_json)
-target_link_libraries(ag-memory asio)
+
 

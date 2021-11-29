@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.20)
+#project(agent-memory-logger)
+if(NOT TARGET CommunicationXLib)
+    add_subdirectory(../../communication)
+endif()
+add_executable(agent-memory-logger agent-memory-logger.cpp)
+target_link_libraries(agent-memory-logger CommunicationXLib)

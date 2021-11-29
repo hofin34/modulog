@@ -2,7 +2,7 @@
 // Created by martin on 10.11.21.
 //
 
-#include "Message.h"
+#include "../include/Message.h"
 void Message::setTimestampNow() {
     auto t = std::time(nullptr);
     auto tm = *std::localtime(&t);

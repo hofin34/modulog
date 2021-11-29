@@ -2,7 +2,7 @@
 // Created by martin on 10.11.21.
 //
 
-#include "LogMessage.h"
+#include "../include/LogMessage.h"
 
 #include <utility>
 

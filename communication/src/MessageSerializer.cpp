@@ -2,7 +2,7 @@
 // Created by martin on 15.11.21.
 //
 
-#include "MessageSerializer.h"
+#include "../include/MessageSerializer.h"
 
 MessageSerializer::MessageSerializer(std::shared_ptr<LogMessage> logMessage) {
     message_ = std::dynamic_pointer_cast<Message>(logMessage);

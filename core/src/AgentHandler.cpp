@@ -6,7 +6,7 @@
 #include <csignal>
 #include <cstring>
 #include <unistd.h>
-#include "AgentHandler.h"
+#include "../include/AgentHandler.h"
 
 AgentHandler::AgentHandler(const std::filesystem::path& pathToAgentsConfigDir): runningAgents_(){
     //TODO termination
