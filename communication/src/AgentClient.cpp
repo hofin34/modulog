@@ -60,7 +60,6 @@ std::string AgentClient::execCommand(const std::string& cmd) {
 
 
 void AgentClient::sendLog(const std::shared_ptr<LogMessage>& logMessage) {
-    std::cout << "HERE" << std::endl;
     MessageSerializer messageSerializer(logMessage);
     std::string toSend = messageSerializer.serialize();
     if(isDebug_){

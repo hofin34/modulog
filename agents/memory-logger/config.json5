@@ -1,4 +1,5 @@
 {
   "id": "memory-logger",
-  "logInterval": 5
+  "logInterval": 5,
+
 }

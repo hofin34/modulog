@@ -70,14 +70,14 @@ void Core::start() {
 
 
         //TODO start send alive timer (async)
-        //startSendAlive();
+        startSendAlive();
         LogSaver logSaver("../logs");
         while(true){
             for(auto &actAgent : agentHandler_.getRunningAgents()){
                 auto logMsg = actAgent->popLogMessage();
                 if(logMsg != nullptr){
                     logSaver.saveLog(actAgent->getId(), logMsg);
-                    std::cout << "CORE received f:" << logMsg->getValue() << std::endl;
+                    std::cout << "CORE received:" << logMsg->getValue() << std::endl;
                 }
 
                 auto controlMsg = actAgent->popControlMessage();

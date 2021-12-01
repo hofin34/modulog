@@ -22,13 +22,14 @@ void TcpConnection::handle_read_msg_size(const asio::error_code& error,
 {
     if(error == asio::error::eof){
         std::cerr << connectionName_ << " err: " << error.message() << " (maybe connection closed?)";
-        return;
+        throw std::runtime_error(error.message());
     }
     if(!error){
         std::cout << "Msg size: " << msgLength << std::endl;
         msgBuffer_ = std::make_shared<asio::streambuf>(msgLength);
         read_msg_content();
     }else{
+        std::cerr << connectionName_ + " err in reading msg size: " + error.message();
         throw std::runtime_error(connectionName_ + " err in reading msg size: " + error.message());
     }
  }
@@ -70,7 +71,7 @@ void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_
 void TcpConnection::send_message(const std::string& msg) {
     asio::error_code errorWrite;
     uint32_t msgSize = msg.length();
-    asio::write(socket_, asio::buffer(&msgSize, sizeof(msgSize)), errorWrite);
+    asio::write(socket_, asio::buffer(&msgSize, sizeof(msgSize)), errorWrite); // TODO these writes on one line?
     asio::write(socket_, asio::buffer(msg), errorWrite);
     if(errorWrite){
         std::cerr << errorWrite.message();
