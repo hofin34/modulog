@@ -17,4 +17,10 @@ private:
     static void cleanup(int sigNum);
     void loadAgentsConfigs(const std::filesystem::path& pathToListFile);
     int createdAgents = 0;
+
+    //Synchronization vars:
+    std::mutex messagesMutex_;
+    std::condition_variable messagesCondVar_;
+    int messagesToProcess = 0;
+
 };

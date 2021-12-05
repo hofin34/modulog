@@ -2,7 +2,9 @@
 #include <asio.hpp>
 #include "ControlMessage.h"
 #include "MessageSerializer.h"
+#include "MessageProcessor.h"
 #include <iostream>
+#include <utility>
 
 class TcpConnection: public std::enable_shared_from_this<TcpConnection> {
 public:
@@ -11,12 +13,12 @@ public:
     void send_message(const std::string& msg);
     void start_read();
     asio::ip::tcp::socket& get_socket();
-    static pointer create(asio::io_context& io_context, std::string& connectionName);
+    static pointer create(asio::io_context& io_context, std::string& connectionName, std::shared_ptr<MessageProcessor> messageProcessor);
     std::shared_ptr<std::string> popMessage();
-    bool isMessage();
-
+    std::shared_ptr<MessageProcessor> getMessageProcessor_();
 private:
-    TcpConnection(asio::io_context& io_context, std::string& connectionName) : socket_(io_context), connectionName_(connectionName){
+    TcpConnection(asio::io_context& io_context, std::string& connectionName, std::shared_ptr<MessageProcessor> messageProcessor) : socket_(io_context), connectionName_(connectionName),
+        messageProcessor_(std::move(messageProcessor)){
         messagesVector_ = std::make_shared<std::vector<std::string>>();
         msgBuffer_ = std::make_shared<asio::streambuf>(128);
     } //TODO specify buff size
@@ -31,4 +33,5 @@ private:
     int alreadyRead_ = 0;
     std::string finalMessage_;
     std::string connectionName_;
+    std::shared_ptr<MessageProcessor>messageProcessor_;
 };

@@ -23,6 +23,7 @@ int main(){
     std::filesystem::space_info spaceInfo = std::filesystem::space("/");
     auto ioContext = std::make_shared<asio::io_context>();
     AgentClient agentClient(ioContext, false, "agent-memory-logger" );
+    agentClient.initClient();
     while(true){
         auto logMsg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "usedRAM", getUsedRAM());
         std::cout << "Ag sending: "  << std::endl;

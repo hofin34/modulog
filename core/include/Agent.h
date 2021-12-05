@@ -5,6 +5,7 @@
 #include <filesystem>
 #include "../../cmake-build-debug/_deps/reproc++-src/reproc++/include/reproc++/reproc.hpp"
 #include "../../communication/include/TcpConnection.h"
+#include "MessageProcessor.h"
 
 class Agent {
 public:
@@ -25,11 +26,9 @@ public:
     void setConnection(const TcpConnection::pointer& connection);
     TcpConnection::pointer getConnection();
     int getProcessPid();
-    std::shared_ptr<LogMessage> popLogMessage();
-    std::shared_ptr<ControlMessage> popControlMessage();
     void setConfirmedAlive(bool value);
     bool getConfirmedAlive();
-
+    TcpConnection::pointer getTcpConnection();
 private:
     std::string id_;
     std::filesystem::path path_;
@@ -38,6 +37,5 @@ private:
     TcpConnection::pointer tcpConnection_;
     std::vector<std::shared_ptr<LogMessage>> logMessages_;
     std::vector<std::shared_ptr<ControlMessage>> controlMessages_;
-    void processMessages(int maxCount);
     bool confirmedAlive_ = false;
 };

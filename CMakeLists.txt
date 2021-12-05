@@ -10,8 +10,11 @@ endif()
 add_subdirectory(agents/memory-logger)
 add_subdirectory(agents/uptime-logger)
 
+file(GLOB_RECURSE source_files "core/src/*")
+add_executable(sys-logger main.cpp ${source_files})
+target_include_directories(sys-logger PUBLIC "core/include/")
+target_link_libraries(sys-logger CommunicationLib)
 
-add_executable(sys-logger main.cpp communication/src/LogMessage.cpp communication/include/LogMessage.h communication/src/ControlMessage.cpp communication/include/ControlMessage.h communication/src/TcpConnection.cpp communication/include/TcpConnection.h communication/src/TcpServer.cpp communication/include/TcpServer.h communication/src/Message.cpp communication/include/Message.h communication/src/MessageSerializer.cpp communication/include/MessageSerializer.h communication/src/MessageDeserializer.cpp communication/include/MessageDeserializer.h core/src/Agent.cpp core/include/Agent.h core/src/AgentHandler.cpp core/include/AgentHandler.h core/src/Core.cpp core/include/Core.h core/src/LogSaver.cpp core/include/LogSaver.h communication/src/AgentClient.cpp communication/include/AgentClient.h)
 add_dependencies(sys-logger memory-logger uptime-logger)
 # ----------- nlohmann json library
 # TODO downloads too long?

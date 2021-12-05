@@ -1,9 +1,9 @@
 #include "../include/TcpConnection.h"
 
 
-TcpConnection::pointer TcpConnection::create(asio::io_context& io_context, std::string& connectionName)
+TcpConnection::pointer TcpConnection::create(asio::io_context& io_context, std::string& connectionName, std::shared_ptr<MessageProcessor> messageProcessor)
 {
-    return pointer(new TcpConnection(io_context, connectionName)); //TODO refactor creation...
+    return pointer(new TcpConnection(io_context, connectionName, messageProcessor)); //TODO refactor creation...
 }
 
 asio::ip::tcp::socket& TcpConnection::get_socket()
@@ -60,6 +60,7 @@ void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_
             alreadyRead_ = 0;
             messagesVector_->push_back(finalMessage_);
             std::cout << connectionName_ << " received: " << finalMessage_ << std::endl;
+            messageProcessor_->processMessage(finalMessage_);
             finalMessage_ = "";
             start_read();
         }
@@ -88,6 +89,7 @@ std::shared_ptr<std::string> TcpConnection::popMessage() {
     return msgToReturn;
 }
 
-bool TcpConnection::isMessage() {
-    return !messagesVector_->empty();
+
+std::shared_ptr<MessageProcessor> TcpConnection::getMessageProcessor_() {
+    return messageProcessor_;
 }

@@ -4,8 +4,9 @@
 
 void TcpServer::start_accept()
 {
+    auto messageProcessor = std::make_shared<MessageProcessor>(totalReceivedMsgs_, messageConditionVariable_, messageMutex_);
     TcpConnection::pointer new_connection =
-            TcpConnection::create(io_context_, serverName_);
+            TcpConnection::create(io_context_, serverName_, messageProcessor);
 
     acceptor_.async_accept(new_connection->get_socket(),
                            std::bind(&TcpServer::handle_accept, this, new_connection,

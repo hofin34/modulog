@@ -10,32 +10,30 @@ std::string AgentClient::getAgentConfig() {
 
 AgentClient::AgentClient(std::shared_ptr<asio::io_context> &ioContext, bool isDebug, std::string agentName)
         : ioContext_(ioContext), isDebug_(isDebug), agentName_(agentName){
-    initClient();
+    msgProcessor_ = std::make_shared<MessageProcessor>(totalMsgsReceived_, msgCondVar_, msgMutex_);
 }
 
 void AgentClient::initClient() {
     if(isDebug_)
         return;
     try{
-        connection_ = TcpConnection::create(*ioContext_, agentName_);
+        connection_ = TcpConnection::create(*ioContext_, agentName_, msgProcessor_);
         asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 1234);
         connection_->get_socket().connect(endpoint);
         connection_->start_read();
         clientThread = std::thread{[this]() { ioContext_->run(); }};
-
-        std::shared_ptr<std::string> configMsgString;
-        while ((configMsgString = connection_->popMessage()) == nullptr);
-        std::cout << agentName_ << " received config: " << *configMsgString << std::endl;
-        // received config
-        MessageDeserializer messageDeserializer(*configMsgString);
-        if(messageDeserializer.getMsgType() == Message::MSG_TYPE::CONTROL_MSG){
-            auto configMessage = messageDeserializer.getControlMessage();
-            //TODO parse json - in future can be some config...
-            auto ackMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, agentName_);
-            MessageSerializer msgSerializer(ackMessage);
-            std::string initResponse = msgSerializer.serialize();
-            connection_->send_message(initResponse);
+        auto configMessage = connection_->getMessageProcessor_()->waitForControlMessage();
+        std::cout << agentName_ << " received config: " << configMessage->getValue() << std::endl;
+        auto ackMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, agentName_);
+        MessageSerializer msgSerializer(ackMessage);
+        std::string initResponse = msgSerializer.serialize();
+        connection_->send_message(initResponse);
+        auto canSendControlMsg = connection_->getMessageProcessor_()->waitForControlMessage();
+        if(canSendControlMsg->getType() != ControlMessage::CONTROL_MSG_TYPE::ACK){
+            std::cerr << "Not received ACK for start sending logs.";
+            exit(EXIT_FAILURE);
         }
+
     }catch(std::exception& e) {
         std::cerr << e.what() << std::endl;
         exit(EXIT_FAILURE);
