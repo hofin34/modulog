@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 20)
 if (NOT TARGET CommunicationLib)
     add_subdirectory(communication)
 endif()
-add_subdirectory(agents/memory-logger)
+add_subdirectory(agents/ram-logger)
 add_subdirectory(agents/uptime-logger)
 
 file(GLOB_RECURSE source_files "core/src/*")
@@ -15,7 +15,7 @@ add_executable(sys-logger main.cpp ${source_files})
 target_include_directories(sys-logger PUBLIC "core/include/")
 target_link_libraries(sys-logger CommunicationLib)
 
-add_dependencies(sys-logger memory-logger uptime-logger)
+add_dependencies(sys-logger ram-logger uptime-logger)
 # ----------- nlohmann json library
 # TODO downloads too long?
 FetchContent_Declare(json

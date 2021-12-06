@@ -9,18 +9,6 @@ std::string Agent::getId() {
     return id_;
 }
 
-std::filesystem::path Agent::getPath() {
-    return path_;
-}
-
-std::shared_ptr<reproc::process> Agent::getProcess() {
-    return process_;
-}
-
-std::shared_ptr<reproc::options> Agent::getProcessOptions() {
-    return processOptions_;
-}
-
 void Agent::setConnection(const TcpConnection::pointer& connection) {
     tcpConnection_ = connection;
 }
@@ -32,9 +20,6 @@ TcpConnection::pointer Agent::getConnection() {
 int Agent::getProcessPid() {
     return process_->pid().first;
 }
-
-
-
 
 void Agent::setConfirmedAlive(bool value) {
     confirmedAlive_ = value;
@@ -51,6 +36,11 @@ void Agent::setId(const std::string& id) {
 
 TcpConnection::pointer Agent::getTcpConnection() {
     return tcpConnection_;
+}
+
+void Agent::deleteSelf() {
+    std::cout << "Agent " << id_ << " is deleting..." << std::endl;
+    //TODO some cleaning
 }
 
 

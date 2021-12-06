@@ -34,6 +34,8 @@ void AgentClient::initClient() {
             exit(EXIT_FAILURE);
         }
 
+        responseHandleThread = std::thread{[this](){ handleResponses(); }};
+
     }catch(std::exception& e) {
         std::cerr << e.what() << std::endl;
         exit(EXIT_FAILURE);
@@ -68,18 +70,13 @@ void AgentClient::sendLog(const std::shared_ptr<LogMessage>& logMessage) {
 }
 
 void AgentClient::handleResponses() {
-    std::shared_ptr<std::string> messageString;
-    while ((messageString = connection_->popMessage()) == nullptr);
-    MessageDeserializer messageDeserializer1(*messageString);
-    if(messageDeserializer1.getMsgType() == Message::MSG_TYPE::CONTROL_MSG){
-        std::shared_ptr<ControlMessage> controlMessage = messageDeserializer1.getControlMessage();
-        if(controlMessage->getType() == ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE){ // Response to isAlive
+    while(true){
+        auto controlMsg = connection_->getMessageProcessor_()->waitForControlMessage();
+        if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE){
+            std::cerr << "Responding to IS_ALIVE!" << std::endl;
             auto ackAliveMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, "");
             MessageSerializer messageSerializer(ackAliveMsg);
-            std::string toSend = messageSerializer.serialize();
-            std::cout << agentName_ << " sending: " << toSend;
-            connection_->send_message(toSend);
-            std::cout << "sentX";
+            connection_->send_message(messageSerializer.serialize());
         }
     }
 }

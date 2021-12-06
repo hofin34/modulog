@@ -10,7 +10,7 @@
 class Agent {
 public:
     Agent(std::string id, std::shared_ptr<reproc::process>& process):
-            id_(std::move(id)), process_(process), logMessages_(), controlMessages_(){
+            id_(std::move(id)), process_(process){
         processOptions_ = std::make_shared<reproc::options>();
         processOptions_->stop = {
                 { reproc::stop::terminate, reproc::milliseconds(2000) }, // TODO how long???
@@ -20,22 +20,18 @@ public:
     // -------
     std::string getId();
     void setId(const std::string& id);
-    std::filesystem::path getPath();
-    std::shared_ptr<reproc::process> getProcess();
-    std::shared_ptr<reproc::options> getProcessOptions();
     void setConnection(const TcpConnection::pointer& connection);
     TcpConnection::pointer getConnection();
     int getProcessPid();
     void setConfirmedAlive(bool value);
     bool getConfirmedAlive();
     TcpConnection::pointer getTcpConnection();
+    void deleteSelf();
 private:
     std::string id_;
     std::filesystem::path path_;
     std::shared_ptr<reproc::process> process_;
     std::shared_ptr<reproc::options> processOptions_;
     TcpConnection::pointer tcpConnection_;
-    std::vector<std::shared_ptr<LogMessage>> logMessages_;
-    std::vector<std::shared_ptr<ControlMessage>> controlMessages_;
     bool confirmedAlive_ = false;
 };

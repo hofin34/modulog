@@ -1,6 +1,0 @@
-{
-    "id": "memory-logger",
-    "execPath": "../cmake-build-debug/ag-memory",
-    "terminateTimeout": 2000,
-    "logInterval": 5
-}

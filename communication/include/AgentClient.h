@@ -17,6 +17,7 @@ private:
     bool isDebug_;
     TcpConnection::pointer connection_;
     std::thread clientThread;
+    std::thread responseHandleThread;
     void handleResponses();
 
     // Sync vars:

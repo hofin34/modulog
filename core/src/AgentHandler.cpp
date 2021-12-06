@@ -36,9 +36,9 @@ void AgentHandler::cleanup(int sigNum) {
 
 
 std::shared_ptr<Agent> AgentHandler::createNextAgent() {
-    if(createdAgents>=agentsPaths_.size())
+    if(createdAgentsCount_ >= agentsPaths_.size())
         return nullptr;
-    std::filesystem::path actAgentFolder = std::filesystem::absolute(agentsPaths_.at(createdAgents));
+    std::filesystem::path actAgentFolder = std::filesystem::absolute(agentsPaths_.at(createdAgentsCount_));
     std::string folderName = actAgentFolder.filename();
     std::filesystem::path execPath = actAgentFolder/folderName;
     if(!std::filesystem::exists(execPath)){
@@ -55,7 +55,7 @@ std::shared_ptr<Agent> AgentHandler::createNextAgent() {
     std::vector<std::string> v;
     v.emplace_back(agentPath);
     std::error_code ec = process->start(v, options);
-    createdAgents++;
+    createdAgentsCount_++;
     if (ec == std::errc::no_such_file_or_directory) {
         throw std::runtime_error("Program not found. Make sure it's available from the PATH");
     } else if (ec) {
@@ -89,4 +89,12 @@ void AgentHandler::loadAgentsConfigs(const std::filesystem::path& pathToListFile
         std::cerr << "Couldn't parse json config (or file open err)." << std::endl;
     }
 
+}
+
+void AgentHandler::deleteAgent(const std::shared_ptr<Agent>& agent) {
+    agent->deleteSelf();
+    { // deletes agent from vector
+        auto it = std::find(runningAgents_.begin(), runningAgents_.end(), agent);
+        if (it != runningAgents_.end()) { runningAgents_.erase(it); }
+    }
 }
