@@ -23,6 +23,7 @@ void Core::start() {
         TcpServer server(*ioContext_, messageMutex, messageConditionVar, totalReceivedMessages);
         server.start_accept();
         std::thread serverThread{[this](){ ioContext_->run(); }};
+
         if(false){ //TODO remove - just for agent debugging...
             TcpConnection::pointer newConnection;
             while((newConnection = server.popConnection()) == nullptr);
@@ -101,7 +102,6 @@ void Core::start() {
                 }
             }
         }
-
         serverThread.join();
     }
     catch (std::exception& e)

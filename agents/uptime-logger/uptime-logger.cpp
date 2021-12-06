@@ -15,6 +15,7 @@ int main(){
         auto logMsg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "howLongRunning", std::to_string(duration));
         std::cout << "Ag sending: "  << logMsg << std::endl;
         agentClient.sendLog(logMsg);
+
         std::this_thread::sleep_for(std::chrono::seconds(2));
     }
 

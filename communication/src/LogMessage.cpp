@@ -33,3 +33,21 @@ std::string LogMessage::getValue() {
 std::string LogMessage::getKey() {
     return key_;
 }
+
+std::string LogMessage::getTypeStr(LogMessage::LOG_MSG_TYPE logMsgType) {
+    switch (logMsgType) {
+        case LOG_MSG_TYPE::DEBUG:
+            return "DEBUG";
+        case LOG_MSG_TYPE::ERROR:
+            return "ERROR";
+        case LOG_MSG_TYPE::LOG:
+            return "LOG";
+            ;
+        default:
+            return "UNKNOWN";
+    }
+}
+
+LogMessage::LOG_MSG_TYPE LogMessage::getType() {
+    return logType_;
+}

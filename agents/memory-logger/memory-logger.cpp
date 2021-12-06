@@ -32,6 +32,9 @@ int main(){
         agentClient.sendLog(logMsg2);
         auto logMsg3 = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "freeSpaceMB", std::to_string(spaceInfo.free/1024));
         agentClient.sendLog(logMsg3);
+
+        auto errorMsg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::ERROR, "freeSpaceMB", std::to_string(6));
+        agentClient.sendLog(errorMsg);
         std::this_thread::sleep_for(std::chrono::seconds(2));
     }
     return 0;
