@@ -19,7 +19,6 @@ public:
 private:
     TcpConnection(asio::io_context& io_context, std::string& connectionName, std::shared_ptr<MessageProcessor> messageProcessor) : socket_(io_context), connectionName_(connectionName),
         messageProcessor_(std::move(messageProcessor)){
-        messagesVector_ = std::make_shared<std::vector<std::string>>();
         msgBuffer_ = std::make_shared<asio::streambuf>(128);
     } //TODO specify buff size
     void handle_read_msg_size(const asio::error_code& error, size_t bytes_transferred);
@@ -29,7 +28,6 @@ private:
     asio::ip::tcp::socket socket_;
     uint32_t msgLength = 0;
     std::shared_ptr<asio::streambuf> msgBuffer_;
-    std::shared_ptr<std::vector<std::string>> messagesVector_;
     int alreadyRead_ = 0;
     std::string finalMessage_;
     std::string connectionName_;

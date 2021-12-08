@@ -11,6 +11,7 @@ public:
     AgentClient(std::shared_ptr<asio::io_context> &ioContext, bool isDebug, std::string agentName);
     std::string getAgentConfig();
     void sendLog(const std::shared_ptr<LogMessage>& logMessage);
+    void sendControl(const std::shared_ptr<ControlMessage> &controlMessage);
     void initClient();
 
     //TODO move to helper funcs:

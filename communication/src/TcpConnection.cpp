@@ -59,7 +59,6 @@ void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_
             read_msg_content();
         }else{
             alreadyRead_ = 0;
-            messagesVector_->push_back(finalMessage_);
             std::cout << connectionName_ << " received: " << finalMessage_ << std::endl;
             messageProcessor_->processMessage(finalMessage_);
             finalMessage_ = "";

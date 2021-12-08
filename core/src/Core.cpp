@@ -41,6 +41,8 @@ void Core::start() {
                 if(controlMsg != nullptr){
                     if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::ACK){
                         actAgent->setConfirmedAlive(true);
+                    }else if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::EXIT){
+                        std::cerr << "Agent wants to exit..." << std::endl;
                     }
                 }
             }

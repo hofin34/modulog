@@ -19,6 +19,7 @@ long long getFreeRam(){
 }
 
 int main(int argc, char** argv){
+    auto programStart = std::chrono::system_clock::now();
     nlohmann::json configJson = AgentClient::parseConfig(argv[0]);// nlohmann::json::parse(ifs);
 
     if(!configJson.contains("id")){
@@ -33,6 +34,11 @@ int main(int argc, char** argv){
     if(configJson.contains("logInterval")){
         logInterval = configJson["logInterval"];
     }
+    std::pair<bool, int> howLongLog(false, -1);
+    if(configJson.contains("howLongLog")){
+        howLongLog.first = true;
+        howLongLog.second = configJson["howLongLog"];
+    }
 
     auto ioContext = std::make_shared<asio::io_context>();
     AgentClient agentClient(ioContext, false, configJson["id"] );
@@ -45,6 +51,13 @@ int main(int argc, char** argv){
         }else{
             auto logMsg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "freeRamMiB", std::to_string(freeRam));
             agentClient.sendLog(logMsg);
+        }
+        if(howLongLog.first == true){
+            if((programStart+std::chrono::seconds(howLongLog.second)) < std::chrono::system_clock::now()){
+                auto exitMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
+                agentClient.sendControl(exitMsg);
+                exit(EXIT_SUCCESS);
+            }
         }
         std::this_thread::sleep_for(std::chrono::seconds(logInterval));
     }

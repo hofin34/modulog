@@ -60,6 +60,18 @@ void AgentClient::sendLog(const std::shared_ptr<LogMessage>& logMessage) {
     }
 }
 
+void AgentClient::sendControl(const std::shared_ptr<ControlMessage> &controlMessage) {
+    MessageSerializer messageSerializer(controlMessage);
+    std::string toSend = messageSerializer.serialize();
+    if(isDebug_){
+        std::cout << "Simulated send: " << toSend << std::endl;
+    } else{
+        connection_->send_message(toSend);
+    }
+}
+
+
+
 void AgentClient::handleResponses() {
     while(true){
         auto controlMsg = connection_->getMessageProcessor_()->waitForControlMessage();
@@ -92,6 +104,5 @@ nlohmann::json AgentClient::parseConfig(const std::string &execPath) {
     nlohmann::json configJson = nlohmann::json::parse(ifs);
     return configJson;
 }
-
 
 
