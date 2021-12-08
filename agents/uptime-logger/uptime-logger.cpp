@@ -2,9 +2,19 @@
 #include <asio.hpp>
 
 
-int main(){
+int main(int argc, char** argv){
+    nlohmann::json configJson = AgentClient::parseConfig(argv[0]);
+    if(!configJson.contains("id")){
+        std::cerr << "Include config with id defined." << std::endl;
+        throw std::runtime_error("...");
+    }
+    int logInterval = 4;
+    if(configJson.contains("logInterval")){
+        logInterval = configJson["logInterval"];
+    }
+
     auto ioContext = std::make_shared<asio::io_context>();
-    AgentClient agentClient(ioContext, false, "ag-uptime-logger" );
+    AgentClient agentClient(ioContext, false, configJson["id"]);
     agentClient.initClient();
     auto programBegin = std::chrono::steady_clock::now();
     auto logStartMsg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "agentStarted", "start");
@@ -16,7 +26,7 @@ int main(){
         std::cout << "Ag sending: "  << logMsg << std::endl;
         agentClient.sendLog(logMsg);
 
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        std::this_thread::sleep_for(std::chrono::seconds(logInterval));
     }
 
     return 0;

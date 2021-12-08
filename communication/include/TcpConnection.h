@@ -14,8 +14,8 @@ public:
     void start_read();
     asio::ip::tcp::socket& get_socket();
     static pointer create(asio::io_context& io_context, std::string& connectionName, std::shared_ptr<MessageProcessor> messageProcessor);
-    std::shared_ptr<std::string> popMessage();
     std::shared_ptr<MessageProcessor> getMessageProcessor_();
+
 private:
     TcpConnection(asio::io_context& io_context, std::string& connectionName, std::shared_ptr<MessageProcessor> messageProcessor) : socket_(io_context), connectionName_(connectionName),
         messageProcessor_(std::move(messageProcessor)){
@@ -34,4 +34,5 @@ private:
     std::string finalMessage_;
     std::string connectionName_;
     std::shared_ptr<MessageProcessor>messageProcessor_;
+    // To cleanup after connection end:
 };

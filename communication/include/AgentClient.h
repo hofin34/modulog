@@ -1,14 +1,22 @@
 #pragma once
+#include <iostream>
 #include <asio.hpp>
 #include "TcpConnection.h"
+#include "../include/TcpConnection.h"
+#include "../include/MessageDeserializer.h"
+#include <nlohmann/json.hpp>
 
 class AgentClient {
 public:
     AgentClient(std::shared_ptr<asio::io_context> &ioContext, bool isDebug, std::string agentName);
     std::string getAgentConfig();
     void sendLog(const std::shared_ptr<LogMessage>& logMessage);
-    static std::string execCommand(const std::string& cmd);
     void initClient();
+
+    //TODO move to helper funcs:
+    static std::string execCommand(const std::string& cmd);
+    static nlohmann::json parseConfig(const std::string& execPath);
+
 
 private:
     std::string agentName_ = "AgentDefaultName";

@@ -18,17 +18,8 @@ long long getFreeRam(){
     return physMemUsed;
 }
 
-struct ConfigValues{
-    std::pair <bool, int> a;
-};
-
 int main(int argc, char** argv){
-    std::filesystem::path agentPath = argv[0];
-    agentPath = agentPath.remove_filename();
-    std::ifstream ifs(agentPath/"config.json5");
-    std::cout <<"sdfk:" << std::filesystem::current_path() <<std::endl;
-    nlohmann::json configJson = nlohmann::json::parse(ifs);
-    std::cout <<"seeeedfk" <<std::endl;
+    nlohmann::json configJson = AgentClient::parseConfig(argv[0]);// nlohmann::json::parse(ifs);
 
     if(!configJson.contains("id")){
         std::cerr << "Include config with id defined." << std::endl;
@@ -44,7 +35,7 @@ int main(int argc, char** argv){
     }
 
     auto ioContext = std::make_shared<asio::io_context>();
-    AgentClient agentClient(ioContext, false, "ram-logger" );
+    AgentClient agentClient(ioContext, false, configJson["id"] );
     agentClient.initClient();
     while(true){
         auto freeRam = getFreeRam();

@@ -1,4 +1,4 @@
 {
-  "id": "memory-logger",
-  "logInterval": 5
+  "id": "space-logger",
+  "logInterval": 1
 }

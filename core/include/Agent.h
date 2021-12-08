@@ -3,7 +3,7 @@
 
 #include <string>
 #include <filesystem>
-#include "../../cmake-build-debug/_deps/reproc++-src/reproc++/include/reproc++/reproc.hpp"
+#include <reproc++/reproc.hpp>
 #include "../../communication/include/TcpConnection.h"
 #include "MessageProcessor.h"
 

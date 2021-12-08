@@ -98,3 +98,15 @@ void AgentHandler::deleteAgent(const std::shared_ptr<Agent>& agent) {
         if (it != runningAgents_.end()) { runningAgents_.erase(it); }
     }
 }
+
+void AgentHandler::deleteAgent(const std::string& agentId) {
+    auto it = runningAgents_.begin();
+    while(it != runningAgents_.end()){
+        if((*it)->getId() == agentId){
+            (*it)->deleteSelf();
+            runningAgents_.erase(it);
+            return;
+        }
+        ++it;
+    }
+}

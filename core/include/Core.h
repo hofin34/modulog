@@ -10,7 +10,7 @@ public:
     void startSendAlive();
 
 private:
-    AgentHandler agentHandler_;
+    std::shared_ptr<AgentHandler> agentHandler_;
     asio::steady_timer sendAliveTimer_;
     std::shared_ptr<asio::io_context> ioContext_;
     void sendAlive();

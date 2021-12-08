@@ -1,5 +1,7 @@
 
 #include <iostream>
+#include <filesystem>
+#include <fstream>
 #include "../include/AgentClient.h"
 #include "../include/TcpConnection.h"
 #include "../include/MessageDeserializer.h"
@@ -45,18 +47,7 @@ void AgentClient::initClient() {
     }
 }
 
-std::string AgentClient::execCommand(const std::string& cmd) {
-    std::array<char, 128> buffer;
-    std::string result;
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.c_str(), "r"), pclose);
-    if (!pipe) {
-        throw std::runtime_error("popen() failed!");
-    }
-    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-        result += buffer.data();
-    }
-    return result;
-}
+
 
 
 void AgentClient::sendLog(const std::shared_ptr<LogMessage>& logMessage) {
@@ -80,5 +71,27 @@ void AgentClient::handleResponses() {
         }
     }
 }
+
+std::string AgentClient::execCommand(const std::string& cmd) {
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.c_str(), "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
+}
+
+nlohmann::json AgentClient::parseConfig(const std::string &execPath) {
+    std::filesystem::path agentPath = execPath;
+    agentPath = agentPath.remove_filename();
+    std::ifstream ifs(agentPath/"config.json5");
+    nlohmann::json configJson = nlohmann::json::parse(ifs);
+    return configJson;
+}
+
 
 

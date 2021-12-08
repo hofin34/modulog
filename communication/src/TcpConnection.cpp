@@ -23,6 +23,7 @@ void TcpConnection::handle_read_msg_size(const asio::error_code& error,
     if(error == asio::error::eof){
         std::cerr << connectionName_ << " err: " << error.message() << " (maybe connection closed?)";
         throw std::runtime_error(error.message());
+
     }
     if(!error){
         std::cout << "Msg size: " << msgLength << std::endl;
@@ -81,15 +82,9 @@ void TcpConnection::send_message(const std::string& msg) {
 }
 
 
-std::shared_ptr<std::string> TcpConnection::popMessage() {
-    if(messagesVector_->empty())
-        return nullptr;
-    auto msgToReturn = std::make_shared<std::string>(messagesVector_->front());
-    messagesVector_->erase(messagesVector_->begin());
-    return msgToReturn;
-}
-
 
 std::shared_ptr<MessageProcessor> TcpConnection::getMessageProcessor_() {
     return messageProcessor_;
 }
+
+

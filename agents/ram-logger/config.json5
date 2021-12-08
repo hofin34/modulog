@@ -1,5 +1,5 @@
 {
   "id": "ram-logger",
   "freeNotSmallerThan": 2280,
-  "logInterval": 1
+  "logInterval": 5
 }

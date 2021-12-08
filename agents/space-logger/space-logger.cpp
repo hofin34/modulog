@@ -6,10 +6,6 @@
 #include <sys/statvfs.h>
 #include <filesystem>
 
-void signal_handler(int signum)
-{
-    std::cout << "Caught signal "<< signum << std::endl;
-}
 
 int main(){
     std::filesystem::space_info spaceInfo = std::filesystem::space("/");

@@ -7,10 +7,11 @@
 #include "../../communication/include/MessageDeserializer.h"
 #include "../include/LogSaver.h"
 
-Core::Core(const std::filesystem::path& pathToAgentsConfigs, std::shared_ptr<asio::io_context> ioContext) : agentHandler_(pathToAgentsConfigs),
+Core::Core(const std::filesystem::path& pathToAgentsConfigs, std::shared_ptr<asio::io_context> ioContext) :
                                                                                                             sendAliveTimer_(*ioContext),
                                                                                                             server_(*ioContext, messageMutex_, messageConditionVar_, totalReceivedMessages_){
     ioContext_ = ioContext;
+    agentHandler_ = std::make_shared<AgentHandler>(pathToAgentsConfigs);
 }
 
 void Core::start() {
@@ -30,7 +31,7 @@ void Core::start() {
                 messageConditionVar_.wait(lck, [this]{ return totalReceivedMessages_; });
                 totalReceivedMessages_--;
             }
-            for (auto &actAgent: agentHandler_.getRunningAgents()) {
+            for (auto &actAgent: agentHandler_->getRunningAgents()) {
                 auto logMsg = actAgent->getTcpConnection()->getMessageProcessor_()->popLogMessage();
                 if(logMsg != nullptr){
                     std::cout << "LOG:" << logMsg->getValue() << std::endl;
@@ -63,7 +64,7 @@ void Core::startSendAlive() {
 
 void Core::sendAlive() {
     std::cout << "Core sending isAlive to all agents..." << std::endl; //TODO when sending to dead agent, core exits...
-    for(auto& agent: agentHandler_.getRunningAgents()){
+    for(auto& agent: agentHandler_->getRunningAgents()){
         auto isAliveMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE, "");
         MessageSerializer messageSerializer(isAliveMsg);
         std::string toSend = messageSerializer.serialize();
@@ -76,7 +77,7 @@ void Core::sendAlive() {
 
 void Core::checkIfAgentsAlive() {
     std::cout << "Core checking if all agents responded with ACK..." << std::endl;
-    for(auto& agent: agentHandler_.getRunningAgents()){
+    for(auto& agent: agentHandler_->getRunningAgents()){
         if(!agent->getConfirmedAlive()){
             std::cerr << "Agent " << agent->getId() << " didn't respond on isAlive!" << std::endl; // TODO kill or something...
         }else{
@@ -88,14 +89,14 @@ void Core::checkIfAgentsAlive() {
 
 void Core::initAllAgents() {
     std::shared_ptr<Agent> agent;
-    while((agent = agentHandler_.createNextAgent()) != nullptr){
+    while((agent = agentHandler_->createNextAgent()) != nullptr){
         std::cout << "waiting for ag. connection..." << std::endl;
         TcpConnection::pointer agentConnection;
         auto endConnectionTime = std::chrono::system_clock::now() + std::chrono::seconds(3); // TODO 3 seconds to variable
         while((endConnectionTime > std::chrono::system_clock::now()) && (agentConnection = server_.popConnection()) == nullptr); //TODO wait timer
         if(agentConnection == nullptr){
             std::cerr << "Agent " << agent->getId() << " didn't connect!";
-            agentHandler_.deleteAgent(agent);
+            agentHandler_->deleteAgent(agent);
             continue;
         }
         agent->setConnection(agentConnection);
@@ -119,7 +120,7 @@ void Core::initAllAgents() {
 }
 
 void Core::notifyAllAgentsToSendLogs() {
-    for (auto &actAgent: agentHandler_.getRunningAgents()) {
+    for (auto &actAgent: agentHandler_->getRunningAgents()) {
         auto startSendMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, "");
         MessageSerializer msgSerializer(startSendMsg);
         actAgent->getTcpConnection()->send_message(msgSerializer.serialize());
