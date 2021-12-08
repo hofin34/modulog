@@ -1,4 +1,5 @@
 {
   "id": "space-logger",
-  "logInterval": 1
+  "logInterval": 5,
+  "folderToMonitor": "/"
 }
