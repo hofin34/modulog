@@ -4,6 +4,8 @@
 #include <condition_variable>
 #include "LogMessage.h"
 #include "ControlMessage.h"
+#include "MessageDeserializer.h"
+#include "MessageSerializer.h"
 
 class MessageProcessor {
 public:
@@ -11,12 +13,12 @@ public:
     void processMessage(std::string msg);
     const std::vector<std::shared_ptr<LogMessage>> &getLogMessagesVector() const;
     const std::vector<std::shared_ptr<ControlMessage>> &getControlMessageVector() const;
-
     std::shared_ptr<ControlMessage> waitForControlMessage();
     std::shared_ptr<LogMessage> waitForLogMessage();
-
     std::shared_ptr<LogMessage> popLogMessage();
     std::shared_ptr<ControlMessage> popControlMessage();
+
+
 
 private:
     std::vector<std::shared_ptr<ControlMessage>> controlMessageVector;

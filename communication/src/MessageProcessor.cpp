@@ -1,6 +1,6 @@
 #include <string>
 #include "MessageProcessor.h"
-#include "MessageDeserializer.h"
+
 
 void MessageProcessor::processMessage(std::string msg) {
     {
@@ -32,7 +32,6 @@ const std::vector<std::shared_ptr<ControlMessage>> &MessageProcessor::getControl
 }
 
 std::shared_ptr<ControlMessage> MessageProcessor::waitForControlMessage() {
-
     std::unique_lock<std::mutex> lck(mutex_);
     conditionVariable_.wait(lck, [this]{ return messagesToProcess_; });
     if(controlMessageVector.empty())
@@ -63,4 +62,5 @@ std::shared_ptr<ControlMessage> MessageProcessor::popControlMessage() {
         return nullptr;
     auto msgToReturn = controlMessageVector.front();
     controlMessageVector.erase(controlMessageVector.begin());
-    return msgToReturn;}
+    return msgToReturn;
+}

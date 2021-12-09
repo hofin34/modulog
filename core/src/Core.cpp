@@ -32,12 +32,12 @@ void Core::start() {
                 totalReceivedMessages_--;
             }
             for (auto &actAgent: agentHandler_->getRunningAgents()) {
-                auto logMsg = actAgent->getTcpConnection()->getMessageProcessor_()->popLogMessage();
+                auto logMsg = actAgent->getMessageExchanger()->popLogMessage();
                 if(logMsg != nullptr){
                     std::cout << "LOG:" << logMsg->getValue() << std::endl;
                     logSaver.saveLog(actAgent->getId(), logMsg);
                 }
-                auto controlMsg = actAgent->getTcpConnection()->getMessageProcessor_()->popControlMessage();
+                auto controlMsg = actAgent->getMessageExchanger()->popControlMessage();
                 if(controlMsg != nullptr){
                     if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::ACK){
                         actAgent->setConfirmedAlive(true);
@@ -68,10 +68,8 @@ void Core::sendAlive() {
     std::cout << "Core sending isAlive to all agents..." << std::endl; //TODO when sending to dead agent, core exits...
     for(auto& agent: agentHandler_->getRunningAgents()){
         auto isAliveMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE, "");
-        MessageSerializer messageSerializer(isAliveMsg);
-        std::string toSend = messageSerializer.serialize();
         agent->setConfirmedAlive(false);
-        agent->getConnection()->send_message(toSend);
+        agent->getMessageExchanger()->sendControl(isAliveMsg);
     }
     sendAliveTimer_.expires_from_now(std::chrono::seconds(2));
     sendAliveTimer_.async_wait(std::bind(&Core::checkIfAgentsAlive, this));
@@ -91,7 +89,9 @@ void Core::checkIfAgentsAlive() {
 
 void Core::initAllAgents() {
     std::shared_ptr<Agent> agent;
-    while((agent = agentHandler_->createNextAgent()) != nullptr){
+    std::shared_ptr<AgentInfo> agentInfo;
+    while((agentInfo = agentHandler_->runNextAgent()) != nullptr){
+        std::cout <<"aDSF"<<std::endl;
         std::cout << "waiting for ag. connection..." << std::endl;
         TcpConnection::pointer agentConnection;
         auto endConnectionTime = std::chrono::system_clock::now() + std::chrono::seconds(3); // TODO 3 seconds to variable
@@ -99,33 +99,37 @@ void Core::initAllAgents() {
         if(agentConnection == nullptr){
             std::cerr << "Agent " << agent->getId() << " didn't connect!";
             agentHandler_->deleteAgent(agent);
-            continue;
+            continue; //TODO uncomm
         }
-        agent->setConnection(agentConnection);
-        agentConnection->start_read();
+        auto messageExchanger = std::make_shared<MessageExchanger>(agentConnection);
+
 
         //TODO check if it is agent:
         auto controlMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::CONFIG, "agent->getConfig().dump()");
-        MessageSerializer msgSerializer(controlMessage);
-        agentConnection->send_message(msgSerializer.serialize());
+        messageExchanger->sendControl(controlMessage);
         std::cout << "Waiting for agent response..." << std::endl;
-        std::shared_ptr<ControlMessage> respControlMessage = agentConnection->getMessageProcessor_()->waitForControlMessage(); // TODO if someone else sends message...
+        std::shared_ptr<ControlMessage> respControlMessage = messageExchanger->waitForControlMessage(); // TODO if someone else sends message...
         if(respControlMessage == nullptr){
             std::cout << "null control msg" << std::endl;
             exit(2); //TODO - timeout
         }
         //Now expecting ACK response with agent name:
         std::string agentName = respControlMessage->getValue();
-        std::cout << "Core received.: " << agentName << std::endl;
-        agent->setId(agentName); // TODO if sends empty?
+        std::cout << "Core agent name.: " << agentName << std::endl;
+        agentInfo->setAgentId(agentName); // TODO if sends empty?
+        agentHandler_->addNewAgent(messageExchanger, agentInfo);
+        std::cout << "IIIII" << std::endl;
+        //agentInfo = agentHandler_->runNextAgent();
+        agentInfo = nullptr;
+        std::cout << "OOOO" << std::endl;
     }
+    std::cout << "EEEE" << std::endl;
 }
 
 void Core::notifyAllAgentsToSendLogs() {
     for (auto &actAgent: agentHandler_->getRunningAgents()) {
         auto startSendMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, "");
-        MessageSerializer msgSerializer(startSendMsg);
-        actAgent->getTcpConnection()->send_message(msgSerializer.serialize());
+        actAgent->getMessageExchanger()->sendControl(startSendMsg);
     }
 }
 

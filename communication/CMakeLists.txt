@@ -25,4 +25,4 @@ target_link_libraries(asio INTERFACE Threads::Threads)
 # ---------------
 
 
-target_link_libraries(CommunicationLib asio)
+target_link_libraries(CommunicationLib asio reproc++)

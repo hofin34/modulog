@@ -19,23 +19,22 @@ void AgentClient::initClient() {
     if(isDebug_)
         return;
     try{
-        connection_ = TcpConnection::create(*ioContext_, agentName_, msgProcessor_);
+        //std::this_thread::sleep_for(std::chrono::seconds(15)); //TODO delete
+        auto connection = TcpConnection::create(*ioContext_, agentName_, msgProcessor_);
         asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 1234);
-        connection_->get_socket().connect(endpoint);
-        connection_->start_read();
+        connection->get_socket().connect(endpoint);
+        messageExchanger_ = std::make_shared<MessageExchanger>(connection);
         clientThread = std::thread{[this]() { ioContext_->run(); }};
-        auto configMessage = connection_->getMessageProcessor_()->waitForControlMessage();
+        //auto configMessage = connection->getMessageProcessor_()->waitForControlMessage();//
+        auto configMessage = messageExchanger_->waitForControlMessage();
         std::cout << agentName_ << " received config: " << configMessage->getValue() << std::endl;
         auto ackMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, agentName_);
-        MessageSerializer msgSerializer(ackMessage);
-        std::string initResponse = msgSerializer.serialize();
-        connection_->send_message(initResponse);
-        auto canSendControlMsg = connection_->getMessageProcessor_()->waitForControlMessage();
-        if(canSendControlMsg->getType() != ControlMessage::CONTROL_MSG_TYPE::ACK){
+        messageExchanger_->sendControl(ackMessage);
+        auto canStartSending = messageExchanger_->waitForControlMessage();
+        if(canStartSending->getType() != ControlMessage::CONTROL_MSG_TYPE::ACK){
             std::cerr << "Not received ACK for start sending logs.";
             exit(EXIT_FAILURE);
         }
-
         responseHandleThread = std::thread{[this](){ handleResponses(); }};
 
     }catch(std::exception& e) {
@@ -49,37 +48,15 @@ void AgentClient::initClient() {
 
 
 
-
-void AgentClient::sendLog(const std::shared_ptr<LogMessage>& logMessage) {
-    MessageSerializer messageSerializer(logMessage);
-    std::string toSend = messageSerializer.serialize();
-    if(isDebug_){
-        std::cout << "Simulated send: " << toSend << std::endl;
-    } else{
-        connection_->send_message(toSend);
-    }
-}
-
-void AgentClient::sendControl(const std::shared_ptr<ControlMessage> &controlMessage) {
-    MessageSerializer messageSerializer(controlMessage);
-    std::string toSend = messageSerializer.serialize();
-    if(isDebug_){
-        std::cout << "Simulated send: " << toSend << std::endl;
-    } else{
-        connection_->send_message(toSend);
-    }
-}
-
-
-
 void AgentClient::handleResponses() {
     while(true){
-        auto controlMsg = connection_->getMessageProcessor_()->waitForControlMessage();
+        auto controlMsg = messageExchanger_->waitForControlMessage();
         if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE){
             std::cerr << "Responding to IS_ALIVE!" << std::endl;
             auto ackAliveMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, "");
-            MessageSerializer messageSerializer(ackAliveMsg);
-            connection_->send_message(messageSerializer.serialize());
+            messageExchanger_->sendControl(ackAliveMsg);
+        }else if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::EXIT_ACK){
+            exitConfirmed.store(true);
         }
     }
 }
@@ -103,6 +80,24 @@ nlohmann::json AgentClient::parseConfig(const std::string &execPath) {
     std::ifstream ifs(agentPath/"config.json5");
     nlohmann::json configJson = nlohmann::json::parse(ifs);
     return configJson;
+}
+
+void AgentClient::exitConnection() {
+    auto exitMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
+    sendControl(exitMsg);
+    while(!exitConfirmed.load()){ // Waits until Core didn't responded with exit ack
+        std::cerr << "waiting..." << std::endl;
+       // std::this_thread::sleep_for(std::chrono::milliseconds(400));
+    }
+    std::cerr <<"EXITED!" << std::endl;
+}
+
+void AgentClient::sendLog(const std::shared_ptr<LogMessage> &logMessage) {
+    messageExchanger_->sendLog(logMessage);
+}
+
+void AgentClient::sendControl(const std::shared_ptr<ControlMessage> &controlMessage) {
+    messageExchanger_->sendControl(controlMessage);
 }
 
 

@@ -9,13 +9,6 @@ std::string Agent::getId() {
     return id_;
 }
 
-void Agent::setConnection(const TcpConnection::pointer& connection) {
-    tcpConnection_ = connection;
-}
-
-TcpConnection::pointer Agent::getConnection() {
-    return tcpConnection_;
-}
 
 int Agent::getProcessPid() {
     return process_->pid().first;
@@ -34,13 +27,13 @@ void Agent::setId(const std::string& id) {
     id_ = id;
 }
 
-TcpConnection::pointer Agent::getTcpConnection() {
-    return tcpConnection_;
-}
-
 void Agent::deleteSelf() {
     std::cout << "Agent " << id_ << " is deleting..." << std::endl;
     //TODO some cleaning
+}
+
+std::shared_ptr<MessageExchanger> Agent::getMessageExchanger() {
+    return messageExchanger_;
 }
 
 

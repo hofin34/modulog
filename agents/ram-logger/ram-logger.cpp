@@ -54,8 +54,7 @@ int main(int argc, char** argv){
         }
         if(howLongLog.first == true){
             if((programStart+std::chrono::seconds(howLongLog.second)) < std::chrono::system_clock::now()){
-                auto exitMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
-                agentClient.sendControl(exitMsg);
+                agentClient.exitConnection();
                 exit(EXIT_SUCCESS);
             }
         }

@@ -33,11 +33,10 @@ void AgentHandler::cleanup(int sigNum) {
     exit(0);
 }
 
-
-
-std::shared_ptr<Agent> AgentHandler::createNextAgent() {
-    if(createdAgentsCount_ >= agentsPaths_.size())
+std::shared_ptr<AgentInfo> AgentHandler::runNextAgent() {
+    if(createdAgentsCount_ >= agentsPaths_.size()){
         return nullptr;
+    }
     std::filesystem::path actAgentFolder = std::filesystem::absolute(agentsPaths_.at(createdAgentsCount_));
     std::string folderName = actAgentFolder.filename();
     std::filesystem::path execPath = actAgentFolder/folderName;
@@ -61,11 +60,14 @@ std::shared_ptr<Agent> AgentHandler::createNextAgent() {
     } else if (ec) {
         throw std::runtime_error("Agent creation err:" + ec.message());
     }
-    auto agent = std::make_shared<Agent>(agentId, process);
-    std::cout << "Created agent with PID: " << agent->getProcessPid() << std::endl;
-    runningAgents_.push_back(agent);
-    return agent;
+    auto agentInfo = std::make_shared<AgentInfo>(agentId, agentPath, process);
+    return agentInfo;
+}
 
+
+void AgentHandler::addNewAgent(std::shared_ptr<MessageExchanger> messageExchanger, std::shared_ptr<AgentInfo> agentInfo){
+    auto agent = std::make_shared<Agent>(agentInfo, messageExchanger);
+    runningAgents_.push_back(agent);
 }
 
 const std::vector<std::shared_ptr<Agent>> &AgentHandler::getRunningAgents() {
@@ -110,3 +112,4 @@ void AgentHandler::deleteAgent(const std::string& agentId) {
         ++it;
     }
 }
+

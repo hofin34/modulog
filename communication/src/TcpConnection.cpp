@@ -26,7 +26,7 @@ void TcpConnection::handle_read_msg_size(const asio::error_code& error,
 
     }
     if(!error){
-        std::cout << "Msg size: " << msgLength << std::endl;
+        std::cout << "Msg size on conn. " << connectionName_ <<": " << msgLength << std::endl;
         msgBuffer_ = std::make_shared<asio::streambuf>(msgLength);
         read_msg_content();
     }else{
