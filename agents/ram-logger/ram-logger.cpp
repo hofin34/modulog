@@ -54,8 +54,8 @@ int main(int argc, char** argv){
         }
         if(howLongLog.first == true){
             if((programStart+std::chrono::seconds(howLongLog.second)) < std::chrono::system_clock::now()){
-                agentClient.exitConnection();
-                exit(EXIT_SUCCESS);
+                //agentClient.exitConnection();
+                //exit(EXIT_SUCCESS);
             }
         }
         std::this_thread::sleep_for(std::chrono::seconds(logInterval));

@@ -48,7 +48,12 @@ std::shared_ptr<AgentInfo> AgentHandler::runNextAgent() {
     std::string agentId = actAgentFolder; // is replaced after communication with client with real id from client side
     std::string agentPath = execPath;
     // ---
+
     reproc::options options;
+    options.stop = {
+            { reproc::stop::terminate, reproc::milliseconds(2000) }, // TODO how long???
+            { reproc::stop::kill, reproc::milliseconds(0) }
+    };
     options.redirect.parent = true;
     auto process = std::make_shared<reproc::process>();
     std::vector<std::string> v;
@@ -65,7 +70,7 @@ std::shared_ptr<AgentInfo> AgentHandler::runNextAgent() {
 }
 
 
-void AgentHandler::addNewAgent(std::shared_ptr<MessageExchanger> messageExchanger, std::shared_ptr<AgentInfo> agentInfo){
+void AgentHandler::addNewAgent(const std::shared_ptr<MessageExchanger> &messageExchanger, const std::shared_ptr<AgentInfo> &agentInfo){
     auto agent = std::make_shared<Agent>(agentInfo, messageExchanger);
     runningAgents_.push_back(agent);
 }
@@ -105,8 +110,7 @@ void AgentHandler::deleteAgent(const std::string& agentId) {
     auto it = runningAgents_.begin();
     while(it != runningAgents_.end()){
         if((*it)->getId() == agentId){
-            (*it)->deleteSelf();
-            runningAgents_.erase(it);
+            deleteAgent(*it);
             return;
         }
         ++it;

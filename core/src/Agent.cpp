@@ -6,7 +6,7 @@
 #include "../../communication/include/MessageDeserializer.h"
 
 std::string Agent::getId() {
-    return id_;
+    return agentInfo_->getAgentId();
 }
 
 
@@ -29,6 +29,7 @@ void Agent::setId(const std::string& id) {
 
 void Agent::deleteSelf() {
     std::cout << "Agent " << id_ << " is deleting..." << std::endl;
+    //agentInfo_->getAgentProcess()
     //TODO some cleaning
 }
 

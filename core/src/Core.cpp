@@ -43,6 +43,8 @@ void Core::start() {
                         actAgent->setConfirmedAlive(true);
                     }else if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::EXIT){
                         std::cerr << "Agent wants to exit..." << std::endl;
+                        auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ACK, "");
+                        actAgent->getMessageExchanger()->sendControl(exitControlMsg);
                     }
                 }
             }
@@ -99,7 +101,7 @@ void Core::initAllAgents() {
         if(agentConnection == nullptr){
             std::cerr << "Agent " << agent->getId() << " didn't connect!";
             agentHandler_->deleteAgent(agent);
-            continue; //TODO uncomm
+            continue;
         }
         auto messageExchanger = std::make_shared<MessageExchanger>(agentConnection);
 
@@ -118,12 +120,7 @@ void Core::initAllAgents() {
         std::cout << "Core agent name.: " << agentName << std::endl;
         agentInfo->setAgentId(agentName); // TODO if sends empty?
         agentHandler_->addNewAgent(messageExchanger, agentInfo);
-        std::cout << "IIIII" << std::endl;
-        //agentInfo = agentHandler_->runNextAgent();
-        agentInfo = nullptr;
-        std::cout << "OOOO" << std::endl;
     }
-    std::cout << "EEEE" << std::endl;
 }
 
 void Core::notifyAllAgentsToSendLogs() {

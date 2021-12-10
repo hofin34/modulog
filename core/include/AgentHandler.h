@@ -9,7 +9,7 @@ class AgentHandler {
 public:
     AgentHandler(const std::filesystem::path& pathToAgentsConfigDir);
     std::shared_ptr<AgentInfo> runNextAgent();
-    void addNewAgent(std::shared_ptr<MessageExchanger> messageExchanger, std::shared_ptr<AgentInfo> agentInfo);
+    void addNewAgent(const std::shared_ptr<MessageExchanger> &messageExchanger, const std::shared_ptr<AgentInfo> &agentInfo);
     const std::vector<std::shared_ptr<Agent>>& getRunningAgents();
     void deleteAgent(const std::shared_ptr<Agent>& agent);
     void deleteAgent(const std::string &agentId);

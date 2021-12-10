@@ -7,9 +7,11 @@
 
 class AgentInfo {
 public:
-    AgentInfo(std::string agentId, std::filesystem::path agentPath, std::shared_ptr<reproc::process> agentProcess_):
-            agentId_(std::move(agentId)), agentPath_(std::move(agentPath)), agentProcess_(std::move(agentProcess_)){}
+    AgentInfo(const std::string &agentId, const std::filesystem::path &agentPath, const std::shared_ptr<reproc::process>& agentProcess):
+            agentId_(agentId), agentPath_(agentPath), agentProcess_(agentProcess){}
     void setAgentId(std::string id);
+    std::string getAgentId();
+    std::shared_ptr<reproc::process> getAgentProcess();
 private:
     std::string agentId_;
     std::filesystem::path agentPath_;

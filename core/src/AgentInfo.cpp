@@ -9,3 +9,11 @@
 void AgentInfo::setAgentId(std::string id) {
     agentId_ = std::move(id);
 }
+
+std::string AgentInfo::getAgentId() {
+    return agentId_;
+}
+
+std::shared_ptr<reproc::process> AgentInfo::getAgentProcess() {
+    return agentProcess_;
+}

@@ -12,14 +12,8 @@
 
 class Agent {
 public:
-    Agent(std::shared_ptr<AgentInfo> agentInfo, std::shared_ptr<MessageExchanger> messageExchanger):
-           messageExchanger_(std::move(messageExchanger)){
-        processOptions_ = std::make_shared<reproc::options>();
-        processOptions_->stop = {
-                { reproc::stop::terminate, reproc::milliseconds(2000) }, // TODO how long???
-                { reproc::stop::kill, reproc::milliseconds(0) }
-        };
-    }
+    Agent(const std::shared_ptr<AgentInfo> &agentInfo, const std::shared_ptr<MessageExchanger> &messageExchanger):
+            agentInfo_(agentInfo), messageExchanger_(messageExchanger) {}
     // -------
     std::string getId();
     void setId(const std::string& id);
@@ -32,8 +26,7 @@ private:
     std::string id_;
     std::filesystem::path path_;
     std::shared_ptr<reproc::process> process_;
-    std::shared_ptr<reproc::options> processOptions_;
-    TcpConnection::pointer tcpConnection_;
     bool confirmedAlive_ = false;
     std::shared_ptr<MessageExchanger> messageExchanger_;
+    std::shared_ptr<AgentInfo> agentInfo_;
 };
