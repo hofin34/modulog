@@ -90,7 +90,7 @@ void AgentClient::exitConnection() {
 
 void AgentClient::sendLog(const std::shared_ptr<LogMessage> &logMessage) {
     if(isDebug_){
-        std::cout << "Simulated send: " << logMessage->serialize() << std::endl;
+        std::cout << "Simulated send (not same as real send): " << logMessage->serialize() << std::endl;
     }else{
         messageExchanger_->sendLog(logMessage);
     }
@@ -98,7 +98,7 @@ void AgentClient::sendLog(const std::shared_ptr<LogMessage> &logMessage) {
 
 void AgentClient::sendControl(const std::shared_ptr<ControlMessage> &controlMessage) {
     if (isDebug_) {
-        std::cout << "Simulated send: " << controlMessage->serialize() << std::endl;
+        std::cout << "Simulated send (not same as real send): " << controlMessage->serialize() << std::endl;
     } else {
         messageExchanger_->sendControl(controlMessage);
     }

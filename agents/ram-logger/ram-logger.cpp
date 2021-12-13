@@ -9,7 +9,7 @@
 #include "sys/types.h"
 #include "sys/sysinfo.h"
 
-long long getFreeRam(){
+long long getTemperature(){
     struct sysinfo memInfo;
     sysinfo (&memInfo);
     long long physMemUsed = memInfo.freeram;
@@ -44,7 +44,7 @@ int main(int argc, char** argv){
     AgentClient agentClient(ioContext, false, configJson["id"] );
     agentClient.initClient();
     while(true){
-        auto freeRam = getFreeRam();
+        auto freeRam = getTemperature();
         if(freeNotSmallerThan > freeRam){
             auto errMsg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::ERROR, "freeRamMiB", std::to_string(freeRam));
             agentClient.sendLog(errMsg);
