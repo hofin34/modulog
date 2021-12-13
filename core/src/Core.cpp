@@ -45,6 +45,8 @@ void Core::start() {
                         std::cerr << "Agent wants to exit..." << std::endl;
                         auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ACK, "");
                         actAgent->getMessageExchanger()->sendControl(exitControlMsg);
+                    }else if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR){
+                        std::cerr << "ExitERR" << std::endl;
                     }
                 }
             }

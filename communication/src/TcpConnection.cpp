@@ -17,21 +17,19 @@ void TcpConnection::start_read()
                            std::bind(&TcpConnection::handle_read_msg_size, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
+
+
 void TcpConnection::handle_read_msg_size(const asio::error_code& error,
                                          size_t bytes_transferred)
 {
-    if(error == asio::error::eof){
-        std::cerr << connectionName_ << " err: " << error.message() << " (maybe connection closed?)";
-        throw std::runtime_error(error.message());
-
-    }
     if(!error){
         std::cout << "Msg size on conn. " << connectionName_ <<": " << msgLength << std::endl;
         msgBuffer_ = std::make_shared<asio::streambuf>(msgLength);
         read_msg_content();
     }else{
-        std::cerr << connectionName_ + " err in reading msg size: " + error.message();
-        throw std::runtime_error(connectionName_ + " err in reading msg size: " + error.message());
+        std::cerr << connectionName_ << " err: " << error.message() << " (maybe connection closed?)";
+        signal_err_exit();
+        return;
     }
  }
 
@@ -65,7 +63,9 @@ void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_
             start_read();
         }
     }else{
-        throw std::runtime_error(connectionName_ + ": error in reading msg content: " + error.message());
+        std::cerr << connectionName_ << ": error in reading msg content: " << error.message() << std::endl;
+        signal_err_exit();
+        return;
     }
 }
 
@@ -75,8 +75,8 @@ void TcpConnection::send_message(const std::string& msg) {
     asio::write(socket_, asio::buffer(&msgSize, sizeof(msgSize)), errorWrite); // TODO these writes on one line?
     asio::write(socket_, asio::buffer(msg), errorWrite);
     if(errorWrite){
-        std::cerr << errorWrite.message();
-        throw std::runtime_error("Error in sending: " + errorWrite.message());
+        signal_err_exit();
+        std::cerr << "Error in sending." << errorWrite.message();
     }
 }
 
@@ -86,4 +86,8 @@ std::shared_ptr<MessageProcessor> TcpConnection::getMessageProcessor_() {
     return messageProcessor_;
 }
 
-
+void TcpConnection::signal_err_exit() {
+    auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR, "");
+    MessageSerializer messageSerializer(exitControlMsg);
+    messageProcessor_->processMessage(messageSerializer.serialize());
+}

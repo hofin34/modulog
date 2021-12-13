@@ -26,6 +26,7 @@ private:
     void handle_read_msg_size(const asio::error_code& error, size_t bytes_transferred);
     void read_msg_content();
     void handle_read_msg_content(const asio::error_code& error, size_t bytes_transferred);
+    void signal_err_exit();
 
 
     // ------ Attributes
