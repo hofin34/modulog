@@ -1,0 +1,5 @@
+{
+  "id": "test-random-logger",
+  "logIntervalMin": 10,
+  "logIntervalMax": 100
+}

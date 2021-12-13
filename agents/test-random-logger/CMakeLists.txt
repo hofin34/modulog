@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.20)
+if(NOT TARGET CommunicationLib)
+    add_subdirectory(../../communication)
+endif()
+add_executable(test-random-logger test-random-logger.cpp)
+configure_file(config.json5 config.json5 COPYONLY)
+target_link_libraries(test-random-logger CommunicationLib)

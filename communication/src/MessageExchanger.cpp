@@ -11,7 +11,7 @@ void MessageExchanger::sendLog(const std::shared_ptr<LogMessage>& logMessage) {
     if(connection_ != nullptr)
         connection_->send_message(toSend);
     else
-        std::cerr << "Connection not set, simulated send: " << toSend << std::endl;
+        std::cerr << "Connection not set, trying to send: " << toSend << std::endl;
 
 
 }
@@ -40,5 +40,9 @@ std::shared_ptr<LogMessage> MessageExchanger::popLogMessage() {
 
 std::shared_ptr<ControlMessage> MessageExchanger::popControlMessage() {
     return connection_->getMessageProcessor_()->popControlMessage();
+}
+
+TcpConnection::pointer MessageExchanger::getConnection() {
+    return connection_;
 }
 

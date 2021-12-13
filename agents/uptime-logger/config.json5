@@ -1,4 +1,4 @@
 {
-  "id": "uptime-loggerX",
-  "logInterval": 2
+  "id": "uptime-logger",
+  "logInterval": 1
 }

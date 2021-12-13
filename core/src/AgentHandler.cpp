@@ -49,23 +49,23 @@ std::shared_ptr<AgentInfo> AgentHandler::runNextAgent() {
     std::string agentPath = execPath;
     // ---
 
-    reproc::options options;
-    options.stop = {
+    auto options = std::make_shared<reproc::options>();
+    options->stop = {
             { reproc::stop::terminate, reproc::milliseconds(2000) }, // TODO how long???
             { reproc::stop::kill, reproc::milliseconds(0) }
     };
-    options.redirect.parent = true;
+    options->redirect.parent = true;
     auto process = std::make_shared<reproc::process>();
     std::vector<std::string> v;
     v.emplace_back(agentPath);
-    std::error_code ec = process->start(v, options);
+    std::error_code ec = process->start(v, *options);
     createdAgentsCount_++;
     if (ec == std::errc::no_such_file_or_directory) {
         throw std::runtime_error("Program not found. Make sure it's available from the PATH");
     } else if (ec) {
         throw std::runtime_error("Agent creation err:" + ec.message());
     }
-    auto agentInfo = std::make_shared<AgentInfo>(agentId, agentPath, process);
+    auto agentInfo = std::make_shared<AgentInfo>(agentId, agentPath, process, options);
     return agentInfo;
 }
 
@@ -99,11 +99,11 @@ void AgentHandler::loadAgentsConfigs(const std::filesystem::path& pathToListFile
 }
 
 void AgentHandler::deleteAgent(const std::shared_ptr<Agent>& agent) {
-    agent->deleteSelf();
     { // deletes agent from vector
         auto it = std::find(runningAgents_.begin(), runningAgents_.end(), agent);
         if (it != runningAgents_.end()) { runningAgents_.erase(it); }
     }
+    agent->deleteSelf();
 }
 
 void AgentHandler::deleteAgent(const std::string& agentId) {

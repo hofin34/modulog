@@ -52,11 +52,11 @@ void AgentClient::handleResponses() {
     while(true){
         auto controlMsg = messageExchanger_->waitForControlMessage();
         if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE){
-            std::cerr << "Responding to IS_ALIVE!" << std::endl;
+            std::cout << "Agent responding to IS_ALIVE!" << std::endl;
             auto ackAliveMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, "");
             messageExchanger_->sendControl(ackAliveMsg);
-        }else if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::EXIT_ACK){
-            exitConfirmed.store(true);
+        }else if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::EXIT){
+            std::cout << "Agent received EXIT - should exit now." << std::endl;
         }
     }
 }
@@ -85,19 +85,22 @@ nlohmann::json AgentClient::parseConfig(const std::string &execPath) {
 void AgentClient::exitConnection() {
     auto exitMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
     sendControl(exitMsg);
-    while(!exitConfirmed.load()){ // Waits until Core didn't responded with exit ack
-        std::cerr << "waiting..." << std::endl;
-       // std::this_thread::sleep_for(std::chrono::milliseconds(400));
-    }
-    std::cerr <<"EXITED!" << std::endl;
+    while(true);
 }
 
 void AgentClient::sendLog(const std::shared_ptr<LogMessage> &logMessage) {
-    messageExchanger_->sendLog(logMessage);
+    if(isDebug_){
+        std::cout << "Simulated send: " << logMessage->serialize() << std::endl;
+    }else{
+        messageExchanger_->sendLog(logMessage);
+    }
 }
 
 void AgentClient::sendControl(const std::shared_ptr<ControlMessage> &controlMessage) {
-    messageExchanger_->sendControl(controlMessage);
+    if (isDebug_) {
+        std::cout << "Simulated send: " << controlMessage->serialize() << std::endl;
+    } else {
+        messageExchanger_->sendControl(controlMessage);
+    }
 }
-
 

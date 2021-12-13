@@ -32,7 +32,6 @@ private:
     std::shared_ptr<MessageExchanger> messageExchanger_;
 
     // Sync vars:
-    std::atomic<bool> exitConfirmed = false;
     std::mutex msgMutex_;
     std::condition_variable msgCondVar_;
     int totalMsgsReceived_ = 0;

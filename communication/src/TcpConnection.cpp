@@ -76,7 +76,7 @@ void TcpConnection::send_message(const std::string& msg) {
     asio::write(socket_, asio::buffer(msg), errorWrite);
     if(errorWrite){
         signal_err_exit();
-        std::cerr << "Error in sending." << errorWrite.message();
+        std::cerr << connectionName_ << ": error in sending." << errorWrite.message();
     }
 }
 
@@ -90,4 +90,13 @@ void TcpConnection::signal_err_exit() {
     auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR, "");
     MessageSerializer messageSerializer(exitControlMsg);
     messageProcessor_->processMessage(messageSerializer.serialize());
+}
+
+void TcpConnection::close_connection() {
+    asio::error_code ec;
+    socket_.shutdown(asio::ip::tcp::socket::shutdown_both, ec);
+    if(ec)
+        std::cerr<< "Closing conn err.:" << ec.message() << std::endl;
+    else
+        socket_.close();
 }

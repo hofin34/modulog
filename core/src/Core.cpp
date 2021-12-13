@@ -43,10 +43,11 @@ void Core::start() {
                         actAgent->setConfirmedAlive(true);
                     }else if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::EXIT){
                         std::cerr << "Agent wants to exit..." << std::endl;
-                        auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ACK, "");
-                        actAgent->getMessageExchanger()->sendControl(exitControlMsg);
+                        //auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ACK, "");
+                        //actAgent->getMessageExchanger()->sendControl(exitControlMsg);
+                        agentHandler_->deleteAgent(actAgent);
                     }else if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR){
-                        std::cerr << "ExitERR" << std::endl;
+                        agentHandler_->deleteAgent(actAgent);
                     }
                 }
             }
@@ -68,6 +69,7 @@ void Core::startSendAlive() {
     sendAliveTimer_.async_wait(std::bind(&Core::sendAlive, this));
 }
 
+
 void Core::sendAlive() {
     std::cout << "Core sending isAlive to all agents..." << std::endl; //TODO when sending to dead agent, core exits...
     for(auto& agent: agentHandler_->getRunningAgents()){
@@ -83,7 +85,8 @@ void Core::checkIfAgentsAlive() {
     std::cout << "Core checking if all agents responded with ACK..." << std::endl;
     for(auto& agent: agentHandler_->getRunningAgents()){
         if(!agent->getConfirmedAlive()){
-            std::cerr << "Agent " << agent->getId() << " didn't respond on isAlive!" << std::endl; // TODO kill or something...
+            std::cerr << "Agent " << agent->getId() << " didn't respond on isAlive!" << std::endl;
+            agentHandler_->deleteAgent(agent);
         }else{
             agent->setConfirmedAlive(false);
         }
@@ -92,17 +95,17 @@ void Core::checkIfAgentsAlive() {
 }
 
 void Core::initAllAgents() {
-    std::shared_ptr<Agent> agent;
     std::shared_ptr<AgentInfo> agentInfo;
     while((agentInfo = agentHandler_->runNextAgent()) != nullptr){
-        std::cout <<"aDSF"<<std::endl;
         std::cout << "waiting for ag. connection..." << std::endl;
         TcpConnection::pointer agentConnection;
         auto endConnectionTime = std::chrono::system_clock::now() + std::chrono::seconds(3); // TODO 3 seconds to variable
-        while((endConnectionTime > std::chrono::system_clock::now()) && (agentConnection = server_.popConnection()) == nullptr); //TODO wait timer
+        while((endConnectionTime > std::chrono::system_clock::now()) && (agentConnection = server_.popConnection()) == nullptr){
+            usleep(20); // sleep for valgrind, if not set, agent will not connect in valgrind environment...
+        };
         if(agentConnection == nullptr){
-            std::cerr << "Agent " << agent->getId() << " didn't connect!";
-            agentHandler_->deleteAgent(agent);
+            std::cerr << "Agent " << agentInfo->getAgentId() << " didn't connect!" << std::endl;
+            agentInfo->stopAgent();
             continue;
         }
         auto messageExchanger = std::make_shared<MessageExchanger>(agentConnection);

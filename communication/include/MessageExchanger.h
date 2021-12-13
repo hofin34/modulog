@@ -10,6 +10,7 @@ public:
     std::shared_ptr<LogMessage> popLogMessage();
     std::shared_ptr<ControlMessage> popControlMessage();
 
+    TcpConnection::pointer getConnection();
 private:
-    TcpConnection::pointer connection_;
+    TcpConnection::pointer connection_ = nullptr;
 };

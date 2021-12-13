@@ -15,6 +15,7 @@ public:
     void start_read();
     asio::ip::tcp::socket& get_socket();
     static pointer create(asio::io_context& io_context, std::string& connectionName, std::shared_ptr<MessageProcessor> messageProcessor);
+    void close_connection();
     std::shared_ptr<MessageProcessor> getMessageProcessor_();
 
 private:

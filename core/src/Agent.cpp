@@ -29,8 +29,8 @@ void Agent::setId(const std::string& id) {
 
 void Agent::deleteSelf() {
     std::cout << "Agent " << id_ << " is deleting..." << std::endl;
-    //agentInfo_->getAgentProcess()
-    //TODO some cleaning
+    messageExchanger_->getConnection()->close_connection();
+    agentInfo_->stopAgent();
 }
 
 std::shared_ptr<MessageExchanger> Agent::getMessageExchanger() {
