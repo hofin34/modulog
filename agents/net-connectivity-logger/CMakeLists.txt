@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.20)
+#project(agent-memory-logger)
+if(NOT TARGET CommunicationLib)
+    add_subdirectory(../../communication)
+endif()
+add_executable(net-connectivity-logger net-connectivity-logger.cpp)
+configure_file(config.json5 config.json5 COPYONLY)
+target_link_libraries(net-connectivity-logger CommunicationLib)

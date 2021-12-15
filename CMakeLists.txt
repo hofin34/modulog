@@ -18,8 +18,9 @@ add_subdirectory(agents/uptime-logger)
 add_subdirectory(agents/space-logger)
 add_subdirectory(agents/test-random-logger)
 add_subdirectory(agents/temperature-logger)
+add_subdirectory(agents/net-connectivity-logger)
 
-add_dependencies(sys-logger ram-logger uptime-logger space-logger test-random-logger temperature-logger)
+add_dependencies(sys-logger ram-logger uptime-logger space-logger test-random-logger temperature-logger net-connectivity-logger)
 # ----------- nlohmann json library
 # TODO downloads too long?
 FetchContent_Declare(json
