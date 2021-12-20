@@ -1,12 +1,19 @@
 In folder `thesis-text` will be LaTex and also generated .pdf text of thesis. In this README file will be my notes, TODO list and later documentation for final program.
 
+
 # TODO
 
 1. Write, why is our solution different
 2. Create architecture diagram
+3. Compile just enabled agents
+4. Create global config file
 
 --- 
 
+# Pitfalls we will work on
+1. Not the most effective - like sending logs in json etc.
+
+---
 # Implementation tasks
 
 1. Our app will have each monitoring agent as a process, so we need to find out, how to create/stop processes.

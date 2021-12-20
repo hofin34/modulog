@@ -19,11 +19,8 @@ std::string AgentInfo::getAgentId() {
     return agentId_;
 }
 
-std::shared_ptr<reproc::process> AgentInfo::getAgentProcess() {
-    return agentProcess_;
-}
 
 void AgentInfo::stopAgent() {
-    agentProcess_->stop(agentProcessOptions_->stop);
+    agentProcess_->stop(agentProcessOptions_->stop); //TODO if stop not set?
 }
 

@@ -2,6 +2,7 @@
 #include <asio.hpp>
 #include "../../communication/include/MessageSerializer.h"
 #include "../../communication/include/AgentClient.h"
+#include "Helpers.h"
 #include <thread>
 #include <fstream>
 
@@ -18,7 +19,7 @@ int getTemperature(std::ifstream &tempSource){
 
 int main(int argc, char** argv){
     auto programStart = std::chrono::system_clock::now();
-    nlohmann::json configJson = AgentClient::parseConfig(argv[0]);
+    nlohmann::json configJson = Helpers::parseConfig(argv[0]);
 
     if(!configJson.contains("id")){
         std::cerr << "Include config with id defined." << std::endl;

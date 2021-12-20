@@ -4,6 +4,7 @@
 #include "../../communication/include/AgentClient.h"
 #include <thread>
 #include "sys/types.h"
+#include "Helpers.h"
 
 bool hostnameToIp(std::string &ip, const std::string &hostname) {
     struct hostent *he;
@@ -100,7 +101,7 @@ void logNetState(bool stateValue, AgentClient &agentClient){
 
 int main(int argc, char** argv){
     auto programStart = std::chrono::system_clock::now();
-    nlohmann::json configJson = AgentClient::parseConfig(argv[0]);// nlohmann::json::parse(ifs);
+    nlohmann::json configJson = Helpers::parseConfig(argv[0]);// nlohmann::json::parse(ifs);
 
     if(!configJson.contains("id")){
         std::cerr << "Include config with id defined." << std::endl;

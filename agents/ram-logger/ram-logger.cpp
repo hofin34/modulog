@@ -8,6 +8,7 @@
 #include <fstream>
 #include "sys/types.h"
 #include "sys/sysinfo.h"
+#include "Helpers.h"
 
 long long getTemperature(){
     struct sysinfo memInfo;
@@ -20,7 +21,7 @@ long long getTemperature(){
 
 int main(int argc, char** argv){
     auto programStart = std::chrono::system_clock::now();
-    nlohmann::json configJson = AgentClient::parseConfig(argv[0]);// nlohmann::json::parse(ifs);
+    nlohmann::json configJson = Helpers::parseConfig(argv[0]);// nlohmann::json::parse(ifs);
 
     if(!configJson.contains("id")){
         std::cerr << "Include config with id defined." << std::endl;

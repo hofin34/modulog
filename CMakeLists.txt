@@ -1,26 +1,26 @@
-cmake_minimum_required(VERSION 3.20)
-include(FetchContent)
-project(bachelor_hofbauer)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
+INCLUDE(FetchContent)
+PROJECT(bachelor_hofbauer)
 
-set(CMAKE_CXX_STANDARD 20)
+SET(CMAKE_CXX_STANDARD 20)
 
 if (NOT TARGET CommunicationLib)
-    add_subdirectory(communication)
+    ADD_SUBDIRECTORY(communication)
 endif()
 
-file(GLOB_RECURSE source_files "core/src/*")
-add_executable(sys-logger main.cpp ${source_files})
-target_include_directories(sys-logger PUBLIC "core/include/")
-target_link_libraries(sys-logger CommunicationLib)
+FILE(GLOB_RECURSE source_files "core/src/*")
+ADD_EXECUTABLE(sys-logger main.cpp ${source_files})
+TARGET_INCLUDE_DIRECTORIES(sys-logger PUBLIC "core/include/")
+TARGET_LINK_LIBRARIES(sys-logger CommunicationLib)
 
-add_subdirectory(agents/ram-logger)
-add_subdirectory(agents/uptime-logger)
-add_subdirectory(agents/space-logger)
-add_subdirectory(agents/test-random-logger)
-add_subdirectory(agents/temperature-logger)
-add_subdirectory(agents/net-connectivity-logger)
+ADD_SUBDIRECTORY(agents/ram-logger)
+ADD_SUBDIRECTORY(agents/uptime-logger)
+ADD_SUBDIRECTORY(agents/space-logger)
+ADD_SUBDIRECTORY(agents/test-random-logger)
+ADD_SUBDIRECTORY(agents/temperature-logger)
+ADD_SUBDIRECTORY(agents/net-connectivity-logger)
 
-add_dependencies(sys-logger ram-logger uptime-logger space-logger test-random-logger temperature-logger net-connectivity-logger)
+ADD_DEPENDENCIES(sys-logger ram-logger uptime-logger space-logger test-random-logger temperature-logger net-connectivity-logger)
 # ----------- nlohmann json library
 # TODO downloads too long?
 FetchContent_Declare(json
@@ -30,12 +30,12 @@ FetchContent_Declare(json
 FetchContent_GetProperties(json)
 if(NOT json_POPULATED)
     FetchContent_Populate(json)
-    add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+    ADD_SUBDIRECTORY(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
 
 # ----------- reproc library
-set(REPROC++ ON)
+SET(REPROC++ ON)
 FetchContent_Declare(
         reproc++
         GIT_REPOSITORY https://github.com/DaanDeMeyer/reproc.git
@@ -45,6 +45,6 @@ FetchContent_MakeAvailable(reproc++)
 
 
 # ------------ linking
-target_link_libraries(sys-logger reproc++ asio nlohmann_json::nlohmann_json)
+TARGET_LINK_LIBRARIES(sys-logger reproc++ asio nlohmann_json::nlohmann_json)
 
 

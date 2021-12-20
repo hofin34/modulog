@@ -1,11 +1,13 @@
-# memory-logger
+# ram-logger
 
-TODO some description...
+This agent logs free RAM in MiB.
 
 ## Config structure
 
-"id": string, something like "memory-logger"
+"id": agent identification, something like "ram-logger"
 
 "logInterval": int, how often take log (in seconds)
 
-"freeNotSmallerThan": int, logs error if is free RAM is smaller than this MiB
+[optional] "freeNotSmallerThan": int, if is RAM smaller than this value, then log an error
+
+[optional] "howLongLog": int, just for testing purposes //TODO remove

@@ -7,11 +7,11 @@
 #include "../../communication/include/MessageDeserializer.h"
 #include "../include/LogSaver.h"
 
-Core::Core(const std::filesystem::path& pathToAgentsConfigs, std::shared_ptr<asio::io_context> ioContext) :
+Core::Core(const std::filesystem::path& pathToEnabledAgentsList, std::shared_ptr<asio::io_context> ioContext) :
                                                                                                             sendAliveTimer_(*ioContext),
                                                                                                             server_(*ioContext, messageMutex_, messageConditionVar_, totalReceivedMessages_){
     ioContext_ = ioContext;
-    agentHandler_ = std::make_shared<AgentHandler>(pathToAgentsConfigs);
+    agentHandler_ = std::make_shared<AgentHandler>(pathToEnabledAgentsList);
 }
 
 void Core::start() {
@@ -23,7 +23,7 @@ void Core::start() {
         initAllAgents();
         notifyAllAgentsToSendLogs();
         startSendAlive();
-        LogSaver logSaver("../logs");
+        LogSaver logSaver("../logs"); //TODO MOVE to global config
         while(true) {
             std::cout << "NEW ITER" << std::endl;
             {
@@ -101,7 +101,8 @@ void Core::initAllAgents() {
         TcpConnection::pointer agentConnection;
         auto endConnectionTime = std::chrono::system_clock::now() + std::chrono::seconds(3); // TODO 3 seconds to variable
         while((endConnectionTime > std::chrono::system_clock::now()) && (agentConnection = server_.popConnection()) == nullptr){
-            usleep(20); // sleep for valgrind, if not set, agent will not connect in valgrind environment...
+           // usleep(20); // sleep for valgrind, if not set, agent will not connect in valgrind environment...
+            std::this_thread::sleep_for(std::chrono::microseconds(20));
         };
         if(agentConnection == nullptr){
             std::cerr << "Agent " << agentInfo->getAgentId() << " didn't connect!" << std::endl;

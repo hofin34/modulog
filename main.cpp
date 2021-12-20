@@ -4,6 +4,7 @@
 #include <vector>
 #include <asio.hpp>
 
+// Just for debug, TODO remove later:
 std::string ver_string(int a, int b, int c) {
     std::ostringstream ss;
     ss << a << '.' << b << '.' << c;
@@ -28,7 +29,7 @@ std::string true_cxx_ver =
 int main(int argc, const char **argv) {
     std::cout << "Comp. version: " << true_cxx_ver << std::endl;
     try{
-        std::filesystem::path agentsList = "../agents-list.conf";
+        std::filesystem::path agentsList = "../agents-list.conf"; // TODO MOVE to config file
         auto ioContext = std::make_shared<asio::io_context>();
         Core core(std::filesystem::absolute(agentsList), ioContext);
         core.start();

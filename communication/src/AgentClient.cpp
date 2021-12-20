@@ -1,14 +1,11 @@
 
 #include <iostream>
 #include <filesystem>
-#include <fstream>
 #include "../include/AgentClient.h"
 #include "../include/TcpConnection.h"
 #include "../include/MessageDeserializer.h"
 
-std::string AgentClient::getAgentConfig() {
-    return agentConfig_;
-}
+
 
 AgentClient::AgentClient(std::shared_ptr<asio::io_context> &ioContext, bool isDebug, std::string agentName)
         : ioContext_(ioContext), isDebug_(isDebug), agentName_(agentName){
@@ -19,7 +16,6 @@ void AgentClient::initClient() {
     if(isDebug_)
         return;
     try{
-        //std::this_thread::sleep_for(std::chrono::seconds(15)); //TODO delete
         auto connection = TcpConnection::create(*ioContext_, agentName_, msgProcessor_);
         asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 1234);
         connection->get_socket().connect(endpoint);
@@ -61,31 +57,13 @@ void AgentClient::handleResponses() {
     }
 }
 
-std::string AgentClient::execCommand(const std::string& cmd) {
-    std::array<char, 128> buffer;
-    std::string result;
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.c_str(), "r"), pclose);
-    if (!pipe) {
-        throw std::runtime_error("popen() failed!");
-    }
-    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-        result += buffer.data();
-    }
-    return result;
-}
 
-nlohmann::json AgentClient::parseConfig(const std::string &execPath) {
-    std::filesystem::path agentPath = execPath;
-    agentPath = agentPath.remove_filename();
-    std::ifstream ifs(agentPath/"config.json5");
-    nlohmann::json configJson = nlohmann::json::parse(ifs);
-    return configJson;
-}
+
+
 
 void AgentClient::exitConnection() {
     auto exitMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
     sendControl(exitMsg);
-    while(true);
 }
 
 void AgentClient::sendLog(const std::shared_ptr<LogMessage> &logMessage) {

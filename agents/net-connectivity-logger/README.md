@@ -1,11 +1,11 @@
 # net-connectivity-logger
+This agent checks, if is connection to the internet and if is possible to send and receive data.
+When started, first log is made and then every "checkInterval" is checked, if connection state changed since last log - if so, it is logged. If not, no log is made.
 
-TODO some description...
+When there is no internet connection, it is logged as error.
 
 ## Config structure
 
-"id": string, something like "memory-logger"
+"id": string, how will be agent identified (something like "net-connectivity-logger")
 
-"logInterval": int, how often take log (in seconds)
-
-"freeNotSmallerThan": int, logs error if is free RAM is smaller than this MiB
+"checkInterval": int, how often check actual net state log (in seconds)

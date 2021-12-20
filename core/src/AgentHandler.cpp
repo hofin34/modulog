@@ -8,30 +8,11 @@
 #include <unistd.h>
 #include "../include/AgentHandler.h"
 
-AgentHandler::AgentHandler(const std::filesystem::path& pathToAgentsConfigDir): runningAgents_(){
-    //TODO termination
-    struct sigaction act{};
-    memset(&act, 0, sizeof(act));
-    act.sa_handler = &AgentHandler::cleanup;
-    sigaction(SIGINT,  &act, nullptr);
-    sigaction(SIGTERM, &act, nullptr);
-
-    loadAgentsConfigs(pathToAgentsConfigDir);
+AgentHandler::AgentHandler(const std::filesystem::path& pathToEnabledAgentsList): runningAgents_(){
+    //TODO termination and cleanup if CTRL+C is pressed
+    parseEnabledAgentsList(pathToEnabledAgentsList);
 };
 
-void AgentHandler::cleanup(int sigNum) {
-    std::cout << "cleanup..." << std::endl; // TODO
-    /*
-    for(auto &agent : running_agents){
-        std::cout << "Stopping " << agent.getName() << " PID: " << agent.getProcess()->pid().first << std::endl;
-        std::error_code ec;
-        int status;
-        std::tie(status, ec) = agent.getProcess()->stop(agent.getProcessOptions()->stop);
-
-    }
-     */
-    exit(0);
-}
 
 std::shared_ptr<AgentInfo> AgentHandler::runNextAgent() {
     if(createdAgentsCount_ >= agentsPaths_.size()){
@@ -79,7 +60,7 @@ const std::vector<std::shared_ptr<Agent>> &AgentHandler::getRunningAgents() {
     return runningAgents_;
 }
 
-void AgentHandler::loadAgentsConfigs(const std::filesystem::path& pathToListFile) {
+void AgentHandler::parseEnabledAgentsList(const std::filesystem::path& pathToListFile) {
     try{
         std::ifstream input( pathToListFile);
         for( std::string line; getline( input, line ); )
@@ -103,17 +84,6 @@ void AgentHandler::deleteAgent(const std::shared_ptr<Agent>& agent) {
         auto it = std::find(runningAgents_.begin(), runningAgents_.end(), agent);
         if (it != runningAgents_.end()) { runningAgents_.erase(it); }
     }
-    agent->deleteSelf();
-}
-
-void AgentHandler::deleteAgent(const std::string& agentId) {
-    auto it = runningAgents_.begin();
-    while(it != runningAgents_.end()){
-        if((*it)->getId() == agentId){
-            deleteAgent(*it);
-            return;
-        }
-        ++it;
-    }
+    agent->deleteSelf(); // cleanup after agent
 }
 

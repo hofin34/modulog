@@ -10,10 +10,6 @@ std::string Agent::getId() {
 }
 
 
-int Agent::getProcessPid() {
-    return process_->pid().first;
-}
-
 void Agent::setConfirmedAlive(bool value) {
     confirmedAlive_ = value;
 
@@ -23,9 +19,6 @@ bool Agent::getConfirmedAlive() {
     return confirmedAlive_;
 }
 
-void Agent::setId(const std::string& id) {
-    id_ = id;
-}
 
 void Agent::deleteSelf() {
     std::cout << "Agent " << id_ << " is deleting..." << std::endl;

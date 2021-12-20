@@ -1,15 +1,11 @@
 # space-logger
 
-TODO some description...
+This agent logs free and available space in folder specified by "folderToMonitor".
 
 ## Config structure
 
-"id": string, something like "memory-logger"
+"id": string, something like "space-logger"
 
-"logInterval": int, how often take log
+"logInterval": int, how often take log (in seconds)
 
-"notBiggerThan": int, logs error if is value bigger than this
-
-
-
-"logInterval": 
+"folderToMonitor": string, which folder will be monitored like "/path/to/folder"

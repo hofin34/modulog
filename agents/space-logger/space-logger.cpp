@@ -1,12 +1,13 @@
 #include <iostream>
 #include <asio.hpp>
 #include "../../communication/include/AgentClient.h"
+#include "Helpers.h"
 #include <thread>
 #include <filesystem>
 
 
 int main(int argc, char** argv){
-    nlohmann::json configJson = AgentClient::parseConfig(argv[0]);
+    nlohmann::json configJson = Helpers::parseConfig(argv[0]);
     if(!configJson.contains("id") || !configJson.contains("folderToMonitor")){
         std::cerr << "You must specify id and folderToMonitor in config." << std::endl;
         exit(EXIT_FAILURE);
