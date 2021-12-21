@@ -29,6 +29,7 @@ After start, enabled agents are created and they collect logs. These logs are sa
 3. Compile just enabled agents
 4. Create global config file
 5. Write to doc, how to create agents
+6. Log somewhere if agent crash
 
 --- 
 

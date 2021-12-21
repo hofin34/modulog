@@ -3,10 +3,6 @@
 #include "../../communication/include/MessageSerializer.h"
 #include "../../communication/include/AgentClient.h"
 #include <thread>
-#include <sys/statvfs.h>
-#include <filesystem>
-#include <fstream>
-#include "sys/types.h"
 #include "sys/sysinfo.h"
 #include "Helpers.h"
 
@@ -35,11 +31,7 @@ int main(int argc, char** argv){
     if(configJson.contains("logInterval")){
         logInterval = configJson["logInterval"];
     }
-    std::pair<bool, int> howLongLog(false, -1);
-    if(configJson.contains("howLongLog")){
-        howLongLog.first = true;
-        howLongLog.second = configJson["howLongLog"];
-    }
+
 
     auto ioContext = std::make_shared<asio::io_context>();
     AgentClient agentClient(ioContext, false, configJson["id"] );
@@ -53,12 +45,7 @@ int main(int argc, char** argv){
             auto logMsg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "freeRamMiB", std::to_string(freeRam));
             agentClient.sendLog(logMsg);
         }
-        if(howLongLog.first == true){
-            if((programStart+std::chrono::seconds(howLongLog.second)) < std::chrono::system_clock::now()){
-                //agentClient.exitConnection();
-                //exit(EXIT_SUCCESS);
-            }
-        }
+
         std::this_thread::sleep_for(std::chrono::seconds(logInterval));
     }
     return 0;

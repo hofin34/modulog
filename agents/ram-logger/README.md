@@ -9,5 +9,3 @@ This agent logs free RAM in MiB.
 "logInterval": int, how often take log (in seconds)
 
 [optional] "freeNotSmallerThan": int, if is RAM smaller than this value, then log an error
-
-[optional] "howLongLog": int, just for testing purposes //TODO remove
