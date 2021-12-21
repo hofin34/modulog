@@ -6,46 +6,46 @@ TcpConnection::pointer TcpConnection::create(asio::io_context& io_context, std::
     return pointer(new TcpConnection(io_context, connectionName, messageProcessor)); //TODO refactor creation...
 }
 
-asio::ip::tcp::socket& TcpConnection::get_socket()
+asio::ip::tcp::socket& TcpConnection::getSocket()
 {
     return socket_;
 }
 
-void TcpConnection::start_read()
+void TcpConnection::startRead()
 {
     asio::async_read(socket_, asio::buffer(&msgLength, sizeof(msgLength)), asio::transfer_exactly(sizeof(msgLength)),
-                           std::bind(&TcpConnection::handle_read_msg_size, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+                           std::bind(&TcpConnection::handleReadMsgSize, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
 
 
-void TcpConnection::handle_read_msg_size(const asio::error_code& error,
-                                         size_t bytes_transferred)
+void TcpConnection::handleReadMsgSize(const asio::error_code& error,
+                                      size_t bytes_transferred)
 {
     if(!error){
         std::cout << "Msg size on conn. " << connectionName_ <<": " << msgLength << std::endl;
         msgBuffer_ = std::make_shared<asio::streambuf>(msgLength);
-        read_msg_content();
+        readMsgContent();
     }else{
         std::cerr << connectionName_ << " err: " << error.message() << " (maybe connection closed?)";
-        signal_err_exit();
+        signalErrExit();
         return;
     }
  }
 
- void TcpConnection::read_msg_content(){
+ void TcpConnection::readMsgContent(){
     int restToRead = msgLength - alreadyRead_;
     if(restToRead >MAX_PACKET_SIZE){
         asio::async_read(socket_, *msgBuffer_,asio::transfer_exactly(MAX_PACKET_SIZE),
-                         std::bind(&TcpConnection::handle_read_msg_content, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+                         std::bind(&TcpConnection::handleReadMsgContent, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
     }else{
         asio::async_read(socket_, *msgBuffer_,asio::transfer_exactly(restToRead),
-                         std::bind(&TcpConnection::handle_read_msg_content, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+                         std::bind(&TcpConnection::handleReadMsgContent, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
     }
 
 }
 
-void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_t bytes_transferred) {
+void TcpConnection::handleReadMsgContent(const asio::error_code &error, size_t bytes_transferred) {
     if(!error){
         alreadyRead_ += bytes_transferred;
         std::cout << "Content bytes read: " << alreadyRead_ << "/" << msgLength <<std::endl;
@@ -54,45 +54,45 @@ void TcpConnection::handle_read_msg_content(const asio::error_code &error, size_
         finalMessage_ += msgPart;
         msgBuffer_->consume(bytes_transferred);
         if(alreadyRead_ != msgLength){
-            read_msg_content();
+            readMsgContent();
         }else{
             alreadyRead_ = 0;
             std::cout << connectionName_ << " received: " << finalMessage_ << std::endl;
             messageProcessor_->processMessage(finalMessage_);
             finalMessage_ = "";
-            start_read();
+            startRead();
         }
     }else{
         std::cerr << connectionName_ << ": error in reading msg content: " << error.message() << std::endl;
-        signal_err_exit();
+        signalErrExit();
         return;
     }
 }
 
-void TcpConnection::send_message(const std::string& msg) {
+void TcpConnection::sendMessage(const std::string& msg) {
     asio::error_code errorWrite;
     uint32_t msgSize = msg.length();
     asio::write(socket_, asio::buffer(&msgSize, sizeof(msgSize)), errorWrite); // TODO these writes on one line?
     asio::write(socket_, asio::buffer(msg), errorWrite);
     if(errorWrite){
-        signal_err_exit();
+        signalErrExit();
         std::cerr << connectionName_ << ": error in sending." << errorWrite.message();
     }
 }
 
 
 
-std::shared_ptr<MessageProcessor> TcpConnection::getMessageProcessor_() {
+std::shared_ptr<MessageProcessor> TcpConnection::getMessageProcessor() {
     return messageProcessor_;
 }
 
-void TcpConnection::signal_err_exit() {
+void TcpConnection::signalErrExit() {
     auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR, "");
     MessageSerializer messageSerializer(exitControlMsg);
     messageProcessor_->processMessage(messageSerializer.serialize());
 }
 
-void TcpConnection::close_connection() {
+void TcpConnection::closeConnection() {
     asio::error_code ec;
     socket_.shutdown(asio::ip::tcp::socket::shutdown_both, ec);
     if(ec)

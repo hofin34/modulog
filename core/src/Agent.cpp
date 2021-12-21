@@ -22,7 +22,7 @@ bool Agent::getConfirmedAlive() {
 
 void Agent::deleteSelf() {
     std::cout << "Agent " << id_ << " is deleting..." << std::endl;
-    messageExchanger_->getConnection()->close_connection();
+    messageExchanger_->getConnection()->closeConnection();
     agentInfo_->stopAgent();
 }
 

@@ -65,16 +65,18 @@ void AgentHandler::parseEnabledAgentsList(const std::filesystem::path& pathToLis
         std::ifstream input( pathToListFile);
         for( std::string line; getline( input, line ); )
         {
+            line.erase(remove(line.begin(), line.end(), ' '), line.end());
+            int commentPos = line.find('#');
+            if(commentPos != std::string::npos) { // line contains comment
+                line = line.substr(0, commentPos);
+            }
             if(line.empty())
                 continue;
-            if(line.find('#') != std::string::npos) // line contains comment
-                continue;
-
             std::filesystem::path actAgentPath = line;
             agentsPaths_.push_back(actAgentPath);
         }
     }catch(...){
-        std::cerr << "Couldn't parse json config (or file open err)." << std::endl;
+        std::cerr << "Couldn't parse agent list (or file open err)." << std::endl;
     }
 
 }

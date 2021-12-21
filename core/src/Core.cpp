@@ -116,10 +116,10 @@ void Core::initAllAgents() {
         auto controlMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::CONFIG, "agent->getConfig().dump()");
         messageExchanger->sendControl(controlMessage);
         std::cout << "Waiting for agent response..." << std::endl;
-        std::shared_ptr<ControlMessage> respControlMessage = messageExchanger->waitForControlMessage(); // TODO if someone else sends message...
+        std::shared_ptr<ControlMessage> respControlMessage = messageExchanger->waitForControlMessage(2000);
         if(respControlMessage == nullptr){
-            std::cout << "null control msg" << std::endl;
-            exit(2); //TODO - timeout
+            std::cerr << "null control msg" << std::endl;
+            exit(EXIT_FAILURE);
         }
         //Now expecting ACK response with agent name:
         std::string agentName = respControlMessage->getValue();

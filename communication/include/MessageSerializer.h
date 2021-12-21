@@ -1,12 +1,30 @@
 #pragma once
+
 #include "LogMessage.h"
 #include "ControlMessage.h"
 #include "Message.h"
 
+/**
+ * Takes care of serializing messages - takes concrete message (Log or Control) and gives it in envelope marking its type
+ */
 class MessageSerializer {
 public:
+    /**
+     * Constructor for log message
+     * @param logMessage log message to serialize
+     */
     MessageSerializer(std::shared_ptr<LogMessage> logMessage);
+
+    /**
+     * Constructor for control message
+     * @param controlMessage control message to serialize
+     */
     MessageSerializer(std::shared_ptr<ControlMessage> controlMessage);
+
+    /**
+     * Serialize message passed to constructor and adding envelope for transport marking msg type
+     * @return serialized message
+     */
     std::string serialize();
 
 private:

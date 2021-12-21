@@ -1,33 +1,64 @@
 #pragma once
+
 #include <asio.hpp>
 #include "ControlMessage.h"
 #include "MessageSerializer.h"
 #include "MessageProcessor.h"
 #include <iostream>
 #include <utility>
-//#include <AgentHandler.h>
-//#include "../../core/include/AgentHandler.h"
-class TcpConnection: public std::enable_shared_from_this<TcpConnection> {
+
+class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
 public:
-    const int MAX_PACKET_SIZE = 512;
+    const int MAX_PACKET_SIZE = 512; // how big packets are read
     typedef std::shared_ptr<TcpConnection> pointer;
-    void send_message(const std::string& msg);
-    void start_read();
-    asio::ip::tcp::socket& get_socket();
-    static pointer create(asio::io_context& io_context, std::string& connectionName, std::shared_ptr<MessageProcessor> messageProcessor);
-    void close_connection();
-    std::shared_ptr<MessageProcessor> getMessageProcessor_();
+
+    /**
+     * Sends message msg
+     * @param msg message to be sent
+     */
+    void sendMessage(const std::string &msg);
+
+    /**
+     * Start reading messages - should be called after connection creation
+     * First reads message size and then content
+     */
+    void startRead();
+
+    /**
+     * Get connection socket
+     * @return socket
+     */
+    asio::ip::tcp::socket &getSocket();
+
+    static pointer create(asio::io_context &io_context, std::string &connectionName,
+                          std::shared_ptr<MessageProcessor> messageProcessor);
+
+    /**
+     * shutdowns socket
+     */
+    void closeConnection();
+
+    /**
+     * Gets MessageProcessor - used for processing messages
+     * @return MessageProcessor
+     */
+    std::shared_ptr<MessageProcessor> getMessageProcessor();
 
 private:
-    TcpConnection(asio::io_context& io_context, std::string& connectionName, std::shared_ptr<MessageProcessor> messageProcessor) : socket_(io_context), connectionName_(connectionName),
-        messageProcessor_(std::move(messageProcessor)){
-        msgBuffer_ = std::make_shared<asio::streambuf>(128);
-       // messageProcessor_->setConnection(this);
-    } //TODO specify buff size
-    void handle_read_msg_size(const asio::error_code& error, size_t bytes_transferred);
-    void read_msg_content();
-    void handle_read_msg_content(const asio::error_code& error, size_t bytes_transferred);
-    void signal_err_exit();
+    TcpConnection(asio::io_context &io_context, std::string &connectionName,
+                  std::shared_ptr<MessageProcessor> messageProcessor) : socket_(io_context),
+                                                                        connectionName_(connectionName),
+                                                                        messageProcessor_(std::move(messageProcessor)) {
+        msgBuffer_ = std::make_shared<asio::streambuf>();
+    }
+
+    void handleReadMsgSize(const asio::error_code &error, size_t bytes_transferred);
+
+    void readMsgContent();
+
+    void handleReadMsgContent(const asio::error_code &error, size_t bytes_transferred);
+
+    void signalErrExit();
 
 
     // ------ Attributes
@@ -37,6 +68,5 @@ private:
     int alreadyRead_ = 0;
     std::string finalMessage_;
     std::string connectionName_;
-    std::shared_ptr<MessageProcessor>messageProcessor_;
-    // To cleanup after connection end:
+    std::shared_ptr<MessageProcessor> messageProcessor_;
 };

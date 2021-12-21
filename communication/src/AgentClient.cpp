@@ -18,15 +18,22 @@ void AgentClient::initClient() {
     try{
         auto connection = TcpConnection::create(*ioContext_, agentName_, msgProcessor_);
         asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 1234);
-        connection->get_socket().connect(endpoint);
+        connection->getSocket().connect(endpoint);
         messageExchanger_ = std::make_shared<MessageExchanger>(connection);
         clientThread = std::thread{[this]() { ioContext_->run(); }};
-        //auto configMessage = connection->getMessageProcessor_()->waitForControlMessage();//
-        auto configMessage = messageExchanger_->waitForControlMessage();
+        auto configMessage = messageExchanger_->waitForControlMessage(2000); //TODO if timeout 2 ms and run with valgrind, error occur
+        if(configMessage == nullptr){
+            std::cerr << agentName_ << " didnt receive configMessage!" << std::endl;
+            exit(EXIT_FAILURE);
+        }
         std::cout << agentName_ << " received config: " << configMessage->getValue() << std::endl;
         auto ackMessage = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, agentName_);
         messageExchanger_->sendControl(ackMessage);
-        auto canStartSending = messageExchanger_->waitForControlMessage();
+        auto canStartSending = messageExchanger_->waitForControlMessage(-1);
+        if(canStartSending == nullptr){
+            std::cerr << agentName_ << " didnt receive can start sending logs! " << std::endl;
+            exit(EXIT_FAILURE);
+        }
         if(canStartSending->getType() != ControlMessage::CONTROL_MSG_TYPE::ACK){
             std::cerr << "Not received ACK for start sending logs.";
             exit(EXIT_FAILURE);
@@ -46,7 +53,11 @@ void AgentClient::initClient() {
 
 void AgentClient::handleResponses() {
     while(true){
-        auto controlMsg = messageExchanger_->waitForControlMessage();
+        auto controlMsg = messageExchanger_->waitForControlMessage(-1);
+        if(controlMsg == nullptr){
+            std::cerr << "TODO del shouldnt be"<< std::endl;
+            continue;
+        }
         if(controlMsg->getType() == ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE){
             std::cout << "Agent responding to IS_ALIVE!" << std::endl;
             auto ackAliveMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::ACK, "");

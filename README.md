@@ -1,19 +1,51 @@
-In folder `thesis-text` will be LaTex and also generated .pdf text of thesis. In this README file will be my notes, TODO list and later documentation for final program.
+# Program documentation
+This program can be used to log GNU/Linux systems.
+Processes collecting logs are called agents.
+
+You can select, which agents will be collecting in file `agents-list.conf`.
+On each line must be path to folder (folder name cannot contain empty spaces), in which is agent executable with same name as the folder.
+You can use `#` as a comment.
+
+You can configure agents with their config files - settings like how often take log, which values are considered as error etc.
+
+After start, enabled agents are created and they collect logs. These logs are saved in `logs/` folder, which is created after program termination.
+
+## How to run
+`mkdir build && cd build && cmake .. && make && ./sys-logger`
 
 
-# TODO
+
+
+## Dependencies 
+
+1. boost asio (no need for whole boost, asio is developed standalone)
+2. DaanDeMeyer/reproc (reproc++)
+3. nlohman/json
+
+## TODO
 
 1. Write, why is our solution different
 2. Create architecture diagram
 3. Compile just enabled agents
 4. Create global config file
+5. Write to doc, how to create agents
 
 --- 
 
-# Pitfalls we will work on
+## Pitfalls we will work on
 1. Not the most effective - like sending logs in json etc.
+2. Not rotating log files
+3. Not the most clean exit with CTRL+C
+
+# END PROGRAM DOCUMENTATION (continuing just some notes)
+---
 
 ---
+
+---
+
+---
+
 # Implementation tasks
 
 1. Our app will have each monitoring agent as a process, so we need to find out, how to create/stop processes.
