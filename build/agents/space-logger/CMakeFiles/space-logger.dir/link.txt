@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/space-logger.dir/space-logger.cpp.o -o space-logger  ../../communication/libCommunicationLib.a ../../_deps/reproc++-build/reproc++/lib/libreproc++.a ../../_deps/reproc++-build/reproc/lib/libreproc.a -lrt -pthread 

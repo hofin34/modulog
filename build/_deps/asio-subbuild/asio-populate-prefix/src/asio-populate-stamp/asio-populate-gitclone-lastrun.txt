@@ -1,3 +1,0 @@
-repository='git@github.com:chriskohlhoff/asio.git'
-module=''
-tag='origin'

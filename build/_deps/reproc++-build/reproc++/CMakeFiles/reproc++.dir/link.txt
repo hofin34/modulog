@@ -1,2 +1,0 @@
-/usr/bin/ar qc lib/libreproc++.a CMakeFiles/reproc++.dir/src/reproc.cpp.o
-/usr/bin/ranlib lib/libreproc++.a

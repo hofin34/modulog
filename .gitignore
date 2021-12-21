@@ -9,5 +9,6 @@ thesis-text/*.lof
 thesis-text/*.ptc
 
 cmake-build-debug/
+build/
 .idea/
 logs/
