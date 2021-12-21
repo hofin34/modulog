@@ -1,5 +1,5 @@
 {
-  "id": "test-random-logger",
+  "id": "test-random-agent",
   "logIntervalMin": 50,
   "logIntervalMax": 100
 }

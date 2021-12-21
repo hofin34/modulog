@@ -1,5 +1,5 @@
 {
-  "id": "temperature-logger",
+  "id": "smart-agent",
   "temperatureNotSmallerThan": 30,
   "temperatureNotBiggerThan": 100,
   "temperatureSource": "/sys/class/thermal/thermal_zone1/temp",

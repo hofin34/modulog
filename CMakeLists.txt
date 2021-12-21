@@ -13,14 +13,15 @@ ADD_EXECUTABLE(sys-logger main.cpp ${source_files})
 TARGET_INCLUDE_DIRECTORIES(sys-logger PUBLIC "core/include/")
 TARGET_LINK_LIBRARIES(sys-logger CommunicationLib)
 
-ADD_SUBDIRECTORY(agents/ram-logger)
-ADD_SUBDIRECTORY(agents/uptime-logger)
-ADD_SUBDIRECTORY(agents/space-logger)
-ADD_SUBDIRECTORY(agents/test-random-logger)
-ADD_SUBDIRECTORY(agents/temperature-logger)
-ADD_SUBDIRECTORY(agents/net-connectivity-logger)
+ADD_SUBDIRECTORY(agents/ram-agent)
+ADD_SUBDIRECTORY(agents/uptime-agent)
+ADD_SUBDIRECTORY(agents/space-agent)
+ADD_SUBDIRECTORY(agents/test-random-agent)
+ADD_SUBDIRECTORY(agents/temperature-agent)
+ADD_SUBDIRECTORY(agents/net-connectivity-agent)
+ADD_SUBDIRECTORY(agents/smart-agent)
 
-ADD_DEPENDENCIES(sys-logger ram-logger uptime-logger space-logger test-random-logger temperature-logger net-connectivity-logger)
+ADD_DEPENDENCIES(sys-logger ram-logger uptime-logger space-logger test-random-logger temperature-logger net-connectivity-logger smart-logger)
 # ----------- nlohmann json library
 # TODO downloads too long?
 FetchContent_Declare(json

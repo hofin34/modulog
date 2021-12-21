@@ -1,5 +1,5 @@
 {
-  "id": "ram-logger",
+  "id": "ram-agent",
   "freeNotSmallerThan": 6374,
   "logInterval": 1
 }

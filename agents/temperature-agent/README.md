@@ -1,10 +1,10 @@
-# temperature-logger
+# temperature-agent
 
 This agent reads temperature file specified by "temperatureSource" in config.json5 and logs it.
 
 ## Config structure
 
-"id": string, something like "temperature-logger"
+"id": string
 
 "temperatureNotSmallerThan": int, logs error if temperature is smaller than this value
 

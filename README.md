@@ -30,6 +30,7 @@ After start, enabled agents are created and they collect logs. These logs are sa
 4. Create global config file
 5. Write to doc, how to create agents
 6. Log somewhere if agent crash
+7. When too much agents and running with Valgrind, connection freeze and crashes - TODO fix
 
 --- 
 

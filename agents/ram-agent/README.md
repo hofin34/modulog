@@ -1,10 +1,10 @@
-# ram-logger
+# ram-agent
 
 This agent logs free RAM in MiB.
 
 ## Config structure
 
-"id": agent identification, something like "ram-logger"
+"id": string, agent identification
 
 "logInterval": int, how often take log (in seconds)
 
