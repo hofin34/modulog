@@ -1,0 +1,3 @@
+repository='https://github.com/DaanDeMeyer/reproc.git'
+module=''
+tag='origin'

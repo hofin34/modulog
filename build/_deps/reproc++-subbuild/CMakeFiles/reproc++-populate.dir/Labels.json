@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/martin/School/bachelor-hofbauer/build/_deps/reproc++-subbuild/CMakeFiles/reproc++-populate"
+		},
+		{
+			"file" : "/home/martin/School/bachelor-hofbauer/build/_deps/reproc++-subbuild/CMakeFiles/reproc++-populate.rule"
+		},
+		{
+			"file" : "/home/martin/School/bachelor-hofbauer/build/_deps/reproc++-subbuild/CMakeFiles/reproc++-populate-complete.rule"
+		},
+		{
+			"file" : "/home/martin/School/bachelor-hofbauer/build/_deps/reproc++-subbuild/reproc++-populate-prefix/src/reproc++-populate-stamp/reproc++-populate-build.rule"
+		},
+		{
+			"file" : "/home/martin/School/bachelor-hofbauer/build/_deps/reproc++-subbuild/reproc++-populate-prefix/src/reproc++-populate-stamp/reproc++-populate-configure.rule"
+		},
+		{
+			"file" : "/home/martin/School/bachelor-hofbauer/build/_deps/reproc++-subbuild/reproc++-populate-prefix/src/reproc++-populate-stamp/reproc++-populate-download.rule"
+		},
+		{
+			"file" : "/home/martin/School/bachelor-hofbauer/build/_deps/reproc++-subbuild/reproc++-populate-prefix/src/reproc++-populate-stamp/reproc++-populate-install.rule"
+		},
+		{
+			"file" : "/home/martin/School/bachelor-hofbauer/build/_deps/reproc++-subbuild/reproc++-populate-prefix/src/reproc++-populate-stamp/reproc++-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/martin/School/bachelor-hofbauer/build/_deps/reproc++-subbuild/reproc++-populate-prefix/src/reproc++-populate-stamp/reproc++-populate-patch.rule"
+		},
+		{
+			"file" : "/home/martin/School/bachelor-hofbauer/build/_deps/reproc++-subbuild/reproc++-populate-prefix/src/reproc++-populate-stamp/reproc++-populate-test.rule"
+		},
+		{
+			"file" : "/home/martin/School/bachelor-hofbauer/build/_deps/reproc++-subbuild/reproc++-populate-prefix/src/reproc++-populate-stamp/reproc++-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"reproc++-populate"
+		],
+		"name" : "reproc++-populate"
+	}
+}

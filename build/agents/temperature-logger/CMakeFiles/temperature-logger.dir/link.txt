@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/temperature-logger.dir/temperature-logger.cpp.o -o temperature-logger  ../../communication/libCommunicationLib.a ../../_deps/reproc++-build/reproc++/lib/libreproc++.a ../../_deps/reproc++-build/reproc/lib/libreproc.a -lrt -pthread 
