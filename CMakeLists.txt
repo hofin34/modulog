@@ -21,7 +21,8 @@ ADD_SUBDIRECTORY(agents/temperature-agent)
 ADD_SUBDIRECTORY(agents/net-connectivity-agent)
 ADD_SUBDIRECTORY(agents/smart-agent)
 
-ADD_DEPENDENCIES(sys-logger ram-logger uptime-logger space-logger test-random-logger temperature-logger net-connectivity-logger smart-logger)
+ADD_DEPENDENCIES(sys-logger ram-agent uptime-agent space-agent test-random-agent temperature-agent net-connectivity-agent smart-agent)
+
 # ----------- nlohmann json library
 # TODO downloads too long?
 FetchContent_Declare(json
