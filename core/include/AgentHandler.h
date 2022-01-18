@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "Agent.h"
-#include "AgentInfo.h"
+#include "AgentProcess.h"
 #include <fstream>
 
 /**
@@ -18,14 +18,14 @@ public:
      * Run next agent process (it is getting agents from pathToEnabledAgentsList)
      * @return running process included in AgentInfo
      */
-    std::shared_ptr<AgentInfo> runNextAgent();
+    std::shared_ptr<AgentProcess> runNextAgent();
 
     /**
      * Add to vector next agent to manage
      * @param messageExchanger already connected with agent and is ready to communicate with him (send/receive messages)
      * @param agentInfo containing already running process
      */
-    void addNewAgent(const std::shared_ptr<MessageExchanger> &messageExchanger, const std::shared_ptr<AgentInfo> &agentInfo);
+    void addNewAgent(const std::shared_ptr<MessageExchanger> &messageExchanger, const std::shared_ptr<AgentProcess> &agentInfo);
 
     const std::vector<std::shared_ptr<Agent>>& getRunningAgents();
     /**

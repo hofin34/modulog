@@ -2,18 +2,18 @@
 #include "../include/TcpServer.h"
 
 
-void TcpServer::start_accept()
+void TcpServer::startAccept()
 {
     auto messageProcessor = std::make_shared<MessageProcessor>(totalReceivedMsgs_, messageConditionVariable_, messageMutex_);
     TcpConnection::pointer new_connection =
             TcpConnection::create(io_context_, serverName_, messageProcessor);
 
     acceptor_.async_accept(new_connection->getSocket(),
-                           std::bind(&TcpServer::handle_accept, this, new_connection,
+                           std::bind(&TcpServer::handleAccept, this, new_connection,
                                      std::placeholders::_1));
 }
 
-void TcpServer::handle_accept(TcpConnection::pointer new_connection,
+void TcpServer::handleAccept(TcpConnection::pointer new_connection,
                    const asio::error_code& error)
 {
     if (!error)
@@ -21,7 +21,7 @@ void TcpServer::handle_accept(TcpConnection::pointer new_connection,
         std::cout << "Starting new connection..." << std::endl;
         lastConnectionsVector.push_back(new_connection);
     }
-    start_accept();
+    startAccept();
 }
 
 TcpConnection::pointer TcpServer::popConnection() {

@@ -18,7 +18,7 @@ void Core::start() {
     try
     {
         // start server:
-        server_.start_accept();
+        server_.startAccept();
         std::thread serverThread{[this](){ ioContext_->run(); }};
         initAllAgents();
         notifyAllAgentsToSendLogs();
@@ -95,7 +95,7 @@ void Core::checkIfAgentsAlive() {
 }
 
 void Core::initAllAgents() {
-    std::shared_ptr<AgentInfo> agentInfo;
+    std::shared_ptr<AgentProcess> agentInfo;
     while((agentInfo = agentHandler_->runNextAgent()) != nullptr){
         std::cout << "waiting for ag. connection..." << std::endl;
         TcpConnection::pointer agentConnection;

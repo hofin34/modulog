@@ -21,7 +21,7 @@ public:
     /**
      * Start accepting incoming connections
      */
-    void start_accept();
+    void startAccept();
 
     /**
      * Pop connection to work with it later
@@ -35,7 +35,7 @@ private:
      * @param new_connection made connection
      * @param error error flag
      */
-    void handle_accept(TcpConnection::pointer new_connection, const asio::error_code &error);
+    void handleAccept(TcpConnection::pointer new_connection, const asio::error_code &error);
 
     // ---- attributes
     asio::io_context &io_context_;

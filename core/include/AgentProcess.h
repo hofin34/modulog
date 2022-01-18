@@ -8,7 +8,7 @@
 /**
  * This class represents running instance of agent
  */
-class AgentInfo {
+class AgentProcess {
 public:
     /**
      * @param agentId can be set later by setAgentId
@@ -16,9 +16,9 @@ public:
      * @param agentProcess process representing running agent
      * @param agentProcessOptions options with defined stop argument - used to send SIGTERM first and after time SIGKILL
      */
-    AgentInfo(const std::string &agentId, const std::filesystem::path &agentPath,
-              const std::shared_ptr<reproc::process> &agentProcess,
-              const std::shared_ptr<reproc::options> &agentProcessOptions);
+    AgentProcess(const std::string &agentId, const std::filesystem::path &agentPath,
+                 const std::shared_ptr<reproc::process> &agentProcess,
+                 const std::shared_ptr<reproc::options> &agentProcessOptions);
 
     /**
      * Setter

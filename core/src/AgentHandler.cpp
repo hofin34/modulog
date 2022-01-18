@@ -14,7 +14,7 @@ AgentHandler::AgentHandler(const std::filesystem::path& pathToEnabledAgentsList)
 };
 
 
-std::shared_ptr<AgentInfo> AgentHandler::runNextAgent() {
+std::shared_ptr<AgentProcess> AgentHandler::runNextAgent() {
     if(createdAgentsCount_ >= agentsPaths_.size()){
         return nullptr;
     }
@@ -46,12 +46,12 @@ std::shared_ptr<AgentInfo> AgentHandler::runNextAgent() {
     } else if (ec) {
         throw std::runtime_error("Agent creation err:" + ec.message());
     }
-    auto agentInfo = std::make_shared<AgentInfo>(agentId, agentPath, process, options);
+    auto agentInfo = std::make_shared<AgentProcess>(agentId, agentPath, process, options);
     return agentInfo;
 }
 
 
-void AgentHandler::addNewAgent(const std::shared_ptr<MessageExchanger> &messageExchanger, const std::shared_ptr<AgentInfo> &agentInfo){
+void AgentHandler::addNewAgent(const std::shared_ptr<MessageExchanger> &messageExchanger, const std::shared_ptr<AgentProcess> &agentInfo){
     auto agent = std::make_shared<Agent>(agentInfo, messageExchanger);
     runningAgents_.push_back(agent);
 }
