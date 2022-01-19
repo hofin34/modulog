@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Message.h"
+#include "Message.hpp"
 
 /**
  * Class is used to transport logs between Core and Agent - it has got type (LOG, ERROR, ...), key and value

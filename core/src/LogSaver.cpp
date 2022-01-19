@@ -2,7 +2,7 @@
 // Created by martin on 24.11.21.
 //
 
-#include "../include/LogSaver.h"
+#include "../include/LogSaver.hpp"
 
 void LogSaver::saveLog(const std::string& agentId, const std::shared_ptr<LogMessage>& logMessage) {
     std::filesystem::path whereSave = logsPath_ / agentId;

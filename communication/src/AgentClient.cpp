@@ -1,9 +1,9 @@
 
 #include <iostream>
 #include <filesystem>
-#include "../include/AgentClient.h"
-#include "../include/TcpConnection.h"
-#include "../include/MessageDeserializer.h"
+#include "AgentClient.hpp"
+#include "TcpConnection.hpp"
+#include "MessageDeserializer.hpp"
 
 
 

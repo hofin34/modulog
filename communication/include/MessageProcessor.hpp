@@ -2,10 +2,10 @@
 
 #include <vector>
 #include <condition_variable>
-#include "LogMessage.h"
-#include "ControlMessage.h"
-#include "MessageDeserializer.h"
-#include "MessageSerializer.h"
+#include "LogMessage.hpp"
+#include "ControlMessage.hpp"
+#include "MessageDeserializer.hpp"
+#include "MessageSerializer.hpp"
 
 /**
  * Used to handle message receiving - notifying condition variable passed by constructor

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "LogMessage.h"
-#include "ControlMessage.h"
-#include "Message.h"
+#include "LogMessage.hpp"
+#include "ControlMessage.hpp"
+#include "Message.hpp"
 
 /**
  * Takes care of serializing messages - takes concrete message (Log or Control) and gives it in envelope marking its type

@@ -1,5 +1,5 @@
 #include <string>
-#include "MessageProcessor.h"
+#include "MessageProcessor.hpp"
 
 MessageProcessor::MessageProcessor(int &messagesToProcess, std::condition_variable &conditionVariable,
                                    std::mutex &mutex) : messagesToProcess_(messagesToProcess),

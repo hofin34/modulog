@@ -1,9 +1,9 @@
 #pragma once
 
 #include <asio.hpp>
-#include "ControlMessage.h"
-#include "MessageSerializer.h"
-#include "MessageProcessor.h"
+#include "ControlMessage.hpp"
+#include "MessageSerializer.hpp"
+#include "MessageProcessor.hpp"
 #include <iostream>
 #include <utility>
 

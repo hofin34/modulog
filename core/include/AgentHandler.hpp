@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "Agent.h"
-#include "AgentProcess.h"
+#include "Agent.hpp"
+#include "AgentProcess.hpp"
 #include <fstream>
 
 /**

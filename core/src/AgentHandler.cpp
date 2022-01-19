@@ -6,7 +6,7 @@
 #include <csignal>
 #include <cstring>
 #include <unistd.h>
-#include "../include/AgentHandler.h"
+#include "../include/AgentHandler.hpp"
 
 AgentHandler::AgentHandler(const std::filesystem::path& pathToEnabledAgentsList): runningAgents_(){
     //TODO termination and cleanup if CTRL+C is pressed

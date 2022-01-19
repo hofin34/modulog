@@ -1,7 +1,7 @@
 #pragma once
 #include <asio.hpp>
-#include "AgentHandler.h"
-#include "TcpServer.h"
+#include "AgentHandler.hpp"
+#include "TcpServer.hpp"
 
 /**
  * Core class - takes care of creating agents, connecting to them, checking if they are alive and collecting their logs

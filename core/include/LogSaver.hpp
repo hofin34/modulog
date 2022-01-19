@@ -2,7 +2,7 @@
 
 #include <filesystem>
 #include <fstream>
-#include "../../communication/include/LogMessage.h"
+#include "../../communication/include/LogMessage.hpp"
 
 class LogSaver {
 public:

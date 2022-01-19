@@ -1,4 +1,4 @@
-#include "Helpers.h"
+#include "Helpers.hpp"
 nlohmann::json Helpers::parseConfig(const std::filesystem::path &execPath) {
     std::filesystem::path agentPath = execPath;
     agentPath = agentPath.remove_filename();

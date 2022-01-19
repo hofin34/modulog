@@ -1,4 +1,4 @@
-#include "../include/TcpConnection.h"
+#include "../include/TcpConnection.hpp"
 
 
 TcpConnection::pointer TcpConnection::create(asio::io_context& io_context, std::string& connectionName, std::shared_ptr<MessageProcessor> messageProcessor)

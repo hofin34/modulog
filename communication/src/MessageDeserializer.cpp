@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "../include/MessageDeserializer.h"
+#include "../include/MessageDeserializer.hpp"
 
 MessageDeserializer::MessageDeserializer(const std::string& toDeserialize) {
     nlohmann::json msgObj = nlohmann::json::parse(toDeserialize);

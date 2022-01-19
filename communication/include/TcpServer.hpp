@@ -1,7 +1,7 @@
 #pragma once
 
 #include <asio.hpp>
-#include "TcpConnection.h"
+#include "TcpConnection.hpp"
 
 class TcpServer {
 public:

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "Message.h"
+#include "Message.hpp"
 /**
  * Class representing control message - is used to communicate between Core and Agents
  * Contains information like key-value

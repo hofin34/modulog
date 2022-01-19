@@ -2,7 +2,7 @@
 // Created by martin on 10.11.21.
 //
 
-#include "../include/ControlMessage.h"
+#include "../include/ControlMessage.hpp"
 ControlMessage::ControlMessage(std::string jsonInit) {
     setTimestampNow();
     nlohmann::json jsonObj = nlohmann::json::parse(jsonInit);

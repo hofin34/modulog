@@ -1,7 +1,7 @@
 #include <iostream>
 #include <asio.hpp>
-#include "../../communication/include/AgentClient.h"
-#include "Helpers.h"
+#include "../../communication/include/AgentClient.hpp"
+#include "Helpers.hpp"
 #include <thread>
 #include <filesystem>
 

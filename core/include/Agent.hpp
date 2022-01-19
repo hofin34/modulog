@@ -5,10 +5,10 @@
 #include <filesystem>
 #include <reproc++/reproc.hpp>
 #include <utility>
-#include "../../communication/include/TcpConnection.h"
-#include "MessageProcessor.h"
-#include "MessageExchanger.h"
-#include "AgentProcess.h"
+#include "../../communication/include/TcpConnection.hpp"
+#include "MessageProcessor.hpp"
+#include "MessageExchanger.hpp"
+#include "AgentProcess.hpp"
 
 /**
  * Class representing agent - contains running instance of agent in AgentInfo and contains also

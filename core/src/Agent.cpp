@@ -2,8 +2,8 @@
 // Created by martin on 15.11.21.
 //
 
-#include "../include/Agent.h"
-#include "../../communication/include/MessageDeserializer.h"
+#include "../include/Agent.hpp"
+#include "../../communication/include/MessageDeserializer.hpp"
 
 std::string Agent::getId() {
     return agentInfo_->getAgentId();

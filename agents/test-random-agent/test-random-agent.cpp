@@ -1,5 +1,5 @@
-#include "../../communication/include/AgentClient.h"
-#include "Helpers.h"
+#include "../../communication/include/AgentClient.hpp"
+#include "Helpers.hpp"
 #include <asio.hpp>
 #include <random>
 

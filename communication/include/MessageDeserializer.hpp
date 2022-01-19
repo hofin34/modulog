@@ -2,8 +2,8 @@
 
 #include <string>
 #include <memory>
-#include "ControlMessage.h"
-#include "LogMessage.h"
+#include "ControlMessage.hpp"
+#include "LogMessage.hpp"
 #include <nlohmann/json.hpp>
 
 /**

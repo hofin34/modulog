@@ -1,5 +1,5 @@
 #pragma once
-#include "TcpConnection.h"
+#include "TcpConnection.hpp"
 /**
  * Class used to send and receive logs between Agent and Core
  */

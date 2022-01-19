@@ -1,10 +1,10 @@
 #pragma once
 #include <iostream>
-#include <asio.hpp>
-#include "TcpConnection.h"
-#include "../include/TcpConnection.h"
-#include "../include/MessageDeserializer.h"
-#include "MessageExchanger.h"
+#include "asio.hpp"
+#include "TcpConnection.hpp"
+#include "TcpConnection.hpp"
+#include "MessageDeserializer.hpp"
+#include "MessageExchanger.hpp"
 #include <nlohmann/json.hpp>
 
 class AgentClient {

@@ -1,10 +1,10 @@
 #include <iostream>
 #include <asio.hpp>
-#include "../../communication/include/MessageSerializer.h"
-#include "../../communication/include/AgentClient.h"
+#include "../../communication/include/MessageSerializer.hpp"
+#include "../../communication/include/AgentClient.hpp"
 #include <thread>
 #include "sys/sysinfo.h"
-#include "Helpers.h"
+#include "Helpers.hpp"
 
 long long getTemperature(){
     struct sysinfo memInfo;
