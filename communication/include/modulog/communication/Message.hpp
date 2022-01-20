@@ -7,19 +7,19 @@
 #include <iostream>
 
 namespace modulog::communication {
+    /**
+     * Two types of messages - one for sending logs and second for controling actions like checking if is agent
+     * alive and then responds to it etc.
+     */
+    enum class MSG_TYPE {
+        LOG_MSG, CONTROL_MSG
+    };
 
 /**
  * Parent class of LogMessage and ControlMessage - used for communication between Agent and Core
  */
     class Message {
     public:
-        /**
-         * Two types of messages - one for sending logs and second for controling actions like checking if is agent
-         * alive and then responds to it etc.
-         */
-        enum class MSG_TYPE {
-            LOG_MSG, CONTROL_MSG
-        };
 
         /**
          * Serialize message - log message and control message is implemented differently (they have got different attributes)
@@ -37,7 +37,6 @@ namespace modulog::communication {
          * @return timestamp string
          */
         std::string getTimestamp();
-
     private:
         std::string timestamp_ = "notDefinedTimestamp";
     };

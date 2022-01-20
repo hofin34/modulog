@@ -15,9 +15,9 @@ namespace modulog::communication{
         }
         std::cout << "Processing msg: " << msg << std::endl;
         MessageDeserializer messageDeserializer(msg);
-        if (messageDeserializer.getMsgType() == Message::MSG_TYPE::CONTROL_MSG) {
+        if (messageDeserializer.getMsgType() == MSG_TYPE::CONTROL_MSG) {
             controlMessageVector.push_back(messageDeserializer.getControlMessage());
-        } else if (messageDeserializer.getMsgType() == Message::MSG_TYPE::LOG_MSG) {
+        } else if (messageDeserializer.getMsgType() == MSG_TYPE::LOG_MSG) {
             logMessagesVector.push_back(messageDeserializer.getLogMessage());
         }
         conditionVariable_.notify_one();

@@ -9,7 +9,6 @@
 #include <iostream>
 
 
-
 namespace modulog::communication{
 /**
  * If you have got message represented by string, you can use this class to deserialize it.
@@ -28,7 +27,7 @@ namespace modulog::communication{
          * Checks if it is Control or Log message
          * @return message type
          */
-        Message::MSG_TYPE getMsgType();
+        MSG_TYPE getMsgType();
 
         /**
          * Get control message - it can be null! (if was deserialized log message)
@@ -43,7 +42,7 @@ namespace modulog::communication{
         std::shared_ptr<LogMessage> getLogMessage();
 
     private:
-        Message::MSG_TYPE msgType_;
+        MSG_TYPE msgType_;
         std::shared_ptr<ControlMessage> controlMessage_;
         std::shared_ptr<LogMessage> logMessage_;
     };

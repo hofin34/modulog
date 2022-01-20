@@ -30,6 +30,6 @@ namespace modulog::communication{
 
     private:
         std::shared_ptr<Message> message_;
-        Message::MSG_TYPE messageType_;
+        MSG_TYPE messageType_;
     };
 }

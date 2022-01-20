@@ -25,7 +25,6 @@ After start, enabled agents are created and they collect logs. These logs are sa
 ## Implementation TODO
     Diagram architektury a funkcnosti
     Dodelat poradne ukoncovani programu
-    bind --> function,
     MSG_TYPE do vastniho enum class
 6. Log somewhere if agent crash
 7. When too much agents and running with Valgrind, connection freeze and crashes - TODO fix

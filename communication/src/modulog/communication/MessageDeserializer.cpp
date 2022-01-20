@@ -3,11 +3,11 @@
 namespace modulog::communication{
     MessageDeserializer::MessageDeserializer(const std::string& toDeserialize) {
         nlohmann::json msgObj = nlohmann::json::parse(toDeserialize);
-        if(msgObj["msgType"] == Message::MSG_TYPE::LOG_MSG){
-            msgType_ = Message::MSG_TYPE::LOG_MSG;
+        if(msgObj["msgType"] == MSG_TYPE::LOG_MSG){
+            msgType_ = MSG_TYPE::LOG_MSG;
             logMessage_ = std::make_shared<LogMessage>(msgObj["message"]);
-        }else if(msgObj["msgType"] == Message::MSG_TYPE::CONTROL_MSG){
-            msgType_ = Message::MSG_TYPE::CONTROL_MSG;
+        }else if(msgObj["msgType"] == MSG_TYPE::CONTROL_MSG){
+            msgType_ = MSG_TYPE::CONTROL_MSG;
             controlMessage_ = std::make_shared<ControlMessage>(msgObj["message"]);
         }
     }
@@ -20,7 +20,7 @@ namespace modulog::communication{
         return controlMessage_;
     }
 
-    Message::MSG_TYPE MessageDeserializer::getMsgType() {
+    MSG_TYPE MessageDeserializer::getMsgType() {
         return msgType_;
     }
 }
