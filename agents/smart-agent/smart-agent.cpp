@@ -1,16 +1,16 @@
-#include <iostream>
-#include <asio.hpp>
-#include "modulog/communication/MessageSerializer.hpp"
-#include "../../agent-client/include/modulog/agent-client/AgentClient.hpp"
-#include "modulog/agent_client/Helpers.hpp"
+#include <modulog/communication/MessageSerializer.hpp>
+#include <modulog/agent_client/AgentClient.hpp>
+#include <modulog/agent_client/Helpers.hpp>
+
 #include <thread>
+#include <iostream>
 
 // temp:sudo smartctl -A /dev/nvme0n1 | grep -i temperature:
 
 
 int main(int argc, char** argv){
     auto programStart = std::chrono::system_clock::now();
-    nlohmann::json configJson = Helpers::parseConfig(argv[0]);
+    nlohmann::json configJson = modulog::agent_client::Helpers::parseConfig(argv [0]);
 
     if(!configJson.contains("id")){
         std::cerr << "Include config with id defined." << std::endl;
@@ -22,11 +22,11 @@ int main(int argc, char** argv){
     }
 
     auto ioContext = std::make_shared<asio::io_context>();
-    AgentClient agentClient(ioContext, false, configJson["id"] );
+    modulog::agent_client::AgentClient agentClient(ioContext, false, configJson["id"] );
     agentClient.initClient();
     while(true){
 
-        auto logMsg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "temperature", "agent not implemented");
+        auto logMsg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "temperature", "agent not implemented");
         agentClient.sendLog(logMsg);
 
         std::this_thread::sleep_for(std::chrono::seconds(logInterval));

@@ -1,7 +1,7 @@
 #pragma once
+#include <modulog/communication/Message.hpp>
 
 #include <string>
-#include "Message.hpp"
 
 namespace modulog::communication {
     /**

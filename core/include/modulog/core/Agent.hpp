@@ -1,14 +1,16 @@
 #pragma once
 
+#include <modulog/communication/MessageDeserializer.hpp>
+#include <modulog/communication/TcpConnection.hpp>
+#include <modulog/communication/MessageProcessor.hpp>
+#include <modulog/communication/MessageExchanger.hpp>
+#include <modulog/core/AgentProcess.hpp>
+
+#include <reproc++/reproc.hpp>
 
 #include <string>
 #include <filesystem>
-#include <reproc++/reproc.hpp>
 #include <utility>
-#include "modulog/communication/TcpConnection.hpp"
-#include "modulog/communication/MessageProcessor.hpp"
-#include "modulog/communication/MessageExchanger.hpp"
-#include "AgentProcess.hpp"
 
 namespace modulog::core{
 /**

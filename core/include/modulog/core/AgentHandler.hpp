@@ -1,9 +1,14 @@
 #pragma once
 
-#include <vector>
-#include "Agent.hpp"
-#include "AgentProcess.hpp"
+#include <modulog/core/Agent.hpp>
+#include <modulog/core/AgentProcess.hpp>
+
 #include <fstream>
+#include <vector>
+#include <iostream>
+#include <csignal>
+#include <cstring>
+#include <unistd.h>
 
 namespace modulog::core{
 /**

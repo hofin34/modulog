@@ -1,11 +1,13 @@
 #pragma once
-#include <iostream>
 #include <modulog/communication/TcpConnection.hpp>
 #include <modulog/communication/MessageDeserializer.hpp>
 #include <modulog/communication/MessageExchanger.hpp>
 #include <modulog/communication/LogMessage.hpp>
 #include <modulog/communication/ControlMessage.hpp>
+
 #include <nlohmann/json.hpp>
+
+#include <iostream>
 #include <filesystem>
 
 namespace modulog::agent_client{

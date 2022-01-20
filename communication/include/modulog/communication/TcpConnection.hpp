@@ -1,9 +1,11 @@
 #pragma once
 
+#include <modulog/communication/ControlMessage.hpp>
+#include <modulog/communication/MessageSerializer.hpp>
+#include <modulog/communication/MessageProcessor.hpp>
+
 #include <asio.hpp>
-#include "ControlMessage.hpp"
-#include "MessageSerializer.hpp"
-#include "MessageProcessor.hpp"
+
 #include <iostream>
 #include <utility>
 

@@ -1,7 +1,10 @@
 #pragma once
 
+#include <modulog/communication/TcpConnection.hpp>
+
 #include <asio.hpp>
-#include "TcpConnection.hpp"
+
+#include <iostream>
 
 namespace modulog::communication{
     class TcpServer {

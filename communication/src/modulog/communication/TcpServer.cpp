@@ -1,5 +1,4 @@
-#include <iostream>
-#include "modulog/communication/TcpServer.hpp"
+#include <modulog/communication/TcpServer.hpp>
 
 namespace modulog::communication{
     void TcpServer::startAccept()

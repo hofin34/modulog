@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Message.hpp"
+#include <modulog/communication/Message.hpp>
 
 namespace modulog::communication{
 /**

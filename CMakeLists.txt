@@ -9,19 +9,19 @@ if (NOT TARGET CommunicationLib)
 endif()
 
 FILE(GLOB_RECURSE source_files "core/src/*")
-ADD_EXECUTABLE(sys-logger main.cpp ${source_files})
-TARGET_INCLUDE_DIRECTORIES(sys-logger PUBLIC "core/include/")
-TARGET_LINK_LIBRARIES(sys-logger CommunicationLib)
+ADD_EXECUTABLE(modulog main.cpp ${source_files})
+TARGET_INCLUDE_DIRECTORIES(modulog PUBLIC "core/include/")
+TARGET_LINK_LIBRARIES(modulog CommunicationLib)
 
 ADD_SUBDIRECTORY(agents/net-connectivity-agent)
-#ADD_SUBDIRECTORY(agents/ram-agent)
-#ADD_SUBDIRECTORY(agents/uptime-agent)
-#ADD_SUBDIRECTORY(agents/space-agent)
-#ADD_SUBDIRECTORY(agents/test-random-agent)
-#ADD_SUBDIRECTORY(agents/temperature-agent)
-#ADD_SUBDIRECTORY(agents/smart-agent)
+ADD_SUBDIRECTORY(agents/ram-agent)
+ADD_SUBDIRECTORY(agents/uptime-agent)
+ADD_SUBDIRECTORY(agents/space-agent)
+ADD_SUBDIRECTORY(agents/test-random-agent)
+ADD_SUBDIRECTORY(agents/temperature-agent)
+ADD_SUBDIRECTORY(agents/smart-agent)
 
-ADD_DEPENDENCIES(sys-logger net-connectivity-agent) #ram-agent uptime-agent space-agent test-random-agent temperature-agent smart-agent)
+ADD_DEPENDENCIES(modulog net-connectivity-agent ram-agent uptime-agent space-agent test-random-agent temperature-agent smart-agent)
 
 # ----------- nlohmann json library
 # TODO downloads too long?
@@ -38,6 +38,6 @@ endif()
 
 
 # ------------ linking
-TARGET_LINK_LIBRARIES(sys-logger reproc++ asio nlohmann_json::nlohmann_json)
+TARGET_LINK_LIBRARIES(modulog reproc++ asio nlohmann_json::nlohmann_json)
 
 

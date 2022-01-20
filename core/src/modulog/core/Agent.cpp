@@ -1,5 +1,4 @@
-#include "../../../include/modulog/core/Agent.hpp"
-#include "modulog/communication/MessageDeserializer.hpp"
+#include <modulog/core/Agent.hpp>
 
 namespace modulog::core{
     std::string Agent::getId() {

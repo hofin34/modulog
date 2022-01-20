@@ -1,4 +1,4 @@
-#include "modulog/communication/Message.hpp"
+#include <modulog/communication/Message.hpp>
 
 namespace modulog::communication{
     void Message::setTimestampNow() {

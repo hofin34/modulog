@@ -1,8 +1,8 @@
 #pragma once
 
-#include "LogMessage.hpp"
-#include "ControlMessage.hpp"
-#include "Message.hpp"
+#include <modulog/communication/LogMessage.hpp>
+#include <modulog/communication/ControlMessage.hpp>
+#include <modulog/communication/Message.hpp>
 
 namespace modulog::communication{
     /**

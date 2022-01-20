@@ -1,11 +1,13 @@
 #pragma once
 
+#include <modulog/communication/LogMessage.hpp>
+#include <modulog/communication/ControlMessage.hpp>
+#include <modulog/communication/MessageDeserializer.hpp>
+#include <modulog/communication/MessageSerializer.hpp>
+
 #include <vector>
 #include <condition_variable>
-#include "LogMessage.hpp"
-#include "ControlMessage.hpp"
-#include "MessageDeserializer.hpp"
-#include "MessageSerializer.hpp"
+#include <string>
 
 namespace modulog::communication {
 /**

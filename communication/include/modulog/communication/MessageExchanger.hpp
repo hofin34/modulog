@@ -1,5 +1,6 @@
 #pragma once
-#include "TcpConnection.hpp"
+
+#include <modulog/communication/TcpConnection.hpp>
 
 namespace modulog::communication{
 /**

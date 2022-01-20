@@ -1,10 +1,10 @@
-#include <iostream>
-#include <asio.hpp>
 #include <modulog/communication/MessageSerializer.hpp>
 #include <modulog/agent_client/AgentClient.hpp>
-#include <thread>
-#include <sys/types.h>
 #include <modulog/agent_client/Helpers.hpp>
+
+#include <thread>
+#include <iostream>
+#include <sys/types.h>
 
 bool hostnameToIp(std::string &ip, const std::string &hostname) {
 

@@ -1,7 +1,9 @@
 #pragma once
-#include <asio.hpp>
-#include "AgentHandler.hpp"
-#include "modulog/communication/TcpServer.hpp"
+
+#include <modulog/core/AgentHandler.hpp>
+#include <modulog/communication/TcpServer.hpp>
+#include <modulog/communication/MessageDeserializer.hpp>
+#include <modulog/core/LogSaver.hpp>
 
 namespace modulog::core{
 /**

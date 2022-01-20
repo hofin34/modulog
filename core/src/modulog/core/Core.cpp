@@ -1,7 +1,4 @@
-#include "../../../include/modulog/core/Core.hpp"
-#include "modulog/communication/TcpServer.hpp"
-#include "modulog/communication/MessageDeserializer.hpp"
-#include "../../../include/modulog/core/LogSaver.hpp"
+#include <modulog/core/Core.hpp>
 
 namespace modulog::core{
     Core::Core(const std::filesystem::path& pathToEnabledAgentsList, std::shared_ptr<asio::io_context> ioContext) :

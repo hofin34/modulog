@@ -1,4 +1,4 @@
-#include "modulog/communication/LogMessage.hpp"
+#include <modulog/communication/LogMessage.hpp>
 
 #include <utility>
 

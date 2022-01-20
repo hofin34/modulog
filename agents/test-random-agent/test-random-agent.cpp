@@ -1,11 +1,11 @@
-#include "../../agent-client/include/modulog/agent-client/AgentClient.hpp"
-#include "modulog/agent_client/Helpers.hpp"
-#include <asio.hpp>
+#include <modulog/agent_client/Helpers.hpp>
+#include <modulog/agent_client/AgentClient.hpp>
+
 #include <random>
 
 
 int main(int argc, char** argv){
-    nlohmann::json configJson = Helpers::parseConfig(argv[0]);
+    nlohmann::json configJson = modulog::agent_client::Helpers::parseConfig(argv[0]);
     if(!configJson.contains("id")){
         std::cerr << "Include config with id defined." << std::endl;
         exit(EXIT_FAILURE);
@@ -26,7 +26,7 @@ int main(int argc, char** argv){
     }
 
     auto ioContext = std::make_shared<asio::io_context>();
-    AgentClient agentClient(ioContext, false, configJson["id"]);
+    modulog::agent_client::AgentClient agentClient(ioContext, false, configJson["id"]);
     agentClient.initClient();
 
     std::random_device rd;
@@ -35,7 +35,7 @@ int main(int argc, char** argv){
     while(true){
         int newRandom = distr(eng);
         std::cout << newRandom << std::endl;
-        auto logMsg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "randomTime", std::to_string(newRandom));
+        auto logMsg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "randomTime", std::to_string(newRandom));
         agentClient.sendLog(logMsg);
         std::this_thread::sleep_for(std::chrono::milliseconds (newRandom));
     }

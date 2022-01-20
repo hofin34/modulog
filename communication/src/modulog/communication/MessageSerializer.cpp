@@ -1,4 +1,4 @@
-#include "modulog/communication/MessageSerializer.hpp"
+#include <modulog/communication/MessageSerializer.hpp>
 
 namespace modulog::communication{
     MessageSerializer::MessageSerializer(std::shared_ptr<LogMessage> logMessage) {

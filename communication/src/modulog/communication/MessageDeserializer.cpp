@@ -1,5 +1,4 @@
-#include <iostream>
-#include "modulog/communication/MessageDeserializer.hpp"
+#include <modulog/communication/MessageDeserializer.hpp>
 
 namespace modulog::communication{
     MessageDeserializer::MessageDeserializer(const std::string& toDeserialize) {

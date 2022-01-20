@@ -11,7 +11,7 @@ You can configure agents with their config files - settings like how often take 
 After start, enabled agents are created and they collect logs. These logs are saved in `logs/` folder, which is created after program termination.
 
 ## How to run
-`mkdir build && cd build && cmake .. && make && ./sys-logger`
+`mkdir build && cd build && cmake .. && make && ./modulog`
 
 
 
@@ -22,15 +22,28 @@ After start, enabled agents are created and they collect logs. These logs are sa
 2. DaanDeMeyer/reproc (reproc++)
 3. nlohman/json
 
+## Implementation TODO
+    Diagram architektury a funkcnosti
+    Dodelat poradne ukoncovani programu
+    Pouzivat pro include knihoven <> misto uvozovek,
+    bind --> function,
+    MSG_TYPE do vastniho enum class
+6. Log somewhere if agent crash
+7. When too much agents and running with Valgrind, connection freeze and crashes - TODO fix
+8. Create architecture diagram
+9. Compile just enabled agents
+10. Create global config file
+
 ## TODO
 
 1. Write, why is our solution different
-2. Create architecture diagram
-3. Compile just enabled agents
-4. Create global config file
-5. Write to doc, how to create agents
-6. Log somewhere if agent crash
-7. When too much agents and running with Valgrind, connection freeze and crashes - TODO fix
+2. Write to doc, how to create agents
+
+---
+
+
+
+
 
 --- 
 

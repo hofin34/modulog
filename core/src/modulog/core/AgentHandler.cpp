@@ -1,8 +1,4 @@
-#include <iostream>
-#include <csignal>
-#include <cstring>
-#include <unistd.h>
-#include "../../../include/modulog/core/AgentHandler.hpp"
+#include <modulog/core/AgentHandler.hpp>
 
 namespace modulog::core{
     AgentHandler::AgentHandler(const std::filesystem::path& pathToEnabledAgentsList): runningAgents_(){

@@ -1,7 +1,5 @@
 #include <modulog/core/AgentProcess.hpp>
 
-#include <utility>
-
 namespace modulog::core{
 //TODO if in agents list not existing agent - tell and end with cleaning
     AgentProcess::AgentProcess(const std::string &agentId, const std::filesystem::path &agentPath, const std::shared_ptr<reproc::process>& agentProcess,

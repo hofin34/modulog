@@ -1,4 +1,3 @@
-#include <filesystem>
 #include <modulog/agent_client/Helpers.hpp>
 
 namespace modulog::agent_client{

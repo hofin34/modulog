@@ -1,5 +1,3 @@
-
-
 #include <modulog/agent_client/AgentClient.hpp>
 
 

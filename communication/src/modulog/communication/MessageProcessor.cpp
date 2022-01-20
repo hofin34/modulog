@@ -1,5 +1,4 @@
-#include <string>
-#include "modulog/communication/MessageProcessor.hpp"
+#include <modulog/communication/MessageProcessor.hpp>
 
 namespace modulog::communication{
     MessageProcessor::MessageProcessor(int &messagesToProcess, std::condition_variable &conditionVariable,
