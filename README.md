@@ -25,7 +25,6 @@ After start, enabled agents are created and they collect logs. These logs are sa
 ## Implementation TODO
     Diagram architektury a funkcnosti
     Dodelat poradne ukoncovani programu
-    Pouzivat pro include knihoven <> misto uvozovek,
     bind --> function,
     MSG_TYPE do vastniho enum class
 6. Log somewhere if agent crash

@@ -61,6 +61,7 @@ namespace modulog::core{
     void Core::startSendAlive() {
         sendAliveTimer_.expires_from_now(std::chrono::seconds(10));
         sendAliveTimer_.async_wait(std::bind(&Core::sendAlive, this));
+        //sendAliveTimer_.async_wait([&](){sendAlive();}); //TODO replace with lambda
     }
 
 

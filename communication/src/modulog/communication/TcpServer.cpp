@@ -8,8 +8,7 @@ namespace modulog::communication{
                 TcpConnection::create(io_context_, serverName_, messageProcessor);
 
         acceptor_.async_accept(new_connection->getSocket(),
-                               std::bind(&TcpServer::handleAccept, this, new_connection,
-                                         std::placeholders::_1));
+                               [this, new_connection](const asio::error_code& e){TcpServer::handleAccept(new_connection, e);});
     }
 
     void TcpServer::handleAccept(TcpConnection::pointer new_connection,
