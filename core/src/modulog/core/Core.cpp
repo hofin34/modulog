@@ -59,9 +59,8 @@ namespace modulog::core{
 
 
     void Core::startSendAlive() {
-        sendAliveTimer_.expires_from_now(std::chrono::seconds(10));
-        sendAliveTimer_.async_wait(std::bind(&Core::sendAlive, this));
-        //sendAliveTimer_.async_wait([&](){sendAlive();}); //TODO replace with lambda
+        sendAliveTimer_.expires_from_now(std::chrono::seconds(10)); //TODO MOVE to config file...
+        sendAliveTimer_.async_wait([this](const asio::error_code&){sendAlive();});
     }
 
 
@@ -73,7 +72,7 @@ namespace modulog::core{
             agent->getMessageExchanger()->sendControl(isAliveMsg);
         }
         sendAliveTimer_.expires_from_now(std::chrono::seconds(2));
-        sendAliveTimer_.async_wait(std::bind(&Core::checkIfAgentsAlive, this));
+        sendAliveTimer_.async_wait([this](const asio::error_code&){checkIfAgentsAlive();});
     }
 
     void Core::checkIfAgentsAlive() {
