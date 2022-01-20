@@ -1,8 +1,8 @@
 #include <iostream>
 #include <asio.hpp>
-#include "../../communication/include/MessageSerializer.hpp"
-#include "../../communication/include/AgentClient.hpp"
-#include "Helpers.hpp"
+#include "modulog/communication/MessageSerializer.hpp"
+#include "../../agent-client/include/modulog/agent-client/AgentClient.hpp"
+#include "modulog/agent_client/Helpers.hpp"
 #include <thread>
 #include <fstream>
 

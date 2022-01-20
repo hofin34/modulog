@@ -1,12 +1,13 @@
 #include <iostream>
 #include <asio.hpp>
-#include "../../communication/include/MessageSerializer.hpp"
-#include "../../communication/include/AgentClient.hpp"
+#include <modulog/communication/MessageSerializer.hpp>
+#include <modulog/agent_client/AgentClient.hpp>
 #include <thread>
-#include "sys/types.h"
-#include "Helpers.hpp"
+#include <sys/types.h>
+#include <modulog/agent_client/Helpers.hpp>
 
 bool hostnameToIp(std::string &ip, const std::string &hostname) {
+
     struct hostent *he;
     struct in_addr **addrList;
     if ((he = gethostbyname(hostname.c_str())) == nullptr) {
@@ -89,20 +90,19 @@ bool isInternet() {
 }
 
 
-void logNetState(bool stateValue, AgentClient &agentClient){
-    std::shared_ptr<LogMessage> msg;
+void logNetState(bool stateValue, modulog::agent_client::AgentClient &agentClient){
+    std::shared_ptr<modulog::communication::LogMessage> msg;
     if(stateValue == true){
-        msg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::LOG, "isInternetConnectivity", std::to_string(stateValue));
+        msg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "isInternetConnectivity", std::to_string(stateValue));
     }else{
-        msg = std::make_shared<LogMessage>(LogMessage::LOG_MSG_TYPE::ERROR, "isInternetConnectivity", std::to_string(stateValue));
+        msg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "isInternetConnectivity", std::to_string(stateValue));
     }
     agentClient.sendLog(msg);
 }
 
 int main(int argc, char** argv){
     auto programStart = std::chrono::system_clock::now();
-    nlohmann::json configJson = Helpers::parseConfig(argv[0]);// nlohmann::json::parse(ifs);
-
+    nlohmann::json configJson = modulog::agent_client::Helpers::parseConfig(argv[0]);// nlohmann::json::parse(ifs);
     if(!configJson.contains("id")){
         std::cerr << "Include config with id defined." << std::endl;
         throw std::runtime_error("...");
@@ -113,7 +113,7 @@ int main(int argc, char** argv){
     }
 
     auto ioContext = std::make_shared<asio::io_context>();
-    AgentClient agentClient(ioContext, false, configJson["id"] );
+    modulog::agent_client::AgentClient agentClient(ioContext, false, configJson["id"] );
     agentClient.initClient();
     auto lastNetState = isInternet();
     logNetState(lastNetState, agentClient);

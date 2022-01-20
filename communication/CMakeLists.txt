@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
+SET(CMAKE_CXX_STANDARD 20)
 
 file(GLOB_RECURSE source_files "src/*")
 include(FetchContent)
@@ -22,7 +23,16 @@ add_library(asio INTERFACE)
 target_include_directories(asio INTERFACE ${asio_SOURCE_DIR}/asio/include)
 find_package(Threads)
 target_link_libraries(asio INTERFACE Threads::Threads)
-# ---------------
 
+# ----------- reproc library
+SET(REPROC++ ON)
+FetchContent_Declare(
+        reproc++
+        GIT_REPOSITORY https://github.com/DaanDeMeyer/reproc.git
+        GIT_TAG        v14.2.4
+)
+FetchContent_MakeAvailable(reproc++)
+
+#-----------
 
 target_link_libraries(CommunicationLib asio reproc++)

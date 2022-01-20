@@ -1,6 +1,6 @@
 #include <iostream>
-#include "communication/include/TcpServer.hpp"
-#include "Core.hpp"
+#include <modulog/communication/TcpServer.hpp>
+#include <modulog/core/Core.hpp>
 #include <vector>
 #include <asio.hpp>
 
@@ -31,7 +31,7 @@ int main(int argc, const char **argv) {
     try{
         std::filesystem::path agentsList = "../agents-list.conf"; // TODO MOVE to config file
         auto ioContext = std::make_shared<asio::io_context>();
-        Core core(std::filesystem::absolute(agentsList), ioContext);
+        modulog::core::Core core(std::filesystem::absolute(agentsList), ioContext);
         core.start();
     }catch(std::exception& e){
         std::cerr << e.what() << std::endl;

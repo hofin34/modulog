@@ -1,5 +1,5 @@
-#include "../../communication/include/AgentClient.hpp"
-#include "Helpers.hpp"
+#include "../../agent-client/include/modulog/agent-client/AgentClient.hpp"
+#include "modulog/agent_client/Helpers.hpp"
 #include <asio.hpp>
 
 
