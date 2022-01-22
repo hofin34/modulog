@@ -51,7 +51,7 @@ namespace modulog::agent_client{
         while(true){
             auto controlMsg = messageExchanger_->waitForControlMessage(-1);
             if(controlMsg == nullptr){
-                std::cerr << "TODO del shouldnt be"<< std::endl;
+                std::cerr << "TODO shouldnt be"<< std::endl;
                 continue;
             }
             if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE){

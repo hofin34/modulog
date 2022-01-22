@@ -95,8 +95,7 @@ namespace modulog::core{
             communication::TcpConnection::pointer agentConnection;
             auto endConnectionTime = std::chrono::system_clock::now() + std::chrono::seconds(3); // TODO 3 seconds to variable
             while((endConnectionTime > std::chrono::system_clock::now()) && (agentConnection = server_.popConnection()) == nullptr){
-                // usleep(20); // sleep for valgrind, if not set, agent will not connect in valgrind environment...
-                std::this_thread::sleep_for(std::chrono::microseconds(20));
+                std::this_thread::sleep_for(std::chrono::microseconds(20));// sleep for valgrind, if not set, agent will not connect in valgrind environment...
             };
             if(agentConnection == nullptr){
                 std::cerr << "Agent " << agentInfo->getAgentId() << " didn't connect!" << std::endl;
@@ -107,7 +106,7 @@ namespace modulog::core{
 
 
             //TODO check if it is agent:
-            auto controlMessage = std::make_shared<communication::ControlMessage>(communication::ControlMessage::CONTROL_MSG_TYPE::CONFIG, "agent->getConfig().dump()");
+            auto controlMessage = std::make_shared<communication::ControlMessage>(communication::ControlMessage::CONTROL_MSG_TYPE::CONFIG, "agent->getConfig().dump()"); //TODO MOVE to config - all agents will receive some same configurable info
             messageExchanger->sendControl(controlMessage);
             std::cout << "Waiting for agent response..." << std::endl;
             std::shared_ptr<communication::ControlMessage> respControlMessage = messageExchanger->waitForControlMessage(2000);
