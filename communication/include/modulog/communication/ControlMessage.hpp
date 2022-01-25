@@ -11,7 +11,7 @@ namespace modulog::communication {
     class ControlMessage : public Message {
     public:
         enum class CONTROL_MSG_TYPE {
-            CONFIG, ACK, IS_ALIVE, EXIT, EXIT_ERR
+            CONFIG, ACK, IS_ALIVE, EXIT, EXIT_ERR, EXIT_ACK
         };
 
         ControlMessage(std::string jsonInit);

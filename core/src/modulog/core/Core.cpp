@@ -16,7 +16,7 @@ namespace modulog::core{
             std::thread serverThread{[this](){ ioContext_->run(); }};
             initAllAgents();
             notifyAllAgentsToSendLogs();
-            startSendAlive();
+            //startSendAlive(); // TODO turn on
             LogSaver logSaver("../logs"); //TODO MOVE to global config
             while(true) {
                 std::cout << "NEW ITER" << std::endl;
@@ -25,26 +25,37 @@ namespace modulog::core{
                     messageConditionVar_.wait(lck, [this]{ return totalReceivedMessages_; });
                     totalReceivedMessages_--;
                 }
-                for (auto &actAgent: agentHandler_->getRunningAgents()) {
+                std::vector<std::shared_ptr<Agent>> agentsToDel;
+                int i = 0;
+                for(auto &actAgent : agentHandler_->getRunningAgents()){
+                    auto controlMsg = actAgent->getMessageExchanger()->popControlMessage();
+                    if(controlMsg != nullptr){
+                        if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT){
+                            std::cerr << "Agent " << actAgent->getId() << " wants to exit..." << std::endl;
+                            auto exitControlMsg = std::make_shared<communication::ControlMessage>(communication::ControlMessage::CONTROL_MSG_TYPE::EXIT_ACK, "");
+                            actAgent->getMessageExchanger()->sendControl(exitControlMsg);
+                            agentsToDel.push_back(actAgent);
+                            continue;
+                        }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR){
+                            std::cerr << "Core received EXIT_ERR from " << actAgent->getId() << std::endl;
+                            //agentHandler_->deleteAgent(actIterator);
+                            agentsToDel.push_back(actAgent);
+                            continue;
+                        }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::ACK){
+                            actAgent->setConfirmedAlive(true);
+                        }
+                    }
                     auto logMsg = actAgent->getMessageExchanger()->popLogMessage();
                     if(logMsg != nullptr){
                         std::cout << "LOG:" << logMsg->getValue() << std::endl;
                         logSaver.saveLog(actAgent->getId(), logMsg);
                     }
-                    auto controlMsg = actAgent->getMessageExchanger()->popControlMessage();
-                    if(controlMsg != nullptr){
-                        if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::ACK){
-                            actAgent->setConfirmedAlive(true);
-                        }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT){
-                            std::cerr << "Agent wants to exit..." << std::endl;
-                            //auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ACK, "");
-                            //actAgent->getMessageExchanger()->sendControl(exitControlMsg);
-                            agentHandler_->deleteAgent(actAgent);
-                        }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR){
-                            agentHandler_->deleteAgent(actAgent);
-                        }
-                    }
                 }
+                for(auto &del : agentsToDel){
+                    std::cout << "AAAAAAA:" <<del->getId() << std::endl;
+                    agentHandler_->deleteAgent(del);
+                }
+                agentsToDel.clear();
             }
             serverThread.join();
         }
@@ -122,11 +133,17 @@ namespace modulog::core{
         }
     }
 
+//TODO error "pure virtual method called" occured one time, when two agents running!
+
     void Core::notifyAllAgentsToSendLogs() {
         for (auto &actAgent: agentHandler_->getRunningAgents()) {
             auto startSendMsg = std::make_shared<communication::ControlMessage>(communication::ControlMessage::CONTROL_MSG_TYPE::ACK, "");
             actAgent->getMessageExchanger()->sendControl(startSendMsg);
         }
+    }
+
+    void Core::stop() {
+        std::cout << "TODO exit " << agentHandler_->getRunningAgents().size() << "agents + cleanup" << std::endl;
     }
 
 

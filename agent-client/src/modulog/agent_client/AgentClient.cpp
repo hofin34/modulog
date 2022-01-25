@@ -5,6 +5,7 @@ namespace modulog::agent_client{
 
     AgentClient::AgentClient(std::shared_ptr<asio::io_context> &ioContext, bool isDebug, std::string agentName)
             : ioContext_(ioContext), isDebug_(isDebug), agentName_(agentName){
+        confirmedExit_ = false;
         msgProcessor_ = std::make_shared<communication::MessageProcessor>(totalMsgsReceived_, msgCondVar_, msgMutex_);
     }
 
@@ -48,7 +49,7 @@ namespace modulog::agent_client{
 
 
     void AgentClient::handleResponses() {
-        while(true){
+        while(confirmedExit_.load() != true){
             auto controlMsg = messageExchanger_->waitForControlMessage(-1);
             if(controlMsg == nullptr){
                 std::cerr << "TODO shouldnt be"<< std::endl;
@@ -59,7 +60,10 @@ namespace modulog::agent_client{
                 auto ackAliveMsg = std::make_shared<communication::ControlMessage>(modulog::communication::ControlMessage::CONTROL_MSG_TYPE::ACK, "");
                 messageExchanger_->sendControl(ackAliveMsg);
             }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT){
-                std::cout << "Agent received EXIT - should exit now." << std::endl;
+                std::cout << "Agent received EXIT - should exit now." << std::endl; //TODO exit
+            }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT_ACK){
+                std::cout << "Agent received EXIT_ACK - can exit now." << std::endl; //TODO
+                confirmedExit_ = true;
             }
         }
     }
@@ -71,6 +75,11 @@ namespace modulog::agent_client{
     void AgentClient::exitConnection() {
         auto exitMsg = std::make_shared<communication::ControlMessage>(modulog::communication::ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
         sendControl(exitMsg);
+        while(confirmedExit_.load() != true){ // Active waiting, but just a few millis, so its ok
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        responseHandleThread.join();
+        messageExchanger_->getConnection()->closeConnection(); // TODO maybe remove?
     }
 
     void AgentClient::sendLog(const std::shared_ptr<communication::LogMessage> &logMessage) {

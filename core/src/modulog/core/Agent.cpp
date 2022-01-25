@@ -17,8 +17,7 @@ namespace modulog::core{
 
 
     void Agent::deleteSelf() {
-        std::cout << "Agent " << id_ << " is deleting..." << std::endl;
-        messageExchanger_->getConnection()->closeConnection();
+        std::cout << "Agent " << agentInfo_->getAgentId() << " is deleting..." << std::endl;
         agentInfo_->stopAgent();
     }
 

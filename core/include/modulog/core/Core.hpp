@@ -17,6 +17,8 @@ namespace modulog::core{
          */
         void start();
 
+        void stop();
+
     private:
         /**
          * Start sending isAlive - just starting async timer and then calls handler

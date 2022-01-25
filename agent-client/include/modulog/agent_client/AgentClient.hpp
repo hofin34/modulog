@@ -54,6 +54,7 @@ namespace modulog::agent_client{
         std::shared_ptr<communication::MessageExchanger> messageExchanger_;
 
         // Sync vars:
+        std::atomic<bool> confirmedExit_;
         std::mutex msgMutex_;
         std::condition_variable msgCondVar_;
         int totalMsgsReceived_ = 0;

@@ -2,6 +2,7 @@
 
 #include <reproc++/reproc.hpp>
 
+#include <iostream>
 #include <string>
 #include <filesystem>
 #include <utility>

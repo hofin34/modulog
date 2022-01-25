@@ -57,7 +57,6 @@ namespace modulog::core{
         std::shared_ptr<communication::MessageExchanger> getMessageExchanger();
 
     private:
-        std::string id_;
         bool confirmedAlive_ = false;
         std::shared_ptr<communication::MessageExchanger> messageExchanger_;
         std::shared_ptr<AgentProcess> agentInfo_;

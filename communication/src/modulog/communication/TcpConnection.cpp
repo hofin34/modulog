@@ -26,7 +26,7 @@ namespace modulog::communication {
             msgBuffer_ = std::make_shared<asio::streambuf>(msgLength);
             readMsgContent();
         } else {
-            std::cerr << connectionName_ << " err: " << error.message() << " (maybe connection closed?)";
+            std::cerr << connectionName_ << " err: " << error.message() << " (maybe connection closed?)" << std::endl;
             signalErrExit();
             return;
         }
@@ -74,8 +74,11 @@ namespace modulog::communication {
     void TcpConnection::sendMessage(const std::string &msg) {
         asio::error_code errorWrite;
         uint32_t msgSize = msg.length();
-        asio::write(socket_, asio::buffer(&msgSize, sizeof(msgSize)), errorWrite); // TODO these writes on one line?
-        asio::write(socket_, asio::buffer(msg), errorWrite);
+        std::array<asio::const_buffer,2> buffToSend = {
+                asio::buffer(&msgSize, sizeof(msgSize)),
+                asio::buffer(msg)
+        };
+        asio::write(socket_, buffToSend, errorWrite);
         if (errorWrite) {
             signalErrExit();
             std::cerr << connectionName_ << ": error in sending." << errorWrite.message();
@@ -91,6 +94,7 @@ namespace modulog::communication {
         auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR, "");
         MessageSerializer messageSerializer(exitControlMsg);
         messageProcessor_->processMessage(messageSerializer.serialize());
+        //closeConnection();
     }
 
     void TcpConnection::closeConnection() {
@@ -101,5 +105,4 @@ namespace modulog::communication {
         else
             socket_.close();
     }
-
 }
