@@ -102,7 +102,9 @@ namespace modulog::communication {
         socket_.shutdown(asio::ip::tcp::socket::shutdown_both, ec);
         if (ec)
             std::cerr << "Closing conn err.:" << ec.message() << std::endl;
-        else
+        else{
+            std::cout << "Closing connection socket." << std::endl;
             socket_.close();
+        }
     }
 }

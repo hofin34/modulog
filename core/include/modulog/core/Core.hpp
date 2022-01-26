@@ -48,6 +48,7 @@ namespace modulog::core{
         asio::steady_timer sendAliveTimer_;
         std::shared_ptr<asio::io_context> ioContext_;
         communication::TcpServer server_;
+        std::thread serverThread_;
         //sync vars:
         int totalReceivedMessages_ = 0;
         std::mutex messageMutex_;

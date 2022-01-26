@@ -2,7 +2,7 @@
 
 namespace modulog::core{
     std::string Agent::getId() {
-        return agentInfo_->getAgentId();
+        return agentProcess_->getAgentId();
     }
 
 
@@ -17,13 +17,15 @@ namespace modulog::core{
 
 
     void Agent::deleteSelf() {
-        std::cout << "Agent " << agentInfo_->getAgentId() << " is deleting..." << std::endl;
-        agentInfo_->stopAgent();
+        std::cout << "Agent " << agentProcess_->getAgentId() << " is deleting..." << std::endl;
+        messageExchanger_->getConnection()->closeConnection();
+        agentProcess_->stopAgent();
     }
 
     std::shared_ptr<communication::MessageExchanger> Agent::getMessageExchanger() {
         return messageExchanger_;
     }
+
 
 
 

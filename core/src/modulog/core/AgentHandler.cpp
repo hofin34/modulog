@@ -79,15 +79,13 @@ namespace modulog::core{
         { // deletes agent from vector
             auto it = std::find(runningAgents_.begin(), runningAgents_.end(), agent);
             if (it != runningAgents_.end()) {
-                deleteAgent(it);
+                agent->deleteSelf();
+                runningAgents_.erase(it);
             }
         }
     }
 
-    void AgentHandler::deleteAgent(std::vector<std::shared_ptr<Agent>>::iterator agentIterator) {
-        (*agentIterator)->deleteSelf();
-        runningAgents_.erase(agentIterator);
-    }
+
 
 
 }

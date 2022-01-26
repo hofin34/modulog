@@ -27,7 +27,7 @@ int main(int argc, char** argv){
         agentClient.sendLog(logMsg);
 
         std::this_thread::sleep_for(std::chrono::seconds(logInterval));
-        agentClient.exitConnection();
+        //agentClient.exitConnection();
         //exit(4);
     }
 

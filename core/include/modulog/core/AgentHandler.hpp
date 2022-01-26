@@ -40,8 +40,6 @@ namespace modulog::core{
          */
         void deleteAgent(const std::shared_ptr<Agent>& agent);
 
-        void deleteAgent(std::vector<std::shared_ptr<Agent>>::iterator agentIterator);
-
     private:
         std::vector<std::shared_ptr<Agent>> runningAgents_;
         std::vector<std::filesystem::path> agentsPaths_;

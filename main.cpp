@@ -31,6 +31,10 @@ std::unique_ptr<modulog::core::Core> core;
 void signalHandler( int signum ) {
     std::cout << "Interrupt signal (" << signum << ") received.\n";
     core->stop();
+    std::cout  << "beforedd exit" << std::endl;
+
+    core.reset();
+    std::cout  << "before exit" << std::endl;
     exit(signum);
 }
 

@@ -13,12 +13,12 @@ namespace modulog::core{
         {
             // start server:
             server_.startAccept();
-            std::thread serverThread{[this](){ ioContext_->run(); }};
+            serverThread_ = std::thread{[this](){ ioContext_->run(); }};
             initAllAgents();
             notifyAllAgentsToSendLogs();
             //startSendAlive(); // TODO turn on
             LogSaver logSaver("../logs"); //TODO MOVE to global config
-            while(true) {
+            while(!agentHandler_->getRunningAgents().empty()) {
                 std::cout << "NEW ITER" << std::endl;
                 {
                     std::unique_lock<std::mutex> lck(messageMutex_);
@@ -57,7 +57,7 @@ namespace modulog::core{
                 }
                 agentsToDel.clear();
             }
-            serverThread.join();
+           stop();
         }
         catch (std::exception& e)
         {
@@ -113,6 +113,7 @@ namespace modulog::core{
                 agentInfo->stopAgent();
                 continue;
             }
+
             auto messageExchanger = std::make_shared<communication::MessageExchanger>(agentConnection);
 
 
@@ -143,7 +144,17 @@ namespace modulog::core{
     }
 
     void Core::stop() {
-        std::cout << "TODO exit " << agentHandler_->getRunningAgents().size() << "agents + cleanup" << std::endl;
+        std::vector<std::shared_ptr<Agent>> agentsToDel;
+        for(auto &toDel : agentHandler_->getRunningAgents()){
+            agentsToDel.push_back(toDel); // Cannot delete from inside for range - its removing from vector
+        }
+        for(auto &toDel : agentsToDel){
+            agentHandler_->deleteAgent(toDel);
+        }
+        ioContext_->stop();
+        std::cout << "Before join" << std::endl;
+        serverThread_.join();
+        std::cout << "After join" << std::endl;
     }
 
 
