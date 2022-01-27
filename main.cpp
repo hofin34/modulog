@@ -31,11 +31,6 @@ std::unique_ptr<modulog::core::Core> core;
 void signalHandler( int signum ) {
     std::cout << "Interrupt signal (" << signum << ") received.\n";
     core->stop();
-    std::cout  << "beforedd exit" << std::endl;
-
-    core.reset();
-    std::cout  << "before exit" << std::endl;
-    exit(signum);
 }
 
 
@@ -49,6 +44,7 @@ int main(int argc, const char **argv) {
         auto ioContext = std::make_shared<asio::io_context>();
         core = std::make_unique<modulog::core::Core>(std::filesystem::absolute(agentsList), ioContext);
         core->start();
+        std::cout  << "-------------CLEAN EXIT----------" << std::endl;
     }catch(std::exception& e){
         std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;

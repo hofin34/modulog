@@ -44,6 +44,9 @@ namespace modulog::core{
          */
         void notifyAllAgentsToSendLogs();
 
+        void cleanAll();
+
+        std::atomic<bool> stopFlag = false;
         std::shared_ptr<AgentHandler> agentHandler_;
         asio::steady_timer sendAliveTimer_;
         std::shared_ptr<asio::io_context> ioContext_;

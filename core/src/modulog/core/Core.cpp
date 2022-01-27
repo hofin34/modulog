@@ -18,10 +18,11 @@ namespace modulog::core{
             notifyAllAgentsToSendLogs();
             //startSendAlive(); // TODO turn on
             LogSaver logSaver("../logs"); //TODO MOVE to global config
-            while(!agentHandler_->getRunningAgents().empty()) {
+            while(!stopFlag.load() && !agentHandler_->getRunningAgents().empty()) {
                 std::cout << "NEW ITER" << std::endl;
                 {
                     std::unique_lock<std::mutex> lck(messageMutex_);
+                    std::cout << "WAIT" <<std::endl;
                     messageConditionVar_.wait(lck, [this]{ return totalReceivedMessages_; });
                     totalReceivedMessages_--;
                 }
@@ -38,7 +39,6 @@ namespace modulog::core{
                             continue;
                         }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR){
                             std::cerr << "Core received EXIT_ERR from " << actAgent->getId() << std::endl;
-                            //agentHandler_->deleteAgent(actIterator);
                             agentsToDel.push_back(actAgent);
                             continue;
                         }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::ACK){
@@ -52,12 +52,10 @@ namespace modulog::core{
                     }
                 }
                 for(auto &del : agentsToDel){
-                    std::cout << "AAAAAAA:" <<del->getId() << std::endl;
                     agentHandler_->deleteAgent(del);
                 }
                 agentsToDel.clear();
             }
-           stop();
         }
         catch (std::exception& e)
         {
@@ -66,6 +64,7 @@ namespace modulog::core{
         catch(...){
             std::cout << "Something bad occurred." << std::endl;
         }
+        cleanAll();
     }
 
 
@@ -144,6 +143,10 @@ namespace modulog::core{
     }
 
     void Core::stop() {
+        stopFlag = true;
+    }
+
+    void Core::cleanAll() {
         std::vector<std::shared_ptr<Agent>> agentsToDel;
         for(auto &toDel : agentHandler_->getRunningAgents()){
             agentsToDel.push_back(toDel); // Cannot delete from inside for range - its removing from vector
@@ -152,8 +155,9 @@ namespace modulog::core{
             agentHandler_->deleteAgent(toDel);
         }
         ioContext_->stop();
-        std::cout << "Before join" << std::endl;
         serverThread_.join();
+        //messageConditionVar_.notify_one();
+        messageConditionVar_.notify_all();
         std::cout << "After join" << std::endl;
     }
 
