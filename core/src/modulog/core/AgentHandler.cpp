@@ -71,7 +71,6 @@ namespace modulog::core{
         }catch(...){
             std::cerr << "Couldn't parse agent list (or file open err)." << std::endl;
         }
-
     }
 
     void AgentHandler::deleteAgent(const std::shared_ptr<Agent>& agent) {

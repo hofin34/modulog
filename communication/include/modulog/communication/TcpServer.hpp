@@ -1,6 +1,7 @@
 #pragma once
 
 #include <modulog/communication/TcpConnection.hpp>
+#include <modulog/communication/SharedSettings.hpp>
 
 #include <asio.hpp>
 
@@ -16,9 +17,9 @@ namespace modulog::communication{
          * @param totalReceivedMsgs counting received messages
          */
         TcpServer(asio::io_context &io_context, std::mutex &messageMutex, std::condition_variable &messageConditionVariable,
-                  int &totalReceivedMsgs)
+                  int &totalReceivedMsgs, std::shared_ptr<SharedSettings> sharedSettings)
                 : io_context_(io_context),
-                  acceptor_(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), 1234)),
+                  acceptor_(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), sharedSettings->ServerSettings.portNumber)),
                   messageMutex_(messageMutex), messageConditionVariable_(messageConditionVariable),
                   totalReceivedMsgs_(totalReceivedMsgs) {}
 

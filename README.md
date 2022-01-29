@@ -122,6 +122,46 @@ Cons:
 - seems pretty good
 
 
+## Epic for cross compile on Rpi
 
+**As a programmer, I want to cross-compile "modulog" logging app for VUT FIT train sensor.**
 
+We have already created modulog application, which will be used on multiple devices based on GNU/Linux.
+For the beginning, we want to try it on first sensor to see, if it's working as expected.
+To run it there, we need to find out, how to compile it on our computer based on Intel, then copy executable to sensor and finally run the app.
+Modulog link: https://github.com/hofin34/bachelor-hofbauer
 
+**Acceptance criteria:**
+
+* modulog application crossed-compiled on Intel based computer for Arm
+* modulog application running on VUT FIT train sensor
+
+Stories:
+### cross compile Hello World for Rpi
+**As a programmer, I want to find out, how to be able cross-compile basic c++ Hello World app for Rpi**
+
+We need to find out, how cross-compiling works with CMake and then we want to compile sample app for Arm architecture.
+
+**Acceptance criteria:**
+
+* Hello World app compiled on Intel based computer for Arm
+* app can be run on Rpi 4
+
+### cross compile modulog for Rpi
+**As a programmer, I want to be able cross-compile modulog application for Rpi 4**
+
+**Acceptance criteria:**
+
+* modulog application cross-compiled on Intel based PC for Rpi 4
+* modulog app running on Rpi 4
+
+### cross compile modulog for VUT FIT train sensor
+**As a programmer, I want to be able cross-compile modulog application for VUT train sensor**
+
+Before working with train sensor, make an OS binary copy for backup!
+
+**Acceptance criteria:**
+
+* binary copy of train sensor SD card (as backup)
+* modulog application cross-compiled on Intel based PC for VUT train sensor (Arm)
+* modulog app running on VUT train sensor

@@ -1,9 +1,10 @@
 #pragma once
 
-#include <modulog/core/AgentHandler.hpp>
 #include <modulog/communication/TcpServer.hpp>
 #include <modulog/communication/MessageDeserializer.hpp>
+#include <modulog/communication/SharedSettings.hpp>
 #include <modulog/core/LogSaver.hpp>
+#include <modulog/core/AgentHandler.hpp>
 
 namespace modulog::core{
 /**
@@ -11,7 +12,8 @@ namespace modulog::core{
  */
     class Core {
     public:
-        Core(const std::filesystem::path& pathToEnabledAgentsList, std::shared_ptr<asio::io_context> ioContext);
+        Core(const std::filesystem::path& pathToEnabledAgentsList, std::shared_ptr<asio::io_context> ioContext,
+             std::shared_ptr<communication::SharedSettings>);
         /**
          * Start core functionality after creating instance of this class
          */
@@ -52,6 +54,7 @@ namespace modulog::core{
         std::shared_ptr<asio::io_context> ioContext_;
         communication::TcpServer server_;
         std::thread serverThread_;
+        std::shared_ptr<communication::SharedSettings> sharedSettings_;
         //sync vars:
         int totalReceivedMessages_ = 0;
         std::mutex messageMutex_;

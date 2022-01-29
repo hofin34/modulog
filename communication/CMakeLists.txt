@@ -8,6 +8,18 @@ add_library(CommunicationLib ${source_files})
 target_include_directories(CommunicationLib PUBLIC "include/")
 target_include_directories(CommunicationLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
+# ----------- nlohmann json library
+# TODO downloads too long?
+FetchContent_Declare(json
+        GIT_REPOSITORY https://github.com/nlohmann/json.git
+        GIT_TAG v3.10.4)
+
+FetchContent_GetProperties(json)
+if(NOT json_POPULATED)
+    FetchContent_Populate(json)
+    ADD_SUBDIRECTORY(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
 # ----------- asio library
 FetchContent_Declare(asio
         GIT_REPOSITORY git@github.com:chriskohlhoff/asio.git
@@ -35,4 +47,4 @@ FetchContent_MakeAvailable(reproc++)
 
 #-----------
 
-target_link_libraries(CommunicationLib asio reproc++)
+target_link_libraries(CommunicationLib asio reproc++ nlohmann_json::nlohmann_json stdc++fs) # stdc++fs is there because of cross-compiling for Rpi

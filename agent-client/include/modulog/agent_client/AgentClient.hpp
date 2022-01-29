@@ -41,7 +41,7 @@ namespace modulog::agent_client{
          */
         void exitConnection();
 
-
+        std::string getSharedConfig();
 
 
     private:
@@ -52,6 +52,7 @@ namespace modulog::agent_client{
         std::thread responseHandleThread;
         void handleResponses();
         std::shared_ptr<communication::MessageExchanger> messageExchanger_;
+        std::string sharedConfig;
 
         // Sync vars:
         std::atomic<bool> confirmedExit_;

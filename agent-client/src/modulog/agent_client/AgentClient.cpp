@@ -24,6 +24,7 @@ namespace modulog::agent_client{
                 exit(EXIT_FAILURE);
             }
             std::cout << agentName_ << " received config: " << configMessage->getValue() << std::endl;
+            sharedConfig = configMessage->getValue();
             auto ackMessage = std::make_shared<communication::ControlMessage>(modulog::communication::ControlMessage::CONTROL_MSG_TYPE::ACK, agentName_);
             messageExchanger_->sendControl(ackMessage);
             auto canStartSending = messageExchanger_->waitForControlMessage(-1);
@@ -51,8 +52,8 @@ namespace modulog::agent_client{
     void AgentClient::handleResponses() {
         while(confirmedExit_.load() != true){
             auto controlMsg = messageExchanger_->waitForControlMessage(-1);
-            if(controlMsg == nullptr){
-                std::cerr << "TODO shouldnt be"<< std::endl;
+            if(controlMsg == nullptr){ // This should not happen
+                std::cerr << "No control message!"<< std::endl;
                 continue;
             }
             if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE){
@@ -96,6 +97,10 @@ namespace modulog::agent_client{
         } else {
             messageExchanger_->sendControl(controlMessage);
         }
+    }
+
+    std::string AgentClient::getSharedConfig() {
+        return sharedConfig;
     }
 
 
