@@ -65,6 +65,7 @@ namespace modulog::communication{
 
 
         // ------ Attributes
+        std::atomic<bool> connectionClosed_ = false;
         asio::ip::tcp::socket socket_;
         uint32_t msgLength = 0;
         std::shared_ptr<asio::streambuf> msgBuffer_;

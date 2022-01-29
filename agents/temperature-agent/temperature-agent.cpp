@@ -1,9 +1,10 @@
-#include <modulog/communication/MessageSerializer.hpp>
-#include <modulog/agent_client/AgentClient.hpp>
 #include <modulog/agent_client/Helpers.hpp>
+#include <modulog/agent_client/AgentClient.hpp>
 
 #include <iostream>
 #include <thread>
+#include <fstream>
+
 
 
 int getTemperature(std::ifstream &tempSource){
@@ -17,6 +18,7 @@ int getTemperature(std::ifstream &tempSource){
 }
 
 int main(int argc, char** argv){
+
     auto programStart = std::chrono::system_clock::now();
     nlohmann::json configJson = modulog::agent_client::Helpers::parseConfig(argv[0]);
 
@@ -41,7 +43,11 @@ int main(int argc, char** argv){
         std::cerr << "Specify temperatureSource!" << std::endl;
         exit(EXIT_FAILURE);
     }
-    std::ifstream tempSource(configJson["temperatureSource"]);
+
+    std::cout << configJson["temp"] << std::endl;
+    std::filesystem::path src = configJson["temperatureSource"];
+    std::ifstream tempSource(src);
+
     if(!tempSource.is_open()){
         std::cerr << "Cannot open file temperature source." << std::endl;
         exit(EXIT_FAILURE);
@@ -61,6 +67,7 @@ int main(int argc, char** argv){
         }
         std::this_thread::sleep_for(std::chrono::seconds(logInterval));
     }
+
     return 0;
 }
 

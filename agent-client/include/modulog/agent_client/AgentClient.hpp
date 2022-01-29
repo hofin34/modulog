@@ -41,16 +41,24 @@ namespace modulog::agent_client{
          */
         void exitConnection();
 
+        /*
+         * Get shared config - it is sent to all agents on the beginning (what will be sent is defined
+         * in SharedSettings file
+         */
         std::string getSharedConfig();
 
 
     private:
+        /*
+         * Function running in own thread - it is receiving messages and processing them
+         */
+        void handleResponses();
+
         std::string agentName_ = "AgentDefaultName";
         std::shared_ptr<asio::io_context> ioContext_;
         bool isDebug_;
         std::thread clientThread;
         std::thread responseHandleThread;
-        void handleResponses();
         std::shared_ptr<communication::MessageExchanger> messageExchanger_;
         std::string sharedConfig;
 
@@ -60,8 +68,6 @@ namespace modulog::agent_client{
         std::condition_variable msgCondVar_;
         int totalMsgsReceived_ = 0;
         std::shared_ptr<communication::MessageProcessor> msgProcessor_;
-
-        //TODO end clientThread
     };
 
 }

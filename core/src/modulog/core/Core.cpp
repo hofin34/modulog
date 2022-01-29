@@ -18,7 +18,8 @@ namespace modulog::core {
             initAllAgents();
         } catch (std::exception &e) {
             cleanAll();
-            throw e;
+            std::cerr << e.what() << std::endl;
+            throw e; //TODO in main, priting this rethrow prints std::exception and not message
         }
         notifyAllAgentsToSendLogs();
         startSendAlive();
@@ -61,6 +62,7 @@ namespace modulog::core {
             }
             agentsToDel.clear();
         }
+        std::this_thread::sleep_for(std::chrono::seconds(5));
         cleanAll();
     }
 
@@ -72,8 +74,7 @@ namespace modulog::core {
 
 
     void Core::sendAlive() {
-        std::cout << "Core sending isAlive to all agents..."
-                  << std::endl; //TODO when sending to dead agent, core exits...
+        std::cout << "Core sending isAlive to all agents..." << std::endl;
         for (auto &agent: agentHandler_->getRunningAgents()) {
             auto isAliveMsg = std::make_shared<communication::ControlMessage>(
                     communication::ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE, "");
@@ -107,22 +108,19 @@ namespace modulog::core {
             std::cout << "waiting for ag. connection..." << std::endl;
             communication::TcpConnection::pointer agentConnection;
             auto endConnectionTime =
-                    std::chrono::system_clock::now() + std::chrono::seconds(3); // TODO 3 seconds to variable
+                    std::chrono::system_clock::now() + std::chrono::seconds(sharedSettings_->ServerSettings.connectionTimeoutSec);
             while ((endConnectionTime > std::chrono::system_clock::now()) &&
                    (agentConnection = server_.popConnection()) == nullptr) {
                 std::this_thread::sleep_for(std::chrono::microseconds(
                         20));// sleep for valgrind, if not set, agent will not connect in valgrind environment...
             };
             if (agentConnection == nullptr) {
-                std::cerr << "Agent " << agentInfo->getAgentId() << " didn't connect!" << std::endl;
                 agentInfo->stopAgent();
-                continue;
+                throw std::runtime_error("Agent " + agentInfo->getAgentId() + " didn't connect!");
             }
 
             auto messageExchanger = std::make_shared<communication::MessageExchanger>(agentConnection);
 
-
-            //TODO check if it is agent:
             std::string configString = "NO-CONFIG";
             std::ifstream configStream(sharedSettings_->LogSettings.sharedAgentsConfig);
             if (configStream.is_open()) {
@@ -136,14 +134,15 @@ namespace modulog::core {
             std::cout << "Waiting for agent response..." << std::endl;
             std::shared_ptr<communication::ControlMessage> respControlMessage = messageExchanger->waitForControlMessage(
                     2000);
-            if (respControlMessage == nullptr) {
-                std::cerr << "null control msg" << std::endl;
-                exit(EXIT_FAILURE);
-            }
+            if (respControlMessage == nullptr)
+                throw std::runtime_error("null control msg");
+
             //Now expecting ACK response with agent name:
             std::string agentName = respControlMessage->getValue();
             std::cout << "Core agent name.: " << agentName << std::endl;
-            agentInfo->setAgentId(agentName); // TODO if sends empty?
+            if(agentName.empty())
+                throw std::runtime_error("Agent didn't send name!");
+            agentInfo->setAgentId(agentName);
             agentHandler_->addNewAgent(messageExchanger, agentInfo);
         }
     }
@@ -172,7 +171,7 @@ namespace modulog::core {
         }
         ioContext_->stop();
         serverThread_.join();
-        messageConditionVar_.notify_all();
+        //messageConditionVar_.notify_all();
     }
 
 

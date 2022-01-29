@@ -1,11 +1,9 @@
-#include <modulog/communication/MessageSerializer.hpp>
 #include <modulog/agent_client/AgentClient.hpp>
 #include <modulog/agent_client/Helpers.hpp>
 
 #include <thread>
 #include <iostream>
 
-// temp:sudo smartctl -A /dev/nvme0n1 | grep -i temperature:
 
 
 int main(int argc, char** argv){

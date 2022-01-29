@@ -4,6 +4,7 @@ namespace modulog::communication{
     struct SharedSettings{
         struct ServerSettings{
             int portNumber = 1234; // Port number, where will be TCP server listening
+            int connectionTimeoutSec = 3; // How many seconds has agent to connect to server before is killed
         } ServerSettings;
         struct LogSettings{
             std::filesystem::path agentListPath = "../agents-list.conf";

@@ -23,18 +23,14 @@ After start, enabled agents are created and they collect logs. These logs are sa
 3. nlohman/json
 
 ## Implementation TODO
-    Diagram architektury a funkcnosti
-    Dodelat poradne ukoncovani programu
-6. Log somewhere if agent crash
-7. When too much agents and running with Valgrind, connection freeze and crashes - TODO fix
-8. Create architecture diagram
-9. Compile just enabled agents
-10. Create global config file
+* Log somewhere if agent crash 
+* When too much agents and running with Valgrind, connection freeze and crashes - TODO fix 
+* Compile just enabled agents
 
 ## TODO
+* Write, why is our solution different
+* Write to doc, how to create agents
 
-1. Write, why is our solution different
-2. Write to doc, how to create agents
 
 ---
 

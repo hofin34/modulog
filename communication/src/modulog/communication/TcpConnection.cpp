@@ -21,12 +21,14 @@ namespace modulog::communication {
 
     void TcpConnection::handleReadMsgSize(const asio::error_code &error,
                                           size_t bytes_transferred) {
+        if(connectionClosed_.load())
+            return;
         if (!error) {
             std::cout << "Msg size on conn. " << connectionName_ << ": " << msgLength << std::endl;
             msgBuffer_ = std::make_shared<asio::streambuf>(msgLength);
             readMsgContent();
         } else {
-            std::cerr << connectionName_ << " err: " << error.message() << " (maybe connection closed?)" << std::endl;
+            std::cerr << connectionName_ << connectionClosed_.load()<< " err: " << error.message() << " (maybe connection closed?)" << std::endl;
             signalErrExit();
             return;
         }
@@ -48,6 +50,8 @@ namespace modulog::communication {
     }
 
     void TcpConnection::handleReadMsgContent(const asio::error_code &error, size_t bytes_transferred) {
+        if(connectionClosed_.load())
+            return;
         if (!error) {
             alreadyRead_ += bytes_transferred;
             std::cout << "Content bytes read: " << alreadyRead_ << "/" << msgLength << std::endl;
@@ -98,6 +102,7 @@ namespace modulog::communication {
     }
 
     void TcpConnection::closeConnection() {
+        connectionClosed_ = true;
         asio::error_code ec;
         socket_.shutdown(asio::ip::tcp::socket::shutdown_both, ec);
         if (ec)

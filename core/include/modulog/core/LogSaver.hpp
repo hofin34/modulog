@@ -17,6 +17,7 @@ namespace modulog::core{
          * @param logMessage Which log to save
          */
         void saveLog(const std::string& agentId, const std::shared_ptr<communication::LogMessage>& logMessage);
+
     private:
         /**
          * If received log is of ERROR type, this function is called - creates directory for error logs and saves it
