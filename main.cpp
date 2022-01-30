@@ -20,8 +20,12 @@ void signalHandler(int signum) {
 
 
 int main(int argc, const char **argv) {
-    signal(SIGINT, signalHandler);
-    signal(SIGTERM, signalHandler);
+    struct sigaction sigAct{};
+    memset(&sigAct, 0, sizeof(sigAct));
+    sigAct.sa_handler = signalHandler;
+    sigaction(SIGINT,  &sigAct, nullptr);
+    sigaction(SIGTERM, &sigAct, nullptr);
+
     auto sharedSettings = std::make_shared<modulog::communication::SharedSettings>();
     std::filesystem::path agentsList = sharedSettings->LogSettings.agentListPath;
 
@@ -30,8 +34,9 @@ int main(int argc, const char **argv) {
         core = std::make_unique<modulog::core::Core>(std::filesystem::absolute(agentsList), ioContext, sharedSettings);
         core->start();
     } catch (std::exception &e) {
-        std::cerr << e.what() << std::endl;
+        std::cerr << "Exception in main.cpp: " <<  e.what() << std::endl;
         return EXIT_FAILURE;
     }
+    std::cout << "---- END -----" << std::endl;
     return EXIT_SUCCESS;
 }

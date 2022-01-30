@@ -1,4 +1,5 @@
 #pragma once
+
 #include <modulog/communication/TcpConnection.hpp>
 #include <modulog/communication/MessageDeserializer.hpp>
 #include <modulog/communication/MessageExchanger.hpp>
@@ -10,7 +11,7 @@
 #include <iostream>
 #include <filesystem>
 
-namespace modulog::agent_client{
+namespace modulog::agent_client {
     class AgentClient {
     public:
         /**
@@ -20,16 +21,19 @@ namespace modulog::agent_client{
          * @param agentName under which name will be saved logs later
          */
         AgentClient(std::shared_ptr<asio::io_context> &ioContext, bool isDebug, std::string agentName);
+
         /**
          * Sends log to the Core, which will save it. If is client in debug mode, log is just printed
          * @param logMessage Message to log
          */
-        void sendLog(const std::shared_ptr<communication::LogMessage>& logMessage);
+        void sendLog(const std::shared_ptr<communication::LogMessage> &logMessage);
+
         /**
          * Sends control message to the Core
          * @param controlMessage control message to send
          */
         void sendControl(const std::shared_ptr<communication::ControlMessage> &controlMessage);
+
         /**
          * Client connects to the Core, sends its name and starts
          * 2 new threads: first to collect incoming messages from Core and second in which io_context is running
@@ -46,6 +50,12 @@ namespace modulog::agent_client{
          * in SharedSettings file
          */
         std::string getSharedConfig();
+
+        /*
+         * reproc++ library sends interrupt signal to all spawned processes - we want to catch it and ignore, because
+         * agent exiting is managed by Core.cxx
+         */
+        static void signalHandler(int signum);
 
 
     private:

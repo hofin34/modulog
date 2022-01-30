@@ -9,7 +9,17 @@ namespace modulog::agent_client{
         msgProcessor_ = std::make_shared<communication::MessageProcessor>(totalMsgsReceived_, msgCondVar_, msgMutex_);
     }
 
+    void AgentClient::signalHandler(int signum) {
+        std::cout << "Agent interupted by signal " << signum << std::endl;
+    }
+
     void AgentClient::initClient() {
+        struct sigaction sigAct{};
+        memset(&sigAct, 0, sizeof(sigAct));
+        sigAct.sa_handler = signalHandler;
+        sigaction(SIGINT,  &sigAct, nullptr);
+        sigaction(SIGTERM, &sigAct, nullptr);
+
         if(isDebug_)
             return;
         try{

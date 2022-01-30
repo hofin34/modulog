@@ -25,7 +25,6 @@ namespace modulog::core{
 
         auto options = std::make_shared<reproc::options>();
         options->stop = {
-                { reproc::stop::terminate, reproc::milliseconds(2000) }, // TODO how long???
                 { reproc::stop::kill, reproc::milliseconds(0) }
         };
         options->redirect.parent = true;

@@ -62,7 +62,6 @@ namespace modulog::core {
             }
             agentsToDel.clear();
         }
-        std::this_thread::sleep_for(std::chrono::seconds(5));
         cleanAll();
     }
 
@@ -171,7 +170,7 @@ namespace modulog::core {
         }
         ioContext_->stop();
         serverThread_.join();
-        //messageConditionVar_.notify_all();
+        sendAliveTimer_.cancel();
     }
 
 
