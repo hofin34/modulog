@@ -13,15 +13,15 @@ ADD_EXECUTABLE(modulog main.cpp ${source_files})
 TARGET_INCLUDE_DIRECTORIES(modulog PUBLIC "core/include/")
 TARGET_LINK_LIBRARIES(modulog CommunicationLib)
 
-ADD_SUBDIRECTORY(agents/net-connectivity-agent)
+#ADD_SUBDIRECTORY(agents/net-connectivity-agent)
 ADD_SUBDIRECTORY(agents/ram-agent)
 ADD_SUBDIRECTORY(agents/uptime-agent)
-ADD_SUBDIRECTORY(agents/space-agent)
-ADD_SUBDIRECTORY(agents/test-random-agent)
-ADD_SUBDIRECTORY(agents/temperature-agent)
-ADD_SUBDIRECTORY(agents/smart-agent)
+#ADD_SUBDIRECTORY(agents/space-agent)
+#ADD_SUBDIRECTORY(agents/test-random-agent)
+#ADD_SUBDIRECTORY(agents/temperature-agent)
+#ADD_SUBDIRECTORY(agents/smart-agent)
 
-ADD_DEPENDENCIES(modulog temperature-agent ram-agent uptime-agent test-random-agent net-connectivity-agent space-agent smart-agent)
+ADD_DEPENDENCIES(modulog ram-agent uptime-agent)# temperature-agent test-random-agent net-connectivity-agent space-agent smart-agent)
 
 
 

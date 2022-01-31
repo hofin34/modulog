@@ -40,11 +40,11 @@ target_link_libraries(asio INTERFACE Threads::Threads)
 SET(REPROC++ ON)
 FetchContent_Declare(
         reproc++
-        GIT_REPOSITORY https://github.com/DaanDeMeyer/reproc.git
-        GIT_TAG        v14.2.4
+        GIT_REPOSITORY https://github.com/DaanDeMeyer/reproc.git #https://github.com/hofin34/reproc.git
+        GIT_TAG     v14.2.4 #  0bce0977bc3fa9ae10193607f3e27ad04e8aab94
 )
 FetchContent_MakeAvailable(reproc++)
 
 #-----------
 
-target_link_libraries(CommunicationLib asio reproc++ nlohmann_json::nlohmann_json stdc++fs) # stdc++fs is there because of cross-compiling for Rpi
+target_link_libraries(CommunicationLib asio reproc++ nlohmann_json::nlohmann_json) # stdc++fs is there because of cross-compiling for Rpi

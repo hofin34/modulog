@@ -55,6 +55,8 @@ namespace modulog::core{
     void AgentHandler::parseEnabledAgentsList(const std::filesystem::path& pathToListFile) {
         try{
             std::ifstream input( pathToListFile);
+            if(!input.is_open())
+                throw std::runtime_error(pathToListFile.generic_string() + " cannot be opened. (maybe not existing...)");
             for( std::string line; getline( input, line ); )
             {
                 line.erase(remove(line.begin(), line.end(), ' '), line.end());
@@ -67,8 +69,8 @@ namespace modulog::core{
                 std::filesystem::path actAgentPath = line;
                 agentsPaths_.push_back(actAgentPath);
             }
-        }catch(...){
-            std::cerr << "Couldn't parse agent list (or file open err)." << std::endl;
+        }catch(std::exception& e){
+            std::cerr << "Couldn't parse agent list (or file open err): " << e.what() << std::endl;
         }
     }
 
