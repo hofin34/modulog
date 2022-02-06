@@ -1,0 +1,28 @@
+{
+  "agentsToCompile": [
+    {
+      "agentPath": "agents/ram-agent",
+      "enabled": false
+    },
+    {
+      "agentPath": "agents/space-agent",
+      "enabled": true
+    },
+    {
+      "agentPath": "agents/uptime-agent",
+      "enabled": true
+    },
+    {
+      "agentPath": "agents/temperature-agent",
+      "enabled": true
+    },
+    {
+      "agentPath": "agents/net-connectivity-agent",
+      "enabled": true
+    },
+    {
+      "agentPath": "agents/test-random-agent",
+      "enabled": true
+    }
+  ]
+}

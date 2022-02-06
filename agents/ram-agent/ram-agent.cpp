@@ -7,13 +7,13 @@
 #include <iostream>
 #include <asio.hpp>
 
-long long getTemperature(){
-    struct sysinfo memInfo;
+long long getRAM(){
+    struct sysinfo memInfo{};
     sysinfo (&memInfo);
-    long long physMemUsed = memInfo.freeram;
-    physMemUsed *= memInfo.mem_unit;
-    physMemUsed /= (1024*1024); //to get MiB
-    return physMemUsed;
+    long long freeRam = memInfo.freeram;
+    freeRam *= memInfo.mem_unit;
+    freeRam /= (1024 * 1024); //to get MiB
+    return freeRam;
 }
 
 int main(int argc, char** argv){
@@ -38,7 +38,7 @@ int main(int argc, char** argv){
     modulog::agent_client::AgentClient agentClient(ioContext, false, configJson["id"] );
     agentClient.initClient();
     while(true){
-        auto freeRam = getTemperature();
+        auto freeRam = getRAM();
         if(freeNotSmallerThan > freeRam){
             auto errMsg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "freeRamMiB", std::to_string(freeRam));
             agentClient.sendLog(errMsg);
