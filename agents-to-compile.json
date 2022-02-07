@@ -2,7 +2,7 @@
   "agentsToCompile": [
     {
       "agentPath": "agents/ram-agent",
-      "enabled": false
+      "enabled": true
     },
     {
       "agentPath": "agents/space-agent",

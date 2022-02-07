@@ -19,14 +19,15 @@ After start, enabled agents are created and they collect logs. These logs are sa
 3. nlohman/json
 
 ## How to cross-compile for Raspberry Pi 4
-* install arm-linux-gnueabihf
+* install arm-linux-gnueabihf (version 9.3.0 working on RPI OS Bullseye having GCC 10.2.1)
 * copy /lib, /opt, /usr folders from Rpi to local folder (in our case called "rootfs")
-* in file `rpi-toolchain-file.cmake` specify path to this folder (variable `CMAKE_FIND_ROOT_PATH`)
+* through cmd or in file `rpi-toolchain-file.cmake` specify path to this folder (variable `CMAKE_FIND_ROOT_PATH`)
 * now you can build:
    * `mkdir build`
    * `cd build`
-   * `cmake -DCMAKE_TOOLCHAIN_FILE=../raspberry_toolchain.cmake ..`
-   * `make`
+   * `cmake -DCMAKE_TOOLCHAIN_FILE=../raspberry_toolchain.cmake -DCMAKE_INSTALL_PREFIX="someDir" ..`
+   * `make install`
+   * output in `someDir` can be moved to RPI
 
 
 

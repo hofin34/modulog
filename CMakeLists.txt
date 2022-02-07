@@ -24,16 +24,22 @@ FOREACH (IDX RANGE ${AGENTS_COUNT})
     STRING(JSON AG_PATH GET ${TO_COMPILE_JSON} agentsToCompile ${IDX} agentPath)
     STRING(JSON AG_ENABLED GET ${TO_COMPILE_JSON} agentsToCompile ${IDX} enabled)
     IF (${AG_ENABLED})
+        #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output-pack/agents/${AG_NAME})
         GET_FILENAME_COMPONENT(AG_NAME ${AG_PATH} NAME)
         ADD_SUBDIRECTORY(${AG_PATH})
         ADD_DEPENDENCIES(modulog ${AG_NAME}) # Agent target has same name as its folder
         FILE(APPEND ${AG_BUILT_LIST} ${AG_PATH} "\n")
+
+        SET(AG_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/agents/${AG_NAME})
+        INSTALL(TARGETS ${AG_NAME} DESTINATION ${AG_INSTALL_DIR})
+        INSTALL(FILES ${AG_PATH}/config.json DESTINATION ${AG_INSTALL_DIR})
     ENDIF ()
 ENDFOREACH ()
-
 # ------------ linking
 TARGET_LINK_LIBRARIES(modulog reproc++ asio nlohmann_json::nlohmann_json)
 
-ADD_SUBDIRECTORY(tests)
+#ADD_SUBDIRECTORY(tests)
 
 
+INSTALL(TARGETS modulog DESTINATION ".")
+INSTALL(FILES ${AG_BUILT_LIST} DESTINATION ".")
