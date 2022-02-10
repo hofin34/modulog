@@ -37,7 +37,6 @@ After start, enabled agents are created and they collect logs. These logs are sa
 * Compile just enabled agents
 
 ## TODO
-* Write, why is our solution different
 * Write to doc, how to create agents
 
 
@@ -63,21 +62,22 @@ After start, enabled agents are created and they collect logs. These logs are sa
 
 ---
 
-# Implementation tasks
+# Test cases
+* add return codes for different exits:
+  * Agent fails to start
+  * Couldn't open file
+  * Runtime err
+* If agent fails during startup
+* If agent asks to exit
+* if is agent killed
+* If all agents are killed - should exit with 0
+* if all agents asks to exit
+* if agent freezes - will it kill him? (also with more agents)
+* if is logging correctly? and errors?
+* logging with a lot of agents and big log frequency
+* Test it with valgrind?
+* 
 
-1. Our app will have each monitoring agent as a process, so we need to find out, how to create/stop processes.
-   Agents will be executed from main app, which will be called Core.
-   We can look for some light-weighted library to manage it - we have to, if library offers handle to process, if we would like to add them in process groups.
-   We will call these processes agents and they will collect system info in the future.
-2. We want our agents to communicate with core app via TCP/IP on localhost. When agent fails, we need to know it. We can use some library, which doesn't have too much dependencies and is not too large (look at boost::asio / POCO project).
-3. We need to send various messege types like msg::log, msg::config or msg::log. We have to check, if agent is not freezed with sending control messages and agent has to respond to it. We will also have to think about communication protocol between agent and core.
-   Agent will also automatically send some random log messages.
-4. We want to create two agents - one to monitor temperature, second to monitor internet connection.
-   We will write and use config files for these agents (like how often send logs, what is max temperature etc.).
-   Agents will then collect logs, send them to core app and core app will save these logs in folder.
-   If agent sends some error message, core app will point on it from general log file.
-
----
 
 # Already existing tools - research
 
@@ -127,46 +127,18 @@ Cons:
 - seems pretty good
 
 
-## Epic for cross compile on Rpi
+---
 
-**As a programmer, I want to cross-compile "modulog" logging app for VUT FIT train sensor.**
+## Osnova BP
+# Teoretická část
+## Napsat požadavky firmy
+## Výběr technologií 
+## Proč existující nevyhovují + větší porovnání
+## Meziprocesní komunikace - výhody/nevýhody + proč TCP nejlepší
+## 
 
-We have already created modulog application, which will be used on multiple devices based on GNU/Linux.
-For the beginning, we want to try it on first sensor to see, if it's working as expected.
-To run it there, we need to find out, how to compile it on our computer based on Intel, then copy executable to sensor and finally run the app.
-Modulog link: https://github.com/hofin34/bachelor-hofbauer
-
-**Acceptance criteria:**
-
-* modulog application crossed-compiled on Intel based computer for Arm
-* modulog application running on VUT FIT train sensor
-
-Stories:
-### cross compile Hello World for Rpi
-**As a programmer, I want to find out, how to be able cross-compile basic c++ Hello World app for Rpi**
-
-We need to find out, how cross-compiling works with CMake and then we want to compile sample app for Arm architecture.
-
-**Acceptance criteria:**
-
-* Hello World app compiled on Intel based computer for Arm
-* app can be run on Rpi 4
-
-### cross compile modulog for Rpi
-**As a programmer, I want to be able cross-compile modulog application for Rpi 4**
-
-**Acceptance criteria:**
-
-* modulog application cross-compiled on Intel based PC for Rpi 4
-* modulog app running on Rpi 4
-
-### cross compile modulog for VUT FIT train sensor
-**As a programmer, I want to be able cross-compile modulog application for VUT train sensor**
-
-Before working with train sensor, make an OS binary copy for backup!
-
-**Acceptance criteria:**
-
-* binary copy of train sensor SD card (as backup)
-* modulog application cross-compiled on Intel based PC for VUT train sensor (Arm)
-* modulog app running on VUT train sensor
+# Praktická část
+## Diagramy + vysvětlení principu
+## Popis struktury projektu???
+## Testování - real + GTesty
+## Analýza výkonu

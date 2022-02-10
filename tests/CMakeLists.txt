@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
 PROJECT(Tests)
 
 # GoogleTest requires at least C++11
-SET(CMAKE_CXX_STANDARD 20)
+SET(CMAKE_CXX_STANDARD 17)
 
 INCLUDE(FetchContent)
 FetchContent_Declare(

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-SET(CMAKE_CXX_STANDARD 20)
+SET(CMAKE_CXX_STANDARD 17)
 
 file(GLOB_RECURSE source_files "src/*")
 include(FetchContent)
@@ -10,9 +10,13 @@ target_include_directories(CommunicationLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # ----------- nlohmann json library
 # TODO downloads too long?
+#FetchContent_Declare(json
+#        GIT_REPOSITORY https://github.com/nlohmann/json.git
+#        GIT_TAG v3.10.4)
+
 FetchContent_Declare(json
-        GIT_REPOSITORY https://github.com/nlohmann/json.git
-        GIT_TAG v3.10.4)
+        URL https://github.com/nlohmann/json/releases/download/v3.10.5/json.tar.xz
+        )
 
 FetchContent_GetProperties(json)
 if(NOT json_POPULATED)
@@ -22,7 +26,7 @@ endif()
 
 # ----------- asio library
 FetchContent_Declare(asio
-        GIT_REPOSITORY git@github.com:chriskohlhoff/asio.git
+        GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
         GIT_TAG  asio-1-20-0
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""
