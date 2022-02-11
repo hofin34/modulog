@@ -18,18 +18,23 @@ After start, enabled agents are created and they collect logs. These logs are sa
 2. DaanDeMeyer/reproc (reproc++)
 3. nlohman/json
 
-## How to cross-compile for Raspberry Pi 4
+# Cross-compiling
+* when program throws error "GLIBCXX_3.4.26 not found" you have to update libstdc++6
+
+## Raspberry Pi 4
 * install arm-linux-gnueabihf (version 9.3.0 working on RPI OS Bullseye having GCC 10.2.1)
 * copy /lib, /opt, /usr folders from Rpi to local folder (in our case called "rootfs")
-* through cmd or in file `rpi-toolchain-file.cmake` specify path to this folder (variable `CMAKE_FIND_ROOT_PATH`)
+* through cmd or in file `rpi-toolchain-file.cmake` specify path to this folder (variable `CMAKE_FIND_ROOT_PATH` and `CMAKE_SYS_ROOT`)
 * now you can build:
    * `mkdir build`
    * `cd build`
    * `cmake -DCMAKE_TOOLCHAIN_FILE=../toolchains/raspberry_toolchain.cmake -DCMAKE_INSTALL_PREFIX="someDir" ..`
-   * `make install`
+   * `make -j 8 install`
    * output in `someDir` can be moved to RPI
 
-
+## aarch64 architecture
+* install `gcc-aarch64-linux-gnu` (tested version 9.3.0)
+* rest same as above, just modify cmake to `-DCMAKE_TOOLCHAIN_FILE=../toolchains/aarch_toolchain.cmake`
 
 ## Implementation TODO
 * Log somewhere if agent crash 
@@ -63,6 +68,8 @@ After start, enabled agents are created and they collect logs. These logs are sa
 ---
 
 # Test cases
+* Write speed to tests and save history
+* Test communication library - sending big logs / big frequency
 * add return codes for different exits:
   * Agent fails to start
   * Couldn't open file

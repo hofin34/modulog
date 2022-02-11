@@ -1,5 +1,6 @@
 # the name of the target operating system
 SET(CMAKE_SYSTEM_NAME Linux)
+SET(CMAKE_SYSTEM_PROCESSOR arm)
 
 # compilers for raspberry:
 SET(CMAKE_C_COMPILER   arm-linux-gnueabihf-gcc)
