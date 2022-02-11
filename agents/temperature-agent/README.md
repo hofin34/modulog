@@ -1,6 +1,7 @@
 # temperature-agent
 
 This agent reads temperature file specified by "temperatureSource" in config.json5 and logs it.
+This file can be on different systems on different places!
 
 ## Config structure
 
