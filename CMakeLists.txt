@@ -39,7 +39,7 @@ ENDFOREACH ()
 TARGET_LINK_LIBRARIES(modulog reproc++ asio nlohmann_json::nlohmann_json)
 
 #ADD_SUBDIRECTORY(test)
-
+##
 
 INSTALL(TARGETS modulog DESTINATION ".")
 INSTALL(FILES ${AG_BUILT_LIST} DESTINATION ".")
