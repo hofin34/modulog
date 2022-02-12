@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.20)
+SET(CMAKE_CXX_STANDARD 17)
+if(NOT TARGET agent_client_lib)
+    add_subdirectory(../../agent-client communication-lib-build)
+endif()
+add_executable(test-random-agent test-random-agent.cpp)
+configure_file(config.json config.json COPYONLY)
+target_link_libraries(test-random-agent agent_client_lib)
