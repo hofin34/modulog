@@ -5,8 +5,8 @@
 # Edited by: dytrych AT fit vutbr cz
 #===========================================
 # asi budete chtit prejmenovat / you will probably rename:
-CO=thesis_hofbauer
-NAME=thesis_hofbauer
+CO=xhofba02-prace
+NAME=xhofba02-prace
 
 all: $(CO).pdf
 

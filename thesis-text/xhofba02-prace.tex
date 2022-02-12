@@ -11,11 +11,11 @@
 % zpracování / processing: make, make pdf, make clean
 %==============================================================================
 % Soubory, které je nutné upravit nebo smazat: / Files which have to be edited or deleted:
-%   thesis_hofbauer-20-literatura-bibliography.bib - literatura / bibliography
-%   thesis_hofbauer-01-kapitoly-chapters.tex - obsah práce / the thesis content
-%   thesis_hofbauer-01-kapitoly-chapters-en.tex - obsah práce v angličtině / the thesis content in English
-%   thesis_hofbauer-30-prilohy-appendices.tex - přílohy / appendices
-%   thesis_hofbauer-30-prilohy-appendices-en.tex - přílohy v angličtině / appendices in English
+%   xhofba02-prace-20-literatura-bibliography.bib - literatura / bibliography
+%   xhofba02-prace-01-kapitoly-chapters.tex - obsah práce / the thesis content
+%   xhofba02-prace-01-kapitoly-chapters-en.tex - obsah práce v angličtině / the thesis content in English
+%   xhofba02-prace-30-prilohy-appendices.tex - přílohy / appendices
+%   xhofba02-prace-30-prilohy-appendices-en.tex - přílohy v angličtině / appendices in English
 %==============================================================================
 \documentclass[]{fitthesis} % bez zadání - pro začátek práce, aby nebyl problém s překladem
 %\documentclass[english]{fitthesis} % without assignment - for the work start to avoid compilation problem
@@ -118,44 +118,41 @@
 \projectinfo{
   %Prace / Thesis
   project={BP},            %typ práce BP/SP/DP/DR  / thesis type (SP = term project)
-  year={2021},             % rok odevzdání / year of submission
+  year={2022},             % rok odevzdání / year of submission
   date=\today,             % datum odevzdání / submission date
   %Nazev prace / thesis title
-  title.cs={Název práce},  % název práce v češtině či slovenštině (dle zadání) / thesis title in czech language (according to assignment)
-  title.en={Thesis title}, % název práce v angličtině / thesis title in english
+  title.cs={Diagnostika systémů založených na GNU/Linux},  % název práce v češtině či slovenštině (dle zadání) / thesis title in czech language (according to assignment)
+  title.en={Diagnostics of GNU/Linux-Based Systems}, % název práce v angličtině / thesis title in english
   %title.length={14.5cm}, % nastavení délky bloku s titulkem pro úpravu zalomení řádku (lze definovat zde nebo níže) / setting the length of a block with a thesis title for adjusting a line break (can be defined here or below)
   %sectitle.length={14.5cm}, % nastavení délky bloku s druhým titulkem pro úpravu zalomení řádku (lze definovat zde nebo níže) / setting the length of a block with a second thesis title for adjusting a line break (can be defined here or below)
   %dectitle.length={14.5cm}, % nastavení délky bloku s titulkem nad prohlášením pro úpravu zalomení řádku (lze definovat zde nebo níže) / setting the length of a block with a thesis title above declaration for adjusting a line break (can be defined here or below)
   %Autor / Author
-  author.name={Jméno},   % jméno autora / author name
-  author.surname={Příjmení},   % příjmení autora / author surname 
+  author.name={Martin},   % jméno autora / author name
+  author.surname={Hofbauer},   % příjmení autora / author surname 
   %author.title.p={Bc.}, % titul před jménem (nepovinné) / title before the name (optional)
   %author.title.a={Ph.D.}, % titul za jménem (nepovinné) / title after the name (optional)
   %Ustav / Department
   department={UPGM}, % doplňte příslušnou zkratku dle ústavu na zadání: UPSY/UIFS/UITS/UPGM / fill in appropriate abbreviation of the department according to assignment: UPSY/UIFS/UITS/UPGM
   % Školitel / supervisor
-  supervisor.name={Jméno},   % jméno školitele / supervisor name 
-  supervisor.surname={Příjmení},   % příjmení školitele / supervisor surname
-  supervisor.title.p={prof. RNDr.},   %titul před jménem (nepovinné) / title before the name (optional)
+  supervisor.name={Pavel},   % jméno školitele / supervisor name 
+  supervisor.surname={Smrž},   % příjmení školitele / supervisor surname
+  supervisor.title.p={doc. RNDr.},   %titul před jménem (nepovinné) / title before the name (optional)
   supervisor.title.a={Ph.D.},    %titul za jménem (nepovinné) / title after the name (optional)
   % Klíčová slova / keywords
-  keywords.cs={Sem budou zapsána jednotlivá klíčová slova v českém (slovenském) jazyce, oddělená čárkami.}, % klíčová slova v českém či slovenském jazyce / keywords in czech or slovak language
-  keywords.en={Sem budou zapsána jednotlivá klíčová slova v anglickém jazyce, oddělená čárkami.}, % klíčová slova v anglickém jazyce / keywords in english
+  keywords.cs={Linux, GNU, logování, diagnostika, sběr informací, C++, CMake, Asio, modulog}, % klíčová slova v českém či slovenském jazyce / keywords in czech or slovak language TODO add
+  keywords.en={Linux, GNU, logging, diagnostics, collecting informations, C++, CMake, Asio, modulog}, % klíčová slova v anglickém jazyce / keywords in english
   %keywords.en={Here, individual keywords separated by commas will be written in English.},
   % Abstrakt / Abstract
   abstract.cs={Do tohoto odstavce bude zapsán výtah (abstrakt) práce v českém (slovenském) jazyce.}, % abstrakt v českém či slovenském jazyce / abstract in czech or slovak language
   abstract.en={Do tohoto odstavce bude zapsán výtah (abstrakt) práce v anglickém jazyce.}, % abstrakt v anglickém jazyce / abstract in english
   %abstract.en={An abstract of the work in English will be written in this paragraph.},
   % Prohlášení (u anglicky psané práce anglicky, u slovensky psané práce slovensky) / Declaration (for thesis in english should be in english)
-  declaration={Prohlašuji, že jsem tuto bakalářskou práci vypracoval samostatně pod vedením pana X...
-Další informace mi poskytli...
-Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých jsem čerpal.},
+  declaration={Prohlašuji, že jsem tuto bakalářskou práci vypracoval samostatně pod vedením pana doc. RNDr. Pavla Smrže, Ph.D. Další informace mi poskytla partnerská firma BringAuto. Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých jsem čerpal.},
   %declaration={I hereby declare that this Bachelor's thesis was prepared as an original work by the author under the supervision of Mr. X
 % The supplementary information was provided by Mr. Y
 % I have listed all the literary sources, publications and other sources, which were used during the preparation of this thesis.},
   % Poděkování (nepovinné, nejlépe v jazyce práce) / Acknowledgement (optional, ideally in the language of the thesis)
-  acknowledgment={V této sekci je možno uvést poděkování vedoucímu práce a těm, kteří poskytli odbornou pomoc
-(externí zadavatel, konzultant apod.).},
+  acknowledgment={Děkuji vedoucímu bakalářské práce doc. RNDr. Pavlu Smrži, Ph.D. za rady, trpělivost a ochotu při konzultacích. Poděkování patří také firmě BringAuto za poskytnutí podpory a možnosti testování aplikace v reálném prostředí.},
   %acknowledgment={Here it is possible to express thanks to the supervisor and to the people which provided professional help
 %(external submitter, consultant, etc.).},
   % Rozšířený abstrakt (cca 3 normostrany) - lze definovat zde nebo níže / Extended abstract (approximately 3 standard pages) - can be defined here or below
@@ -235,9 +232,9 @@ Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých
   % Text prace / Thesis text
   % ----------------------------------------------
   \ifenglish
-    \input{thesis_hofbauer-01-kapitoly-chapters-en}
+    \input{xhofba02-prace-01-kapitoly-chapters-en}
   \else
-    \input{thesis_hofbauer-01-kapitoly-chapters}
+    \input{xhofba02-prace-01-kapitoly-chapters}
   \fi
   
   % Kompilace po částech (viz výše, nutno odkomentovat)
@@ -269,7 +266,7 @@ Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých
   \fi
 \fi
   \begin{flushleft}
-  \bibliography{thesis_hofbauer-20-literatura-bibliography}
+  \bibliography{xhofba02-prace-20-literatura-bibliography}
   \end{flushleft}
 
   % vynechani stranky v oboustrannem rezimu
@@ -329,13 +326,13 @@ Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých
   
   % Přílohy / Appendices
   \ifenglish
-    \input{thesis_hofbauer-30-prilohy-appendices-en}
+    \input{xhofba02-prace-30-prilohy-appendices-en}
   \else
-    \input{thesis_hofbauer-30-prilohy-appendices}
+    \input{xhofba02-prace-30-prilohy-appendices}
   \fi
   
   % Kompilace po částech (viz výše, nutno odkomentovat)
   % Compilation piecewise (see above, it is necessary to uncomment it)
-  %\subfile{thesis_hofbauer-30-prilohy-appendices}
+  %\subfile{xhofba02-prace-30-prilohy-appendices}
   
 \end{document}
