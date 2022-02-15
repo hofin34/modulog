@@ -1,18 +1,17 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
 INCLUDE(FetchContent)
-PROJECT(bachelor_hofbauer)
+PROJECT(modulog)
+
+OPTION(BRINGAUTO_TESTS "Tests" OFF)
+OPTION(BRINGAUTO_INSTALL "Install" OFF)
+OPTION(BRINGAUTO_PACKAGE "Create package" OFF)
 
 SET(CMAKE_CXX_STANDARD 17)
 SET(AG_BUILT_LIST ${CMAKE_BINARY_DIR}/agents-enabled.conf)
 
-if (NOT TARGET CommunicationLib)
-    ADD_SUBDIRECTORY(communication)
-endif ()
+ADD_SUBDIRECTORY(core)
 
-FILE(GLOB_RECURSE source_files "core/src/*")
-ADD_EXECUTABLE(modulog main.cpp ${source_files})
-TARGET_INCLUDE_DIRECTORIES(modulog PUBLIC "core/include/")
-TARGET_LINK_LIBRARIES(modulog CommunicationLib)
+ADD_EXECUTABLE(modulog main.cpp)
 
 # What will be compiled:
 FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/agents-to-compile.json TO_COMPILE_JSON)
@@ -30,16 +29,23 @@ FOREACH (IDX RANGE ${AGENTS_COUNT})
         ADD_DEPENDENCIES(modulog ${AG_NAME}) # Agent target has same name as its folder
         FILE(APPEND ${AG_BUILT_LIST} ${AG_PATH} "\n")
 
-        SET(AG_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/agents/${AG_NAME})
-        INSTALL(TARGETS ${AG_NAME} DESTINATION ${AG_INSTALL_DIR})
-        INSTALL(FILES ${AG_PATH}/config.json DESTINATION ${AG_INSTALL_DIR})
+        IF(BRINGAUTO_INSTALL)
+            SET(AG_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/agents/${AG_NAME})
+            INSTALL(TARGETS ${AG_NAME} DESTINATION ${AG_INSTALL_DIR})
+            INSTALL(FILES ${AG_PATH}/config.json DESTINATION ${AG_INSTALL_DIR})
+        ENDIF()
     ENDIF ()
 ENDFOREACH ()
 # ------------ linking
-TARGET_LINK_LIBRARIES(modulog reproc++ asio nlohmann_json::nlohmann_json)
 
-#ADD_SUBDIRECTORY(test)
-##
+TARGET_LINK_LIBRARIES(modulog CoreLib)
 
-INSTALL(TARGETS modulog DESTINATION ".")
-INSTALL(FILES ${AG_BUILT_LIST} DESTINATION ".")
+IF(BRINGAUTO_TESTS)
+    ENABLE_TESTING()
+    ADD_SUBDIRECTORY(test)
+ENDIF()
+
+IF(BRINGAUTO_INSTALL)
+    INSTALL(TARGETS modulog DESTINATION ".")
+    INSTALL(FILES ${AG_BUILT_LIST} DESTINATION ".")
+ENDIF()

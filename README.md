@@ -10,8 +10,16 @@ You can configure agents with their config files - settings like how often take 
 
 After start, enabled agents are created and they collect logs. These logs are saved in `logs/` folder, which is created after program termination.
 
-## How to run
-`mkdir build && cd build && cmake .. && make && ./modulog`
+## How to use
+You can select, which agents will be compiled in file `agents-to-compile.json`.
+Then compile all with:
+
+`mkdir build && cd build && cmake .. && make`
+
+In built folder file `agents-enabled.conf`, you can enable/disable agents, that will be used during runtime (simply delete line or comment with `#` character).
+Now you can run with `./modulog`.
+
+
 
 ## Dependencies
 1. boost asio (no need for whole boost, asio is developed standalone)

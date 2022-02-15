@@ -1,6 +1,10 @@
 #pragma once
 #include <filesystem>
-namespace modulog::communication{
+#include <state_smurf/diagram/StateDiagram.hpp>
+#include <state_smurf/transition/StateTransition.hpp>
+#include <StateGraphHandler.hpp>
+
+namespace modulog::meta_lib{
     struct SharedSettings{
         struct ServerSettings{
             int portNumber = 1234; // Port number, where will be TCP server listening
@@ -13,5 +17,9 @@ namespace modulog::communication{
             int isAliveTimeoutSec = 2; // How long wait for agents isAlive response
             std::filesystem::path sharedAgentsConfig = ""; // Path to file - its content will be sent to all agents (if not using, leave this variable empty)
         } LogSettings;
+
+        struct Testing{
+            std::shared_ptr<state_smurf::transition::StateTransition> transitions = std::make_shared<state_smurf::transition::StateTransition>(StateGraphHandler::createStateDiagram());
+        } Testing;
     };
 }

@@ -1,9 +1,9 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
 PROJECT(Tests)
-
 # GoogleTest requires at least C++11
 SET(CMAKE_CXX_STANDARD 17)
 
+ENABLE_TESTING()
 INCLUDE(FetchContent)
 FetchContent_Declare(
         googletest
@@ -13,10 +13,14 @@ FetchContent_Declare(
 SET(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-ENABLE_TESTING()
-
 ADD_EXECUTABLE(hello_test hello_test.cpp)
-TARGET_LINK_LIBRARIES(hello_test gtest_main)
-
-include(GoogleTest)
+TARGET_LINK_LIBRARIES(hello_test gtest_main CoreLib)
+ADD_SUBDIRECTORY(agents/exiting-agent)
+ADD_SUBDIRECTORY(agents/simple-log-agent)
+INCLUDE(GoogleTest)
 gtest_discover_tests(hello_test)
+
+ADD_TEST(NAME hello_test
+        COMMAND hello_test)
+CONFIGURE_FILE(agents-enabled.conf agents-enabled.conf)
+

@@ -2,14 +2,9 @@
 #include <modulog/core/Core.hpp>
 #include <vector>
 #include <asio.hpp>
-#include <modulog/communication/SharedSettings.hpp>
+#include "meta-lib/include/SharedSettings.hpp"
 
-// Just for debug, TODO remove later:
-std::string ver_string(int a, int b, int c) {
-    std::ostringstream ss;
-    ss << a << '.' << b << '.' << c;
-    return ss.str();
-}
+
 
 std::unique_ptr<modulog::core::Core> core;
 
@@ -26,12 +21,10 @@ int main(int argc, const char **argv) {
     sigaction(SIGINT,  &sigAct, nullptr);
     sigaction(SIGTERM, &sigAct, nullptr);
 
-    auto sharedSettings = std::make_shared<modulog::communication::SharedSettings>();
-    std::filesystem::path agentsList = sharedSettings->LogSettings.agentListPath;
-
+    auto sharedSettings = std::make_shared<modulog::meta_lib::SharedSettings>();
     try {
         auto ioContext = std::make_shared<asio::io_context>();
-        core = std::make_unique<modulog::core::Core>(std::filesystem::absolute(agentsList), ioContext, sharedSettings);
+        core = std::make_unique<modulog::core::Core>(ioContext, sharedSettings);
         core->start();
     } catch (std::exception &e) {
         std::cerr << "Exception in main.cpp: " <<  e.what() << std::endl;

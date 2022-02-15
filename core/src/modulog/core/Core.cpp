@@ -1,17 +1,18 @@
 #include <modulog/core/Core.hpp>
 
 namespace modulog::core {
-    Core::Core(const std::filesystem::path &pathToEnabledAgentsList, std::shared_ptr<asio::io_context> ioContext,
-               std::shared_ptr<communication::SharedSettings> sharedSettings) :
+    Core::Core(std::shared_ptr<asio::io_context> ioContext,
+               std::shared_ptr<meta_lib::SharedSettings> sharedSettings) :
             sendAliveTimer_(*ioContext),
             server_(*ioContext, messageMutex_, messageConditionVar_, totalReceivedMessages_, sharedSettings),
             sharedSettings_(sharedSettings) {
         ioContext_ = ioContext;
-        agentHandler_ = std::make_shared<AgentHandler>(pathToEnabledAgentsList);
+        agentHandler_ = std::make_shared<AgentHandler>(std::filesystem::absolute(sharedSettings_->LogSettings.agentListPath));
     }
 
     void Core::start() {
         // start server:
+        sharedSettings_->Testing.transitions->goToState("");
         server_.startAccept();
         serverThread_ = std::thread{[this]() { ioContext_->run(); }};
         try {

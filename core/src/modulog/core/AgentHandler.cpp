@@ -2,7 +2,6 @@
 
 namespace modulog::core{
     AgentHandler::AgentHandler(const std::filesystem::path& pathToEnabledAgentsList): runningAgents_(){
-        //TODO termination and cleanup if CTRL+C is pressed
         parseEnabledAgentsList(pathToEnabledAgentsList);
     };
 
@@ -70,7 +69,7 @@ namespace modulog::core{
                 agentsPaths_.push_back(actAgentPath);
             }
         }catch(std::exception& e){
-            std::cerr << "Couldn't parse agent list (or file open err): " << e.what() << std::endl;
+            throw;
         }
     }
 
