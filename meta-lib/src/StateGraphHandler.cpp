@@ -7,7 +7,6 @@ namespace modulog::meta_lib{
         auto start= stateDiagram.addVertex("Start");
         auto serverCreated = stateDiagram.addVertex("ServerCreated");
         auto creatingAgent = stateDiagram.addVertex("CreatingAgent");
-        auto agentsCreated = stateDiagram.addVertex("AgentsCreated");
         auto startSendAlive = stateDiagram.addVertex("StartSendAlive");
         auto sentIsAlive = stateDiagram.addVertex("SentIsAlive");
         auto waitForMessage = stateDiagram.addVertex("WaitForMessage");
@@ -19,8 +18,7 @@ namespace modulog::meta_lib{
         stateDiagram.setEdge(start, serverCreated);
         stateDiagram.setEdge(serverCreated, creatingAgent);
         stateDiagram.setEdge(creatingAgent, creatingAgent);
-        stateDiagram.setEdge(creatingAgent, agentsCreated);
-        stateDiagram.setEdge(agentsCreated, startSendAlive);
+        stateDiagram.setEdge(creatingAgent, startSendAlive);
         stateDiagram.setEdge(startSendAlive, sentIsAlive);
         stateDiagram.setEdge(startSendAlive, waitForMessage);
         stateDiagram.setEdge(sentIsAlive, waitForMessage);
@@ -38,7 +36,6 @@ namespace modulog::meta_lib{
         stateDiagram.setEdge(start, exiting);
         stateDiagram.setEdge(serverCreated, exiting);
         stateDiagram.setEdge(creatingAgent, exiting);
-        stateDiagram.setEdge(agentsCreated, exiting);
         stateDiagram.setEdge(startSendAlive, exiting);
         stateDiagram.setEdge(sentIsAlive, exiting);
         stateDiagram.setEdge(waitForMessage, exiting);

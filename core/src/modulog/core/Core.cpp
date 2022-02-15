@@ -12,9 +12,10 @@ namespace modulog::core {
 
     void Core::start() {
         // start server:
-        sharedSettings_->Testing.transitions->goToState("");
+        sharedSettings_->Testing.transitions->goToState("Start");
         server_.startAccept();
         serverThread_ = std::thread{[this]() { ioContext_->run(); }};
+        sharedSettings_->Testing.transitions->goToState("ServerCreated");
         try {
             initAllAgents();
         } catch (std::exception &e) {
@@ -26,12 +27,13 @@ namespace modulog::core {
         startSendAlive();
         LogSaver logSaver(sharedSettings_->LogSettings.logsDestination);
         while (!stopFlag.load() && !agentHandler_->getRunningAgents().empty()) {
-            std::cout << "NEW ITER" << std::endl;
+            sharedSettings_->Testing.transitions->goToState("WaitForMessage");
             {
                 std::unique_lock<std::mutex> lck(messageMutex_);
                 messageConditionVar_.wait(lck, [this] { return totalReceivedMessages_; });
                 totalReceivedMessages_--;
             }
+            sharedSettings_->Testing.transitions->goToState("ProcessMessage");
             std::vector<std::shared_ptr<Agent>> agentsToDel;
             int i = 0;
             for (auto &actAgent: agentHandler_->getRunningAgents()) {
@@ -68,6 +70,7 @@ namespace modulog::core {
 
 
     void Core::startSendAlive() {
+        sharedSettings_->Testing.transitions->goToState("StartSendAlive");
         sendAliveTimer_.expires_from_now(std::chrono::seconds(sharedSettings_->LogSettings.isAliveIntervalSec));
         sendAliveTimer_.async_wait([this](const asio::error_code &) { sendAlive(); });
     }
@@ -81,6 +84,7 @@ namespace modulog::core {
             agent->setConfirmedAlive(false);
             agent->getMessageExchanger()->sendControl(isAliveMsg);
         }
+        sharedSettings_->Testing.transitions->goToState("SentIsAlive");
         sendAliveTimer_.expires_from_now(std::chrono::seconds(sharedSettings_->LogSettings.isAliveTimeoutSec));
         sendAliveTimer_.async_wait([this](const asio::error_code &) { checkIfAgentsAlive(); });
     }
@@ -105,6 +109,7 @@ namespace modulog::core {
     void Core::initAllAgents() {
         std::shared_ptr<AgentProcess> agentInfo;
         while ((agentInfo = agentHandler_->runNextAgent()) != nullptr) {
+            sharedSettings_->Testing.transitions->goToState("CreatingAgent");
             std::cout << "waiting for ag. connection..." << std::endl;
             communication::TcpConnection::pointer agentConnection;
             auto endConnectionTime =
@@ -158,6 +163,7 @@ namespace modulog::core {
     }
 
     void Core::stop() {
+        sharedSettings_->Testing.transitions->goToState("Exiting");
         stopFlag = true;
     }
 
@@ -167,11 +173,13 @@ namespace modulog::core {
             agentsToDel.push_back(toDel); // Cannot delete from inside for range - its removing from vector
         }
         for (auto &toDel: agentsToDel) {
+            sharedSettings_->Testing.transitions->goToState("StopAgent");
             agentHandler_->deleteAgent(toDel);
         }
         ioContext_->stop();
         serverThread_.join();
         sendAliveTimer_.cancel();
+        sharedSettings_->Testing.transitions->goToState("CleanExit");
     }
 
 
