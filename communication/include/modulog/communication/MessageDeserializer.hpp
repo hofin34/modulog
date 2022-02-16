@@ -1,4 +1,5 @@
 #pragma once
+
 #include <modulog/communication/ControlMessage.hpp>
 #include <modulog/communication/LogMessage.hpp>
 
@@ -9,12 +10,12 @@
 #include <iostream>
 
 
-namespace modulog::communication{
-/**
- * If you have got message represented by string, you can use this class to deserialize it.
- * After calling constructor, there will be stored log or control message in this class -
- * you have to check it with getMsgType and then getControlMessage() or getLogMessage()
- */
+namespace modulog::communication {
+    /**
+     * If you have got message represented by string, you can use this class to deserialize it.
+     * After calling constructor, there will be stored log or control message in this class -
+     * you have to check it with getMsgType and then getControlMessage() or getLogMessage()
+     */
     class MessageDeserializer {
     public:
         /**

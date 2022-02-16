@@ -1,6 +1,11 @@
 #pragma once
+
 #include <filesystem>
+
 namespace modulog::communication{
+    /**
+     * Shared settings for whole app - you can set here things to change behaviour of application
+     */
     struct SharedSettings{
         struct ServerSettings{
             int portNumber = 1234; // Port number, where will be TCP server listening

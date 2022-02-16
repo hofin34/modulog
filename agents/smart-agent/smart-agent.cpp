@@ -1,3 +1,7 @@
+/*
+ * modulog agent, that monitors disk status (look at README.md for more info)
+ */
+
 #include <modulog/agent_client/AgentClient.hpp>
 #include <modulog/agent_client/Helpers.hpp>
 
@@ -24,7 +28,7 @@ int main(int argc, char** argv){
     agentClient.initClient();
     while(true){
 
-        auto logMsg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "temperature", "agent not implemented");
+        auto logMsg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "notImplemented", "agent not implemented");
         agentClient.sendLog(logMsg);
 
         std::this_thread::sleep_for(std::chrono::seconds(logInterval));

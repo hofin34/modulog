@@ -1,3 +1,7 @@
+/*
+ * modulog agent, that monitors net connectivity (look at README.md for more info)
+ */
+
 #include <modulog/communication/MessageSerializer.hpp>
 #include <modulog/agent_client/AgentClient.hpp>
 #include <modulog/agent_client/Helpers.hpp>
@@ -90,38 +94,42 @@ bool isInternet() {
 }
 
 
-void logNetState(bool stateValue, modulog::agent_client::AgentClient &agentClient){
+void logNetState(bool stateValue, modulog::agent_client::AgentClient &agentClient) {
     std::shared_ptr<modulog::communication::LogMessage> msg;
-    if(stateValue == true){
-        msg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "isInternetConnectivity", std::to_string(stateValue));
-    }else{
-        msg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "isInternetConnectivity", std::to_string(stateValue));
+    if (stateValue == true) {
+        msg = std::make_shared<modulog::communication::LogMessage>(
+                modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "isInternetConnectivity",
+                std::to_string(stateValue));
+    } else {
+        msg = std::make_shared<modulog::communication::LogMessage>(
+                modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "isInternetConnectivity",
+                std::to_string(stateValue));
     }
     agentClient.sendLog(msg);
 }
 
-int main(int argc, char** argv){
+int main(int argc, char **argv) {
     auto programStart = std::chrono::system_clock::now();
     nlohmann::json configJson = modulog::agent_client::Helpers::parseConfig(argv[0]);// nlohmann::json::parse(ifs);
-    if(!configJson.contains("id")){
+    if (!configJson.contains("id")) {
         std::cerr << "Include config with id defined." << std::endl;
         throw std::runtime_error("...");
     }
     int checkInterval = 4; // TODO default in variable
-    if(configJson.contains("checkInterval")){
+    if (configJson.contains("checkInterval")) {
         checkInterval = configJson["checkInterval"];
     }
 
     auto ioContext = std::make_shared<asio::io_context>();
-    modulog::agent_client::AgentClient agentClient(ioContext, false, configJson["id"] );
+    modulog::agent_client::AgentClient agentClient(ioContext, false, configJson["id"]);
     agentClient.initClient();
     auto lastNetState = isInternet();
     logNetState(lastNetState, agentClient);
 
-    while(true){
+    while (true) {
         std::this_thread::sleep_for(std::chrono::seconds(checkInterval));
         auto newNetState = isInternet();
-        if(newNetState != lastNetState){
+        if (newNetState != lastNetState) {
             logNetState(newNetState, agentClient);
             lastNetState = newNetState;
         }

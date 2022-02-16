@@ -108,6 +108,8 @@ Cons:
 ### Datadog
 Cons:
 1. paid
+2. for observing cloud-scale applications
+
 
 ---
 

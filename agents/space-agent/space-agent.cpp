@@ -1,3 +1,7 @@
+/*
+ * modulog agent, that monitors disk space (look at README.md for more info)
+ */
+
 #include <modulog/agent_client/AgentClient.hpp>
 #include <modulog/agent_client/Helpers.hpp>
 

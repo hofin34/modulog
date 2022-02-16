@@ -12,6 +12,12 @@
 #include <filesystem>
 
 namespace modulog::agent_client {
+    /**
+     * This class is used by agents to easily send logs to the core.
+     * At the beginning has to be initialized via initClient() and can be sent logs
+     * with function sendLog(). In the background, class responds to IS_ALIVE messages
+     * and process other messages.
+     */
     class AgentClient {
     public:
         /**

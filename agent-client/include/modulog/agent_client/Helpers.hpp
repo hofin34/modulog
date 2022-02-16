@@ -9,8 +9,8 @@
 
 namespace modulog::agent_client {
     /**
- * Class containing helper functions for repeatig routines of Agents
- */
+     * Class containing helper functions for repeatig routines of Agents
+     */
     class Helpers {
     public:
         /**

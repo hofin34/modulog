@@ -90,7 +90,7 @@ namespace modulog::agent_client{
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
         responseHandleThread.join();
-        messageExchanger_->getConnection()->closeConnection(); // TODO maybe remove?
+        messageExchanger_->getConnection()->closeConnection();
     }
 
     void AgentClient::sendLog(const std::shared_ptr<communication::LogMessage> &logMessage) {
