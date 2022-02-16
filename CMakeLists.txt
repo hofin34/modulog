@@ -14,6 +14,7 @@ ADD_EXECUTABLE(modulog main.cpp ${source_files})
 TARGET_INCLUDE_DIRECTORIES(modulog PUBLIC "core/include/")
 TARGET_LINK_LIBRARIES(modulog CommunicationLib)
 
+ADD_SUBDIRECTORY(agent-client)
 # What will be compiled:
 FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/agents-to-compile.json TO_COMPILE_JSON)
 STRING(JSON AGENTS_COUNT LENGTH ${TO_COMPILE_JSON} agentsToCompile)

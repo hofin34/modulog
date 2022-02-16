@@ -18,6 +18,16 @@ After start, enabled agents are created and they collect logs. These logs are sa
 2. DaanDeMeyer/reproc (reproc++)
 3. nlohman/json
 
+
+# Diagrams
+This is, how architecture of modulog looks like: 
+
+![Architecture diagram](assets/images/architecture_diagram.png)
+
+And also flowchart diagram:
+
+![Flowchart diagram](assets/images/flowchart.png)
+
 # Cross-compiling
 * when program throws error "GLIBCXX_3.4.26 not found" you have to update libstdc++6
 
