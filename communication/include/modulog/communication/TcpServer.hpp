@@ -36,7 +36,7 @@ namespace modulog::communication{
          * Pop connection to work with it later
          * @return connection or nullptr if no connection was made
          */
-        TcpConnection::pointer popConnection();
+        std::shared_ptr<TcpConnection> popConnection();
 
     private:
         /**
@@ -44,12 +44,12 @@ namespace modulog::communication{
          * @param new_connection made connection
          * @param error error flag
          */
-        void handleAccept(TcpConnection::pointer new_connection, const asio::error_code &error);
+        void handleAccept(std::shared_ptr<TcpConnection> new_connection, const asio::error_code &error);
 
         // ---- attributes
         asio::io_context &io_context_;
         asio::ip::tcp::acceptor acceptor_;
-        std::vector<TcpConnection::pointer> lastConnectionsVector;
+        std::vector<std::shared_ptr<TcpConnection>> lastConnectionsVector;
         std::string serverName_ = "server";
         // Synchro vars:
         std::mutex &messageMutex_;

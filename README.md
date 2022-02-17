@@ -19,7 +19,7 @@ After start, enabled agents are created and they collect logs. These logs are sa
 3. nlohman/json
 
 
-# Diagrams
+# How it works
 This is, how architecture of modulog looks like: 
 
 ![Architecture diagram](assets/images/architecture_diagram.png)

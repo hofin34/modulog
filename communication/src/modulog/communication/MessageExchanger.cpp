@@ -1,7 +1,7 @@
 #include <modulog/communication/MessageExchanger.hpp>
 
 namespace modulog::communication{
-    MessageExchanger::MessageExchanger(TcpConnection::pointer connection) : connection_(connection){
+    MessageExchanger::MessageExchanger(std::shared_ptr<TcpConnection> connection) : connection_(connection){
         connection->startRead();
     }
 
@@ -39,7 +39,7 @@ namespace modulog::communication{
         return connection_->getMessageProcessor()->popControlMessage();
     }
 
-    TcpConnection::pointer MessageExchanger::getConnection() {
+    std::shared_ptr<TcpConnection> MessageExchanger::getConnection() {
         return connection_;
     }
 

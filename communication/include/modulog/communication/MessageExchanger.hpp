@@ -11,7 +11,7 @@ namespace modulog::communication{
         /**
          * @param connection active connection with someone
          */
-        MessageExchanger(TcpConnection::pointer connection);
+        MessageExchanger(std::shared_ptr<TcpConnection> connection);
         /**
          * send log to the second side of connection
          * @param logMessage message to send
@@ -39,9 +39,9 @@ namespace modulog::communication{
          */
         std::shared_ptr<ControlMessage> popControlMessage();
 
-        TcpConnection::pointer getConnection();
+        std::shared_ptr<TcpConnection> getConnection();
     private:
-        TcpConnection::pointer connection_ = nullptr;
+        std::shared_ptr<TcpConnection> connection_ = nullptr;
     };
 
 }

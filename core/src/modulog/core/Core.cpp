@@ -105,7 +105,7 @@ namespace modulog::core {
         std::shared_ptr<AgentProcess> agentInfo;
         while ((agentInfo = agentHandler_->runNextAgent()) != nullptr) {
             std::cout << "waiting for ag. connection..." << std::endl;
-            communication::TcpConnection::pointer agentConnection;
+            std::shared_ptr<communication::TcpConnection> agentConnection;
             auto endConnectionTime =
                     std::chrono::system_clock::now() + std::chrono::seconds(sharedSettings_->ServerSettings.connectionTimeoutSec);
             while ((endConnectionTime > std::chrono::system_clock::now()) &&

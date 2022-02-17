@@ -23,7 +23,7 @@ namespace modulog::agent_client{
         if(isDebug_)
             return;
         try{
-            auto connection = communication::TcpConnection::create(*ioContext_, agentName_, msgProcessor_);
+            auto connection = std::make_shared<communication::TcpConnection>(*ioContext_, agentName_, msgProcessor_);
             asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string("127.0.0.1"), 1234);
             connection->getSocket().connect(endpoint);
             messageExchanger_ = std::make_shared<communication::MessageExchanger>(connection);

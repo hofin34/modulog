@@ -4,8 +4,9 @@ SET(CMAKE_SYSTEM_PROCESSOR aarch64)
 SET(CMAKE_C_COMPILER   aarch64-linux-gnu-gcc)
 SET(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)
 
-SET(CMAKE_FIND_ROOT_PATH /home/martin/Work/proofs-of-concepts/hello-world-cross-compile/train-sensor)
-SET(CMAKE_SYSROOT /home/martin/Work/proofs-of-concepts/hello-world-cross-compile/train-sensor)
+IF(NOT CMAKE_FIND_ROOT_PATH OR NOT CMAKE_SYSROOT)
+    message(SEND_ERROR "Specify CMAKE_FIND_ROOT_PATH and CMAKE_SYSROOT variable!")
+ENDIF()
 
 # if never -> searching programs just in host
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
