@@ -1,3 +1,7 @@
+/*
+ * Begin of modulog program. Look at README.md, how to use.
+ */
+
 #include <iostream>
 #include <modulog/core/Core.hpp>
 #include <vector>
@@ -36,7 +40,7 @@ int main(int argc, const char **argv) {
     struct sigaction sigAct{};
     memset(&sigAct, 0, sizeof(sigAct));
     sigAct.sa_handler = signalHandler;
-    sigaction(SIGINT,  &sigAct, nullptr);
+    sigaction(SIGINT, &sigAct, nullptr);
     sigaction(SIGTERM, &sigAct, nullptr);
 
     initLogger("./ba-logs", true);
@@ -46,7 +50,7 @@ int main(int argc, const char **argv) {
         core = std::make_unique<modulog::core::Core>(ioContext, sharedSettings);
         core->start();
     } catch (std::exception &e) {
-        std::cerr << "Exception in main.cpp: " <<  e.what() << std::endl;
+        std::cerr << "Exception in main.cpp: " << e.what() << std::endl;
         return EXIT_FAILURE;
     }
     std::cout << "---- END -----" << std::endl;

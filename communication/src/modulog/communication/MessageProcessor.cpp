@@ -13,7 +13,6 @@ namespace modulog::communication{
             std::lock_guard<std::mutex> lck(mutex_);
             messagesToProcess_++;
         }
-        std::cout << "Processing msg: " << msg << std::endl;
         MessageDeserializer messageDeserializer(msg);
         if (messageDeserializer.getMsgType() == MSG_TYPE::CONTROL_MSG) {
             controlMessageVector.push_back(messageDeserializer.getControlMessage());

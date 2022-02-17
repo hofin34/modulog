@@ -9,11 +9,18 @@
 #include <iostream>
 #include <utility>
 
-namespace modulog::communication{
+namespace modulog::communication {
     class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     public:
+        TcpConnection(asio::io_context &io_context, std::string &connectionName,
+                      std::shared_ptr<MessageProcessor> messageProcessor) : socket_(io_context),
+                                                                            connectionName_(connectionName),
+                                                                            messageProcessor_(
+                                                                                    std::move(messageProcessor)) {
+            msgBuffer_ = std::make_shared<asio::streambuf>();
+        }
+
         const int MAX_PACKET_SIZE = 512; // how big packets are read
-        typedef std::shared_ptr<TcpConnection> pointer;
 
         /**
          * Sends message msg
@@ -33,9 +40,6 @@ namespace modulog::communication{
          */
         asio::ip::tcp::socket &getSocket();
 
-        static pointer create(asio::io_context &io_context, std::string &connectionName,
-                              std::shared_ptr<MessageProcessor> messageProcessor);
-
         /**
          * shutdowns socket
          */
@@ -48,12 +52,6 @@ namespace modulog::communication{
         std::shared_ptr<MessageProcessor> getMessageProcessor();
 
     private:
-        TcpConnection(asio::io_context &io_context, std::string &connectionName,
-                      std::shared_ptr<MessageProcessor> messageProcessor) : socket_(io_context),
-                                                                            connectionName_(connectionName),
-                                                                            messageProcessor_(std::move(messageProcessor)) {
-            msgBuffer_ = std::make_shared<asio::streambuf>();
-        }
 
         void handleReadMsgSize(const asio::error_code &error, size_t bytes_transferred);
 

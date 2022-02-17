@@ -13,6 +13,7 @@ ADD_SUBDIRECTORY(core)
 
 ADD_EXECUTABLE(modulog main.cpp)
 
+ADD_SUBDIRECTORY(agent-client)
 # What will be compiled:
 FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/agents-to-compile.json TO_COMPILE_JSON)
 STRING(JSON AGENTS_COUNT LENGTH ${TO_COMPILE_JSON} agentsToCompile)

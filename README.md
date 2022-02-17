@@ -26,6 +26,16 @@ Now you can run with `./modulog`.
 2. DaanDeMeyer/reproc (reproc++)
 3. nlohman/json
 
+
+# How it works
+This is, how architecture of modulog looks like: 
+
+![Architecture diagram](assets/images/architecture_diagram.png)
+
+And also flowchart diagram:
+
+![Flowchart diagram](assets/images/flowchart.png)
+
 # Cross-compiling
 * when program throws error "GLIBCXX_3.4.26 not found" you have to update libstdc++6
 
@@ -36,13 +46,13 @@ Now you can run with `./modulog`.
 * now you can build:
    * `mkdir build`
    * `cd build`
-   * `cmake -DCMAKE_TOOLCHAIN_FILE=../toolchains/raspberry_toolchain.cmake -DCMAKE_INSTALL_PREFIX="someDir" ..`
+   * `cmake -DCMAKE_TOOLCHAIN_FILE=../toolchains/raspberry_toolchain.cmake -DCMADE_SYSROOT=/path/to/sysroot -DCMAKE_INSTALL_PREFIX="someDir" ..`
    * `make -j 8 install`
    * output in `someDir` can be moved to RPI
 
 ## aarch64 architecture
 * install `gcc-aarch64-linux-gnu` (tested version 9.3.0)
-* rest same as above, just modify cmake to `-DCMAKE_TOOLCHAIN_FILE=../toolchains/aarch_toolchain.cmake`
+* rest same as above, just modify cmake variable `-DCMAKE_TOOLCHAIN_FILE=../toolchains/aarch_toolchain.cmake`
 
 ## Implementation TODO
 * Log somewhere if agent crash 
@@ -116,6 +126,8 @@ Cons:
 ### Datadog
 Cons:
 1. paid
+2. for observing cloud-scale applications
+
 
 ---
 

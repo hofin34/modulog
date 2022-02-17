@@ -15,9 +15,9 @@ namespace modulog::communication {
         LOG_MSG, CONTROL_MSG
     };
 
-/**
- * Parent class of LogMessage and ControlMessage - used for communication between Agent and Core
- */
+    /**
+     * Parent class of LogMessage and ControlMessage - used for communication between Agent and Core
+     */
     class Message {
     public:
 

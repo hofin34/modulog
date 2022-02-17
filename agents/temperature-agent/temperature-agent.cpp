@@ -1,9 +1,12 @@
+/*
+ * modulog agent, that monitors hardware temperature (look at README.md for more info)
+ */
+
 #include <modulog/agent_client/Helpers.hpp>
 #include <modulog/agent_client/AgentClient.hpp>
 
 #include <iostream>
 #include <thread>
-#include <fstream>
 
 
 
@@ -26,11 +29,11 @@ int main(int argc, char** argv){
         std::cerr << "Include config with id defined." << std::endl;
         throw std::runtime_error("...");
     }
-    int temperatureNotSmallerThan = INT_MIN;
+    int temperatureNotSmallerThan = std::numeric_limits<int>::min();
     if(configJson.contains("temperatureNotSmallerThan")){
         temperatureNotSmallerThan = configJson["temperatureNotSmallerThan"];
     }
-    int temperatureNotBiggerThan = INT_MAX;
+    int temperatureNotBiggerThan = std::numeric_limits<int>::max();
     if(configJson.contains("temperatureNotBiggerThan")){
         temperatureNotBiggerThan = configJson["temperatureNotBiggerThan"];
     }

@@ -1,3 +1,7 @@
+/*
+ * modulog agent, that send logs at random intervals - for testing purposes (look at README.md for more info)
+ */
+
 #include <modulog/agent_client/Helpers.hpp>
 #include <modulog/agent_client/AgentClient.hpp>
 

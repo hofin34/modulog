@@ -1,10 +1,6 @@
 #include <modulog/communication/TcpConnection.hpp>
 
 namespace modulog::communication {
-    TcpConnection::pointer TcpConnection::create(asio::io_context &io_context, std::string &connectionName,
-                                                 std::shared_ptr<MessageProcessor> messageProcessor) {
-        return pointer(new TcpConnection(io_context, connectionName, messageProcessor)); //TODO refactor creation...
-    }
 
     asio::ip::tcp::socket &TcpConnection::getSocket() {
         return socket_;
