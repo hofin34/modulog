@@ -18,7 +18,6 @@ namespace modulog::communication {
     void TcpConnection::handleReadMsgSize(const asio::error_code &error,
                                           size_t bytes_transferred) {
         if (!error) {
-            std::cout << "Msg size on conn. " << connectionName_ << ": " << msgLength << std::endl;
             msgBuffer_ = std::make_shared<asio::streambuf>(msgLength);
             readMsgContent();
         } else {
@@ -45,7 +44,6 @@ namespace modulog::communication {
     void TcpConnection::handleReadMsgContent(const asio::error_code &error, size_t bytes_transferred) {
         if (!error) {
             alreadyRead_ += bytes_transferred;
-            std::cout << "Content bytes read: " << alreadyRead_ << "/" << msgLength << std::endl;
             std::istream istream(&(*msgBuffer_));
             std::string msgPart(std::istreambuf_iterator<char>(istream), {});
             finalMessage_ += msgPart;
@@ -54,7 +52,6 @@ namespace modulog::communication {
                 readMsgContent();
             } else {
                 alreadyRead_ = 0;
-                std::cout << connectionName_ << " received: " << finalMessage_ << std::endl;
                 messageProcessor_->processMessage(finalMessage_);
                 finalMessage_ = "";
                 startRead();
@@ -89,7 +86,6 @@ namespace modulog::communication {
         auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR, "");
         MessageSerializer messageSerializer(exitControlMsg);
         messageProcessor_->processMessage(messageSerializer.serialize());
-        //closeConnection();
     }
 
     void TcpConnection::closeConnection() {
@@ -98,7 +94,6 @@ namespace modulog::communication {
         if (ec)
             std::cerr << "Closing conn err.:" << ec.message() << std::endl;
         else{
-            std::cout << "Closing connection socket." << std::endl;
             socket_.close();
         }
     }

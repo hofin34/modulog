@@ -2,7 +2,7 @@
 #include <filesystem>
 #include <state_smurf/diagram/StateDiagram.hpp>
 #include <state_smurf/transition/StateTransition.hpp>
-#include <StateGraphHandler.hpp>
+#include <modulog/meta_lib/StateGraphHandler.hpp>
 
 namespace modulog::meta_lib{
     struct SharedSettings{
@@ -11,7 +11,7 @@ namespace modulog::meta_lib{
             int connectionTimeoutSec = 3; // How many seconds has agent to connect to server before is killed
         } ServerSettings;
         struct LogSettings{
-            std::filesystem::path agentListPath = "./agents-enabled.conf";
+            std::filesystem::path enabledAgentsPath = "./agents-enabled.conf";
             std::filesystem::path logsDestination = "./logs"; // Where will be saved logs (folder is created if not existing)
             int isAliveIntervalSec = 1; // How often check, if agent is not freezed (in seconds)
             int isAliveTimeoutSec = 2; // How long wait for agents isAlive response

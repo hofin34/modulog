@@ -1,5 +1,4 @@
 #include <modulog/core/AgentProcess.hpp>
-#include <iostream>
 
 namespace modulog::core{
 //TODO if in agents list not existing agent - tell and end with cleaning
@@ -18,8 +17,7 @@ namespace modulog::core{
 
 
     void AgentProcess::stopAgent() {
-        std::cout << "Killing: " << agentProcess_->pid().first << std::endl;
-        agentProcess_->stop(agentProcessOptions_->stop); //TODO if stop not set?
+        agentProcess_->stop(agentProcessOptions_->stop);
     }
 
 

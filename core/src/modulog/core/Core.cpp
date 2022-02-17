@@ -7,7 +7,7 @@ namespace modulog::core {
             server_(*ioContext, messageMutex_, messageConditionVar_, totalReceivedMessages_, sharedSettings),
             sharedSettings_(sharedSettings) {
         ioContext_ = ioContext;
-        agentHandler_ = std::make_shared<AgentHandler>(std::filesystem::absolute(sharedSettings_->LogSettings.agentListPath));
+        agentHandler_ = std::make_shared<AgentHandler>(std::filesystem::absolute(sharedSettings_->LogSettings.enabledAgentsPath));
     }
 
     void Core::start() {
@@ -27,13 +27,15 @@ namespace modulog::core {
         startSendAlive();
         LogSaver logSaver(sharedSettings_->LogSettings.logsDestination);
         while (!stopFlag.load() && !agentHandler_->getRunningAgents().empty()) {
-            sharedSettings_->Testing.transitions->goToState("WaitForMessage");
+            if(!stopFlag.load())
+                sharedSettings_->Testing.transitions->goToState("WaitForMessage");
             {
                 std::unique_lock<std::mutex> lck(messageMutex_);
                 messageConditionVar_.wait(lck, [this] { return totalReceivedMessages_; });
                 totalReceivedMessages_--;
             }
-            sharedSettings_->Testing.transitions->goToState("ProcessMessage");
+            if(!stopFlag.load())
+                sharedSettings_->Testing.transitions->goToState("ProcessMessage");
             std::vector<std::shared_ptr<Agent>> agentsToDel;
             int i = 0;
             for (auto &actAgent: agentHandler_->getRunningAgents()) {
@@ -56,7 +58,6 @@ namespace modulog::core {
                 }
                 auto logMsg = actAgent->getMessageExchanger()->popLogMessage();
                 if (logMsg != nullptr) {
-                    std::cout << "LOG:" << logMsg->getValue() << std::endl;
                     logSaver.saveLog(actAgent->getId(), logMsg);
                 }
             }
@@ -77,7 +78,6 @@ namespace modulog::core {
 
 
     void Core::sendAlive() {
-        std::cout << "Core sending isAlive to all agents..." << std::endl;
         for (auto &agent: agentHandler_->getRunningAgents()) {
             auto isAliveMsg = std::make_shared<communication::ControlMessage>(
                     communication::ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE, "");
@@ -90,11 +90,10 @@ namespace modulog::core {
     }
 
     void Core::checkIfAgentsAlive() {
-        std::cout << "Core checking if all agents responded with ACK..." << std::endl;
         std::vector<std::shared_ptr<Agent>> agentsToDel;
         for (auto &agent: agentHandler_->getRunningAgents()) {
             if (!agent->getConfirmedAlive()) {
-                std::cerr << "Agent " << agent->getId() << " didn't respond on isAlive!" << std::endl;
+                bringauto::logging::Logger::logError("Agent {} didn't respond on IS_ALIVE!", agent->getId());
                 agentsToDel.push_back(agent);
             } else {
                 agent->setConfirmedAlive(false);
@@ -110,7 +109,7 @@ namespace modulog::core {
         std::shared_ptr<AgentProcess> agentInfo;
         while ((agentInfo = agentHandler_->runNextAgent()) != nullptr) {
             sharedSettings_->Testing.transitions->goToState("CreatingAgent");
-            std::cout << "waiting for ag. connection..." << std::endl;
+            bringauto::logging::Logger::logInfo("waiting for ag. connection...");
             std::shared_ptr<communication::TcpConnection> agentConnection;
             auto endConnectionTime =
                     std::chrono::system_clock::now() + std::chrono::seconds(sharedSettings_->ServerSettings.connectionTimeoutSec);
@@ -136,7 +135,6 @@ namespace modulog::core {
             auto controlMessage = std::make_shared<communication::ControlMessage>(
                     communication::ControlMessage::CONTROL_MSG_TYPE::CONFIG, configString);
             messageExchanger->sendControl(controlMessage);
-            std::cout << "Waiting for agent response..." << std::endl;
             std::shared_ptr<communication::ControlMessage> respControlMessage = messageExchanger->waitForControlMessage(
                     2000);
             if (respControlMessage == nullptr)
@@ -144,7 +142,6 @@ namespace modulog::core {
 
             //Now expecting ACK response with agent name:
             std::string agentName = respControlMessage->getValue();
-            std::cout << "Core agent name.: " << agentName << std::endl;
             if(agentName.empty())
                 throw std::runtime_error("Agent didn't send name!");
             agentInfo->setAgentId(agentName);

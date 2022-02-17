@@ -10,7 +10,8 @@ namespace modulog::agent_client{
     }
 
     void AgentClient::signalHandler(int signum) {
-        std::cout << "Agent interupted by signal " << signum << std::endl;
+        // Do nothing, just reproc++ library sends sigterm to all agents, when Core is interrupted with sigterm
+        // - we want to stop agents on our own
     }
 
     void AgentClient::initClient() {
@@ -67,13 +68,11 @@ namespace modulog::agent_client{
                 continue;
             }
             if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE){
-                std::cout << "Agent responding to IS_ALIVE!" << std::endl;
                 auto ackAliveMsg = std::make_shared<communication::ControlMessage>(modulog::communication::ControlMessage::CONTROL_MSG_TYPE::ACK, "");
                 messageExchanger_->sendControl(ackAliveMsg);
             }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT){
                 std::cout << "Agent received EXIT - should exit now." << std::endl; //TODO exit
             }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT_ACK){
-                std::cout << "Agent received EXIT_ACK - can exit now." << std::endl; //TODO
                 confirmedExit_ = true;
             }
         }
@@ -95,7 +94,7 @@ namespace modulog::agent_client{
 
     void AgentClient::sendLog(const std::shared_ptr<communication::LogMessage> &logMessage) {
         if(isDebug_){
-            std::cout << "Simulated send (not same as real send): " << logMessage->serialize() << std::endl;
+            bringauto::logging::Logger::logInfo("Simulated send (not same as real send): {}", logMessage->serialize());
         }else{
             messageExchanger_->sendLog(logMessage);
         }
@@ -103,7 +102,7 @@ namespace modulog::agent_client{
 
     void AgentClient::sendControl(const std::shared_ptr<communication::ControlMessage> &controlMessage) {
         if (isDebug_) {
-            std::cout << "Simulated send (not same as real send): " << controlMessage->serialize() << std::endl;
+            bringauto::logging::Logger::logInfo("Simulated control send (not same as real send): {}", controlMessage->serialize());
         } else {
             messageExchanger_->sendControl(controlMessage);
         }

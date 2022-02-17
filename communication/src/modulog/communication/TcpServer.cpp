@@ -15,8 +15,7 @@ namespace modulog::communication{
     {
         if (!error)
         {
-            std::cout << "Starting new connection..." << std::endl;
-            
+            bringauto::logging::Logger::logInfo("Starting new connection...");
             lastConnectionsVector.push_back(new_connection);
         }
         startAccept();

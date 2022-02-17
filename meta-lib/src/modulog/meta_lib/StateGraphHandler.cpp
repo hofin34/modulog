@@ -1,4 +1,4 @@
-#include <StateGraphHandler.hpp>
+#include <modulog/meta_lib/StateGraphHandler.hpp>
 
 namespace modulog::meta_lib{
     state_smurf::diagram::StateDiagram StateGraphHandler::createStateDiagram() {
@@ -19,12 +19,12 @@ namespace modulog::meta_lib{
         stateDiagram.setEdge(serverCreated, creatingAgent);
         stateDiagram.setEdge(creatingAgent, creatingAgent);
         stateDiagram.setEdge(creatingAgent, startSendAlive);
+        stateDiagram.setEdge(creatingAgent, waitForMessage);
         stateDiagram.setEdge(startSendAlive, sentIsAlive);
-        stateDiagram.setEdge(startSendAlive, waitForMessage);
         stateDiagram.setEdge(sentIsAlive, waitForMessage);
         stateDiagram.setEdge(waitForMessage, processMessage);
         stateDiagram.setEdge(processMessage, waitForMessage);
-        stateDiagram.setEdge(processMessage, sentIsAlive);
+        stateDiagram.setEdge(processMessage, startSendAlive);
 
         // Exit:
         stateDiagram.setEdge(exiting, stopAgent);

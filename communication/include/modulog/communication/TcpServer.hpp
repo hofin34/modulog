@@ -1,8 +1,9 @@
 #pragma once
 
 #include <modulog/communication/TcpConnection.hpp>
-#include "../../../../meta-lib/include/SharedSettings.hpp"
+#include <modulog/meta_lib/SharedSettings.hpp>
 
+#include <bringauto/logging/Logger.hpp>
 #include <asio.hpp>
 
 #include <iostream>

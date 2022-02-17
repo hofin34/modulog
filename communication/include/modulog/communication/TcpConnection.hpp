@@ -4,6 +4,7 @@
 #include <modulog/communication/MessageSerializer.hpp>
 #include <modulog/communication/MessageProcessor.hpp>
 
+#include <bringauto/logging/Logger.hpp>
 #include <asio.hpp>
 
 #include <iostream>

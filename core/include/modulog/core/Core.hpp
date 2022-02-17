@@ -2,14 +2,14 @@
 
 #include <modulog/communication/TcpServer.hpp>
 #include <modulog/communication/MessageDeserializer.hpp>
-#include "../../../../meta-lib/include/SharedSettings.hpp"
+#include <modulog/meta_lib/SharedSettings.hpp>
 #include <modulog/core/LogSaver.hpp>
 #include <modulog/core/AgentHandler.hpp>
 
 namespace modulog::core{
-/**
- * Core class - takes care of creating agents, connecting to them, checking if they are alive and collecting their logs
- */
+    /**
+     * Core class - takes care of creating agents, connecting to them, checking if they are alive and collecting their logs
+     */
     class Core {
     public:
         Core(std::shared_ptr<asio::io_context> ioContext,

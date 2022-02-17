@@ -7,6 +7,7 @@
 #include <modulog/communication/ControlMessage.hpp>
 
 #include <nlohmann/json.hpp>
+#include <bringauto/logging/Logger.hpp>
 
 #include <iostream>
 #include <filesystem>

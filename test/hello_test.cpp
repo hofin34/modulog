@@ -7,7 +7,7 @@ TEST(EasyTest, BasicAssertion) {
     EXPECT_EQ(7 * 5, 35);
 }
 
-#include "../meta-lib/include/SharedSettings.hpp"
+#include <modulog/meta_lib/SharedSettings.hpp>
 #include <mutex>
 #include <condition_variable>
 #include <asio.hpp>
@@ -21,7 +21,7 @@ TEST(CoreTest, BasicLog){
     enabledAgentsFile.close();
 
     auto sharedSettings = std::make_shared<modulog::communication::SharedSettings>();
-    sharedSettings->LogSettings.agentListPath = "test-agents-enabled.conf";
+    sharedSettings->LogSettings.enabledAgentsPath = "test-agents-enabled.conf";
     try {
         auto ioContext = std::make_shared<asio::io_context>();
         auto core = std::make_unique<modulog::core::Core>(ioContext, sharedSettings);
