@@ -16,6 +16,7 @@ namespace modulog::communication{
         if (!error)
         {
             std::cout << "Starting new connection..." << std::endl;
+            
             lastConnectionsVector.push_back(new_connection);
         }
         startAccept();

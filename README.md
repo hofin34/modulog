@@ -38,13 +38,13 @@ And also flowchart diagram:
 * now you can build:
    * `mkdir build`
    * `cd build`
-   * `cmake -DCMAKE_TOOLCHAIN_FILE=../toolchains/raspberry_toolchain.cmake -DCMAKE_INSTALL_PREFIX="someDir" ..`
+   * `cmake -DCMAKE_TOOLCHAIN_FILE=../toolchains/raspberry_toolchain.cmake -DCMADE_SYSROOT=/path/to/sysroot -DCMAKE_INSTALL_PREFIX="someDir" ..`
    * `make -j 8 install`
    * output in `someDir` can be moved to RPI
 
 ## aarch64 architecture
 * install `gcc-aarch64-linux-gnu` (tested version 9.3.0)
-* rest same as above, just modify cmake to `-DCMAKE_TOOLCHAIN_FILE=../toolchains/aarch_toolchain.cmake`
+* rest same as above, just modify cmake variable `-DCMAKE_TOOLCHAIN_FILE=../toolchains/aarch_toolchain.cmake`
 
 ## Implementation TODO
 * Log somewhere if agent crash 
