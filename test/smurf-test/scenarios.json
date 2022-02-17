@@ -1,0 +1,18 @@
+{
+  "setup" : [
+    ""
+  ],
+  "between_runs" : [ "" ],
+  "scenarios" : [
+    {
+      "name" : "fewNodes",
+      "timeout" : 70,
+      "arguments" : {
+        "--map" : "maps/1.osm"
+      }
+    }
+  ],
+  "cleanup" : [
+    ""
+  ]
+}
