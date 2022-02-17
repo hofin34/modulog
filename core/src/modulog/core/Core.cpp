@@ -71,7 +71,6 @@ namespace modulog::core {
 
 
     void Core::startSendAlive() {
-        sharedSettings_->Testing.transitions->goToState("StartSendAlive");
         sendAliveTimer_.expires_from_now(std::chrono::seconds(sharedSettings_->LogSettings.isAliveIntervalSec));
         sendAliveTimer_.async_wait([this](const asio::error_code &) { sendAlive(); });
     }
@@ -84,7 +83,6 @@ namespace modulog::core {
             agent->setConfirmedAlive(false);
             agent->getMessageExchanger()->sendControl(isAliveMsg);
         }
-        sharedSettings_->Testing.transitions->goToState("SentIsAlive");
         sendAliveTimer_.expires_from_now(std::chrono::seconds(sharedSettings_->LogSettings.isAliveTimeoutSec));
         sendAliveTimer_.async_wait([this](const asio::error_code &) { checkIfAgentsAlive(); });
     }
