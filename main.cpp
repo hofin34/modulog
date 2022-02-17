@@ -31,28 +31,29 @@ void signalHandler(int signum) {
 
 
 int main(int argc, const char **argv) {
-    initLogger("./ba-logs", true);
-    auto sharedSettings = std::make_shared<modulog::meta_lib::SharedSettings>();
-    cxxopts::Options options("modulog", "Modular light-weighted logging program");
-    options.add_options()
-            ("h,help", "Print usage")
-            ("e,enabled-agents", "Enabled agents file - in this file can be just compiled agents!", cxxopts::value<std::string>())
-            ;
-    auto result = options.parse(argc, argv);
-    if (result.count("help")){
-        std::cout << options.help() << std::endl;
-        exit(EXIT_SUCCESS);
-    }
-    if(result.count("enabled-agents"))
-        sharedSettings->LogSettings.enabledAgentsPath = result["bar"].as<std::string>();
-
     struct sigaction sigAct{};
-    memset(&sigAct, 0, sizeof(sigAct));
+    memset(&sigAct, -1, sizeof(sigAct));
     sigAct.sa_handler = signalHandler;
     sigaction(SIGINT, &sigAct, nullptr);
     sigaction(SIGTERM, &sigAct, nullptr);
+    initLogger("./ba-logs", true);
 
     try {
+        auto sharedSettings = std::make_shared<modulog::meta_lib::SharedSettings>();
+        cxxopts::Options options("modulog", "Modular light-weighted logging program");
+        options.add_options()
+                ("h,help", "Print usage")
+                ("e,enabled-agents", "Enabled agents file - in this file can be just compiled agents!", cxxopts::value<std::string>())
+                ;
+        auto result = options.parse(argc, argv);
+        if (result.count("help")){
+            std::cout << options.help() << std::endl;
+            exit(EXIT_SUCCESS);
+        }
+        if(result.count("enabled-agents"))
+            sharedSettings->LogSettings.enabledAgentsPath = result["enabled-agents"].as<std::string>();
+
+
         auto ioContext = std::make_shared<asio::io_context>();
         core = std::make_unique<modulog::core::Core>(ioContext, sharedSettings);
         core->start();

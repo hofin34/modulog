@@ -1,14 +1,14 @@
 {
   "setup" : [
-    ""
+    "echo \"ag1\" > basicAgentOnOff-enabled-agents.conf"
   ],
   "between_runs" : [ "" ],
   "scenarios" : [
     {
-      "name" : "fewNodes",
-      "timeout" : 70,
+      "name" : "BasicAgentOnOff",
+      "timeout" : 5,
       "arguments" : {
-        "--map" : "maps/1.osm"
+        "--enabled-agents" : "basicAgentOnOff-enabled-agents.conf"
       }
     }
   ],

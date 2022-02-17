@@ -1,0 +1,4 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
+SET(CMAKE_CXX_STANDARD 17)
+ADD_EXECUTABLE(on-off-agent on-off-agent.cpp)
+TARGET_LINK_LIBRARIES(on-off-agent agent_client_lib)

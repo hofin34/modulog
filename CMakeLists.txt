@@ -39,8 +39,8 @@ FOREACH (IDX RANGE ${AGENTS_COUNT})
 ENDFOREACH ()
 # ------------ linking
 
-FIND_PACKAGE(libbringauto_logger)
-TARGET_LINK_LIBRARIES(modulog CoreLib bringauto_logger::bringauto_logger)
+#FIND_PACKAGE(libbringauto_logger)
+TARGET_LINK_LIBRARIES(modulog CoreLib)#bringauto_logger::bringauto_logger)
 IF(BRINGAUTO_TESTS)
     ENABLE_TESTING()
     ADD_SUBDIRECTORY(test)

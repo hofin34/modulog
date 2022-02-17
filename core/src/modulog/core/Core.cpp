@@ -20,8 +20,7 @@ namespace modulog::core {
             initAllAgents();
         } catch (std::exception &e) {
             cleanAll();
-            std::cerr << e.what() << std::endl;
-            throw e; //TODO in main, priting this rethrow prints std::exception and not message
+            throw;
         }
         notifyAllAgentsToSendLogs();
         startSendAlive();
