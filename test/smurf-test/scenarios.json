@@ -1,6 +1,7 @@
 {
   "setup" : [
-    "echo \"notExistingAgentXXX\" > not-existing-enabled-agents.conf && echo \"agents/on-off-agent\" > on-off-agent-enabled-agents.conf "
+    "echo \"notExistingAgentXXX\" > not-existing-enabled-agents.conf",
+    "echo \"../../build/test/smurf-test/agents/on-off-agent\" > on-off-agent-enabled-agents.conf "
   ],
   "between_runs" : [ "" ],
   "scenarios" : [

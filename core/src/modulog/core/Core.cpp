@@ -65,6 +65,7 @@ namespace modulog::core {
             }
             agentsToDel.clear();
         }
+        sharedSettings_->Testing.transitions->goToState("Exiting");
         cleanAll();
     }
 
@@ -157,7 +158,6 @@ namespace modulog::core {
     }
 
     void Core::stop() {
-        sharedSettings_->Testing.transitions->goToState("Exiting");
         stopFlag = true;
     }
 

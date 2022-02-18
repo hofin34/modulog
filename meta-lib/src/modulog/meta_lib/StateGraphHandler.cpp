@@ -22,7 +22,7 @@ namespace modulog::meta_lib{
 
         // Exit:
         stateDiagram.setEdge(exiting, stopAgent);
-        //stateDiagram.setEdge(exiting, cleanExit);
+        stateDiagram.setEdge(exiting, cleanExit);
         stateDiagram.setEdge(stopAgent, stopAgent);
         stateDiagram.setEdge(stopAgent, cleanExit);
 
