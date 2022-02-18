@@ -64,6 +64,10 @@ namespace modulog::agent_client {
          */
         static void signalHandler(int signum);
 
+        /*
+         * For testing purposes - client stops responding to IS_ALIVE messages
+         */
+        void freezeClient();
 
     private:
         /*
@@ -78,7 +82,7 @@ namespace modulog::agent_client {
         std::thread responseHandleThread;
         std::shared_ptr<communication::MessageExchanger> messageExchanger_;
         std::string sharedConfig;
-
+        std::atomic<bool> simulatedFreeze = false;
         // Sync vars:
         std::atomic<bool> confirmedExit_;
         std::mutex msgMutex_;

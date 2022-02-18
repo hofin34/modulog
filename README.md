@@ -86,7 +86,6 @@ And also flowchart diagram:
 ---
 
 # Test cases
-* Write speed to tests and save history
 * Test communication library - sending big logs / big frequency
 * add return codes for different exits:
   * Agent fails to start

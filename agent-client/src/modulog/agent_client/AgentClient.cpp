@@ -68,6 +68,8 @@ namespace modulog::agent_client{
                 continue;
             }
             if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE){
+                if(simulatedFreeze.load()) // for testing purposes, you can simulate, that client doesn't respond to IS_ALIVE messages
+                    continue;
                 auto ackAliveMsg = std::make_shared<communication::ControlMessage>(modulog::communication::ControlMessage::CONTROL_MSG_TYPE::ACK, "");
                 messageExchanger_->sendControl(ackAliveMsg);
             }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT){
@@ -110,6 +112,10 @@ namespace modulog::agent_client{
 
     std::string AgentClient::getSharedConfig() {
         return sharedConfig;
+    }
+
+    void AgentClient::freezeClient() {
+        simulatedFreeze = true;
     }
 
 

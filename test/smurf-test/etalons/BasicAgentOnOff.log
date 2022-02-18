@@ -1,5 +1,0 @@
-[2022-02-17 15:09:40.896] [modulog] [debug] [TransitionSmurf] Start of Run
-[2022-02-17 15:09:40.896] [modulog] [debug] [TransitionSmurf] Going to state Start
-[2022-02-17 15:09:40.896] [modulog] [debug] [TransitionSmurf] Going to state ServerCreated
-[2022-02-17 15:09:40.897] [modulog] [warning] [TransitionSmurf] Couldn't change state { "to":CleanExit "from": ServerCreated }
-[2022-02-17 15:09:40.897] [modulog] [error] Exception in main.cpp: Executable /home/martin/School/modulog/test/smurf-test/ag1/ag1 not found

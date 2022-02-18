@@ -3,9 +3,24 @@ PROJECT(Tests)
 # GoogleTest requires at least C++11
 SET(CMAKE_CXX_STANDARD 17)
 
+
+MACRO(SUBDIRLIST result curdir)
+    FILE(GLOB children ${curdir}/*)
+    SET(dirlist "")
+    FOREACH(child ${children})
+        IF(IS_DIRECTORY ${child})
+            LIST(APPEND dirlist ${child})
+        ENDIF()
+    ENDFOREACH()
+    SET(${result} ${dirlist})
+ENDMACRO()
+
+
 ENABLE_TESTING()
-ADD_SUBDIRECTORY(smurf-test/agents/on-off-agent)
-ADD_SUBDIRECTORY(smurf-test/agents/simple-log-agent)
+SUBDIRLIST(SUBDIRS smurf-test/agents)
+FOREACH(subdir ${SUBDIRS})
+    ADD_SUBDIRECTORY(${subdir})
+ENDFOREACH()
 
 find_package(Python3 COMPONENTS Interpreter Development)
 message("Python_FOUND:${Python3_FOUND}")

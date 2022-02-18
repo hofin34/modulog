@@ -1,18 +1,25 @@
 {
   "setup" : [
-    "echo \"ag1\" > basicAgentOnOff-enabled-agents.conf"
+    "echo \"notExistingAgentXXX\" > not-existing-enabled-agents.conf && echo \"agents/on-off-agent\" > on-off-agent-enabled-agents.conf "
   ],
   "between_runs" : [ "" ],
   "scenarios" : [
     {
-      "name" : "BasicAgentOnOff",
+      "name" : "NotExistingAgent",
       "timeout" : 5,
       "arguments" : {
-        "--enabled-agents" : "basicAgentOnOff-enabled-agents.conf"
+        "--enabled-agents" : "not-existing-enabled-agents.conf"
+      }
+    },
+    {
+      "name" : "OnOffAgent",
+      "timeout" : 5,
+      "arguments" : {
+        "--enabled-agents" : "on-off-agent-enabled-agents.conf"
       }
     }
   ],
   "cleanup" : [
-    ""
+    "rm -f *-enabled-agents.conf"
   ]
 }
