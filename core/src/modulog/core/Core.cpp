@@ -99,6 +99,11 @@ namespace modulog::core {
         }
         for (auto &toDel: agentsToDel) {
             agentHandler_->deleteAgent(toDel); //TODO create from two for loops one (with deleting inside)
+            { // if is last agent killed, program freezes - waits for other messages. This simulates message receive
+                std::lock_guard<std::mutex> lck(messageMutex_);
+                totalReceivedMessages_++;
+                messageConditionVar_.notify_one();
+            }
         }
         startSendAlive();
     }
@@ -147,7 +152,6 @@ namespace modulog::core {
         }
     }
 
-//TODO error "pure virtual method called" occured one time, when two agents running!
 
     void Core::notifyAllAgentsToSendLogs() {
         for (auto &actAgent: agentHandler_->getRunningAgents()) {

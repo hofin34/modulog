@@ -1,22 +1,70 @@
 {
   "setup" : [
     "echo \"notExistingAgentXXX\" > not-existing-enabled-agents.conf",
-    "echo \"../../build/test/smurf-test/agents/on-off-agent\" > on-off-agent-enabled-agents.conf "
+    "echo \"../../build/test/smurf-test/agents/on-off-agent\" > on-off-enabled-agents.conf ",
+    "echo \"../../build/test/smurf-test/agents/not-connecting-freezed-agent\" > not-connecting-freezed-enabled-agents.conf ",
+    "echo \"../../build/test/smurf-test/agents/freezed-agent\" > freezed-enabled-agents.conf ",
+    "echo \"../../build/test/smurf-test/agents/killed-agent\" > killed-enabled-agents.conf ",
+    "echo \"../../build/test/smurf-test/agents/simple-log-agent\" > simple-log-enabled-agents.conf ",
+    "echo \"../../build/test/smurf-test/agents/start-fail-agent\" > start-fail-enabled-agents.conf ",
+    "echo \"../../build/test/smurf-test/agents/start-fail-delay-agent\" > start-fail-delay-enabled-agents.conf "
   ],
   "between_runs" : [ "" ],
   "scenarios" : [
     {
-      "name" : "NotExistingAgent",
+      "name" : "not-existing",
       "timeout" : 5,
       "arguments" : {
         "--enabled-agents" : "not-existing-enabled-agents.conf"
       }
     },
     {
-      "name" : "OnOffAgent",
+      "name" : "on-off",
       "timeout" : 5,
       "arguments" : {
-        "--enabled-agents" : "on-off-agent-enabled-agents.conf"
+        "--enabled-agents" : "on-off-enabled-agents.conf"
+      }
+    },
+    {
+      "name" : "not-connecting-freezed",
+      "timeout" : 10,
+      "arguments" : {
+        "--enabled-agents" : "not-connecting-freezed-enabled-agents.conf"
+      }
+    },
+    {
+      "name" : "freezed",
+      "timeout" : 20,
+      "arguments" : {
+        "--enabled-agents" : "freezed-enabled-agents.conf"
+      }
+    },
+    {
+      "name" : "simple-log",
+      "timeout" : 5,
+      "arguments" : {
+        "--enabled-agents" : "simple-log-enabled-agents.conf"
+      }
+    },
+    {
+      "name" : "killed",
+      "timeout" : 10,
+      "arguments" : {
+        "--enabled-agents" : "killed-enabled-agents.conf"
+      }
+    },
+    {
+      "name" : "start-fail",
+      "timeout" : 10,
+      "arguments" : {
+        "--enabled-agents" : "start-fail-enabled-agents.conf"
+      }
+    },
+    {
+      "name" : "start-fail-delay",
+      "timeout" : 10,
+      "arguments" : {
+        "--enabled-agents" : "start-fail-delay-enabled-agents.conf"
       }
     }
   ],

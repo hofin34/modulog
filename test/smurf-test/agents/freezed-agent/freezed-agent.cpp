@@ -4,7 +4,7 @@ int main(){
     auto ioContext = std::make_shared<asio::io_context>();
     modulog::agent_client::AgentClient agentClient(ioContext, false, "freezed-agent");
     agentClient.initClient();
-    for(int i = 0; i < 1000; i++){ // just sending a few logs
+    for(int i = 0; i < 2; i++){ // just sending a few logs
         auto msg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "simpleLog", "simpleValue" + std::to_string(i));
         agentClient.sendLog(msg);
     }

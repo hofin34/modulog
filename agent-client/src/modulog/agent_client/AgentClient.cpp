@@ -31,7 +31,7 @@ namespace modulog::agent_client{
             clientThread = std::thread{[this]() { ioContext_->run(); }};
             auto configMessage = messageExchanger_->waitForControlMessage(2000); //TODO if timeout 2 ms and run with valgrind, error occur
             if(configMessage == nullptr){
-                std::cerr << agentName_ << " didnt receive configMessage!" << std::endl;
+                bringauto::logging::Logger::logError("{} didnt receive configMessage", agentName_);
                 exit(EXIT_FAILURE);
             }
             std::cout << agentName_ << " received config: " << configMessage->getValue() << std::endl;

@@ -12,9 +12,7 @@ namespace modulog::communication{
         if(connection_ != nullptr)
             connection_->sendMessage(toSend);
         else
-            std::cerr << "Connection not set, trying to send: " << toSend << std::endl;
-
-
+            bringauto::logging::Logger::logError("Connection not set, trying to send: {}", toSend);
     }
 
     void MessageExchanger::sendControl(const std::shared_ptr<ControlMessage> &controlMessage) {

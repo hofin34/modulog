@@ -21,7 +21,8 @@ namespace modulog::communication {
             msgBuffer_ = std::make_shared<asio::streambuf>(msgLength);
             readMsgContent();
         } else {
-            signalErrExit();
+            if(!connectionClosed_.load())
+                signalErrExit();
             return;
         }
     }
@@ -57,8 +58,9 @@ namespace modulog::communication {
                 startRead();
             }
         } else {
-            std::cerr << connectionName_ << ": error in reading msg content: " << error.message() << std::endl;
-            signalErrExit();
+            bringauto::logging::Logger::logError("{} :error in reading msg content: {}", connectionName_, error.message());
+            if(!connectionClosed_.load())
+                signalErrExit();
             return;
         }
     }
@@ -72,8 +74,9 @@ namespace modulog::communication {
         };
         asio::write(socket_, buffToSend, errorWrite);
         if (errorWrite) {
-            signalErrExit();
-            std::cerr << connectionName_ << ": error in sending." << errorWrite.message() << std::endl;
+            if(!connectionClosed_.load())
+                signalErrExit();
+            bringauto::logging::Logger::logError("{}: error in sending: {}", connectionName_, errorWrite.message());
         }
     }
 
@@ -83,17 +86,20 @@ namespace modulog::communication {
     }
 
     void TcpConnection::signalErrExit() {
+        bringauto::logging::Logger::logDebug("Signal err");
         auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR, "");
         MessageSerializer messageSerializer(exitControlMsg);
         messageProcessor_->processMessage(messageSerializer.serialize());
     }
 
     void TcpConnection::closeConnection() {
+        bringauto::logging::Logger::logDebug("Closing conn");
         asio::error_code ec;
         socket_.shutdown(asio::ip::tcp::socket::shutdown_both, ec);
         if (ec)
-            std::cerr << "Closing conn err.:" << ec.message() << std::endl;
+            bringauto::logging::Logger::logError("Closing connection error: {}", ec.message());
         else{
+            connectionClosed_ = true;
             socket_.close();
         }
     }

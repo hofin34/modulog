@@ -71,5 +71,6 @@ namespace modulog::communication {
         std::string finalMessage_;
         std::string connectionName_;
         std::shared_ptr<MessageProcessor> messageProcessor_;
+        std::atomic<bool>connectionClosed_ = false;
     };
 }
