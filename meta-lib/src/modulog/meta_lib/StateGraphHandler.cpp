@@ -1,6 +1,7 @@
 #include <modulog/meta_lib/StateGraphHandler.hpp>
 
 namespace modulog::meta_lib{
+    #ifdef BRINGAUTO_TESTS
     state_smurf::diagram::StateDiagram StateGraphHandler::createStateDiagram() {
         state_smurf::diagram::StateDiagram stateDiagram;
         /// Creating Vertexes, they are accessible by name.
@@ -37,5 +38,6 @@ namespace modulog::meta_lib{
 
         return stateDiagram;
     }
+    #endif
 }
 

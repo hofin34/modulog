@@ -1,0 +1,5 @@
+[2022-02-18 11:05:51.958] [modulog] [debug] [TransitionSmurf] Start of Run
+[2022-02-18 11:05:51.958] [modulog] [debug] [TransitionSmurf] Going to state Start
+[2022-02-18 11:05:51.958] [modulog] [debug] [TransitionSmurf] Going to state ServerCreated
+[2022-02-18 11:05:51.958] [modulog] [warning] [TransitionSmurf] Couldn't change state { "to":CleanExit "from": ServerCreated }
+[2022-02-18 11:05:51.958] [modulog] [error] Exception in main.cpp: Executable /home/martin/School/modulog/test/smurf-test/notExistingAgentXXX/notExistingAgentXXX not found

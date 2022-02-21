@@ -1,12 +1,16 @@
 #pragma once
 
-#include <state_smurf/diagram/StateDiagram.hpp>
-#include <state_smurf/transition/StateTransition.hpp>
+#ifdef BRINGAUTO_TESTS
+    #include <state_smurf/diagram/StateDiagram.hpp>
+    #include <state_smurf/transition/StateTransition.hpp>
+#endif
 
 namespace modulog::meta_lib{
     class StateGraphHandler {
     public:
-        static state_smurf::diagram::StateDiagram createStateDiagram();
+        #ifdef BRINGAUTO_TESTS
+            static state_smurf::diagram::StateDiagram createStateDiagram();
+        #endif
 
     };
 }

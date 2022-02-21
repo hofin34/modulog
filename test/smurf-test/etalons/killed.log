@@ -1,0 +1,2 @@
+[2022-02-19 13:23:13.998] [modulog] [debug] [TransitionSmurf] Start of Run
+[2022-02-19 13:23:14.009] [modulog] [error] Exception in main.cpp: bind: Address already in use

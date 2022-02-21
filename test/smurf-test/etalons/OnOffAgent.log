@@ -1,0 +1,13 @@
+[2022-02-18 11:05:51.966] [modulog] [debug] [TransitionSmurf] Start of Run
+[2022-02-18 11:05:51.967] [modulog] [debug] [TransitionSmurf] Going to state Start
+[2022-02-18 11:05:51.967] [modulog] [debug] [TransitionSmurf] Going to state ServerCreated
+[2022-02-18 11:05:51.967] [modulog] [debug] [TransitionSmurf] Going to state CreatingAgent
+[2022-02-18 11:05:51.967] [modulog] [info] waiting for ag. connection...
+[2022-02-18 11:05:51.969] [modulog] [info] Starting new connection...
+on-off-agent received config: NO-CONFIG
+[2022-02-18 11:05:51.969] [modulog] [debug] [TransitionSmurf] Going to state WaitForMessage
+[2022-02-18 11:05:51.969] [modulog] [debug] [TransitionSmurf] Going to state ProcessMessage
+[2022-02-18 11:05:51.969] [modulog] [info] Agent on-off-agent is stopping...
+[2022-02-18 11:05:51.969] [modulog] [debug] [TransitionSmurf] Going to state Exiting
+[2022-02-18 11:05:51.970] [modulog] [debug] [TransitionSmurf] Going to state CleanExit
+[2022-02-18 11:05:51.970] [modulog] [info] ---- END ----

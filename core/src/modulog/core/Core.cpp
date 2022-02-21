@@ -12,10 +12,14 @@ namespace modulog::core {
 
     void Core::start() {
         // start server:
-        sharedSettings_->Testing.transitions->goToState("Start");
+        #ifdef BRINGAUTO_TESTS
+            sharedSettings_->Testing.transitions->goToState("Start");
+        #endif
         server_.startAccept();
         serverThread_ = std::thread{[this]() { ioContext_->run(); }};
-        sharedSettings_->Testing.transitions->goToState("ServerCreated");
+        #ifdef BRINGAUTO_TESTS
+            sharedSettings_->Testing.transitions->goToState("ServerCreated");
+        #endif
         try {
             initAllAgents();
         } catch (std::exception &e) {
@@ -26,15 +30,19 @@ namespace modulog::core {
         startSendAlive();
         LogSaver logSaver(sharedSettings_->LogSettings.logsDestination);
         while (!stopFlag.load() && !agentHandler_->getRunningAgents().empty()) {
-            if(!stopFlag.load())
-                sharedSettings_->Testing.transitions->goToState("WaitForMessage");
+            #ifdef BRINGAUTO_TESTS
+                if(!stopFlag.load())
+                        sharedSettings_->Testing.transitions->goToState("WaitForMessage");
+            #endif
             {
                 std::unique_lock<std::mutex> lck(messageMutex_);
                 messageConditionVar_.wait(lck, [this] { return totalReceivedMessages_; });
                 totalReceivedMessages_--;
             }
-            if(!stopFlag.load())
-                sharedSettings_->Testing.transitions->goToState("ProcessMessage");
+            #ifdef BRINGAUTO_TESTS
+                if(!stopFlag.load())
+                        sharedSettings_->Testing.transitions->goToState("ProcessMessage");
+            #endif
             std::vector<std::shared_ptr<Agent>> agentsToDel;
             int i = 0;
             for (auto &actAgent: agentHandler_->getRunningAgents()) {
@@ -65,7 +73,9 @@ namespace modulog::core {
             }
             agentsToDel.clear();
         }
-        sharedSettings_->Testing.transitions->goToState("Exiting");
+        #ifdef BRINGAUTO_TESTS
+            sharedSettings_->Testing.transitions->goToState("Exiting");
+        #endif
         cleanAll();
     }
 
@@ -111,7 +121,9 @@ namespace modulog::core {
     void Core::initAllAgents() {
         std::shared_ptr<AgentProcess> agentInfo;
         while ((agentInfo = agentHandler_->runNextAgent()) != nullptr) {
-            sharedSettings_->Testing.transitions->goToState("CreatingAgent");
+            #ifdef BRINGAUTO_TESTS
+                sharedSettings_->Testing.transitions->goToState("CreatingAgent");
+            #endif
             bringauto::logging::Logger::logInfo("waiting for ag. connection...");
             std::shared_ptr<communication::TcpConnection> agentConnection;
             auto endConnectionTime =
@@ -171,13 +183,17 @@ namespace modulog::core {
             agentsToDel.push_back(toDel); // Cannot delete from inside for range - its removing from vector
         }
         for (auto &toDel: agentsToDel) {
-            sharedSettings_->Testing.transitions->goToState("StopAgent");
+            #ifdef BRINGAUTO_TESTS
+                sharedSettings_->Testing.transitions->goToState("StopAgent");
+            #endif
             agentHandler_->deleteAgent(toDel);
         }
         ioContext_->stop();
         serverThread_.join();
         sendAliveTimer_.cancel();
-        sharedSettings_->Testing.transitions->goToState("CleanExit");
+        #ifdef BRINGAUTO_TEST
+            sharedSettings_->Testing.transitions->goToState("CleanExit");
+        #endif
     }
 
 

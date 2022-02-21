@@ -1,8 +1,12 @@
 #pragma once
-#include <filesystem>
-#include <state_smurf/diagram/StateDiagram.hpp>
-#include <state_smurf/transition/StateTransition.hpp>
 #include <modulog/meta_lib/StateGraphHandler.hpp>
+
+#ifdef BRINGAUTO_TESTS
+    #include <state_smurf/diagram/StateDiagram.hpp>
+    #include <state_smurf/transition/StateTransition.hpp>
+#endif
+
+#include <filesystem>
 
 namespace modulog::meta_lib{
     struct SharedSettings{
@@ -19,7 +23,9 @@ namespace modulog::meta_lib{
         } LogSettings;
 
         struct Testing{
-            std::shared_ptr<state_smurf::transition::StateTransition> transitions = std::make_shared<state_smurf::transition::StateTransition>(StateGraphHandler::createStateDiagram());
+            #ifdef BRINGAUTO_TESTS
+                std::shared_ptr<state_smurf::transition::StateTransition> transitions = std::make_shared<state_smurf::transition::StateTransition>(StateGraphHandler::createStateDiagram());
+            #endif
         } Testing;
     };
 }
