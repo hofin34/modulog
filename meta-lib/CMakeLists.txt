@@ -9,7 +9,7 @@ TARGET_INCLUDE_DIRECTORIES(MetaLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 IF(BRINGAUTO_TESTS)
     ADD_SUBDIRECTORY(../lib/StateSmurf state-smurf-build)
-    TARGET_LINK_LIBRARIES(MetaLib DiagramSmurfLib TransitionSmurfLib)
+    TARGET_LINK_LIBRARIES(MetaLib PUBLIC DiagramSmurfLib TransitionSmurfLib)
 ENDIF()
 
 execute_process(

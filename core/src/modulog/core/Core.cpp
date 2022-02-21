@@ -191,7 +191,7 @@ namespace modulog::core {
         ioContext_->stop();
         serverThread_.join();
         sendAliveTimer_.cancel();
-        #ifdef BRINGAUTO_TEST
+        #ifdef BRINGAUTO_TESTS
             sharedSettings_->Testing.transitions->goToState("CleanExit");
         #endif
     }

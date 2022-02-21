@@ -33,17 +33,17 @@
       }
     },
     {
-      "name" : "freezed",
-      "timeout" : 20,
-      "arguments" : {
-        "--enabled-agents" : "freezed-enabled-agents.conf"
-      }
-    },
-    {
       "name" : "simple-log",
       "timeout" : 5,
       "arguments" : {
         "--enabled-agents" : "simple-log-enabled-agents.conf"
+      }
+    },
+    {
+      "name" : "freezed",
+      "timeout" : 20,
+      "arguments" : {
+        "--enabled-agents" : "freezed-enabled-agents.conf"
       }
     },
     {
