@@ -51,5 +51,4 @@ FetchContent_MakeAvailable(reproc++)
 
 #-----------
 
-ADD_SUBDIRECTORY(../meta-lib meta-lib-build)
 TARGET_LINK_LIBRARIES(CommunicationLib asio reproc++ nlohmann_json::nlohmann_json MetaLib)

@@ -28,13 +28,17 @@ SET(CMAKE_CXX_STANDARD 17)
 SET(modulog_VERSION 1.0.0)
 SET(AG_BUILT_LIST ${CMAKE_BINARY_DIR}/agents-enabled.conf)
 
+
 ADD_SUBDIRECTORY(core)
+ADD_SUBDIRECTORY(communication)
+ADD_SUBDIRECTORY(meta-lib)
+ADD_SUBDIRECTORY(agent-client)
+ADD_SUBDIRECTORY(agents)
 
 ADD_EXECUTABLE(modulog main.cpp)
 
-ADD_SUBDIRECTORY(agent-client)
 # What will be compiled:
-FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/agents-to-compile.json TO_COMPILE_JSON)
+FILE(READ ${CMAKE_SOURCE_DIR}/agents-to-compile.json TO_COMPILE_JSON)
 STRING(JSON AGENTS_COUNT LENGTH ${TO_COMPILE_JSON} agentsToCompile)
 MATH(EXPR AGENTS_COUNT "${AGENTS_COUNT}-1") # Decrementing by one - foreach needs number (count-1)
 FILE(REMOVE ${AG_BUILT_LIST}) # list of built agents is deleted - now we can start appending
@@ -60,6 +64,7 @@ ENDFOREACH ()
 TARGET_LINK_LIBRARIES(modulog CoreLib)
 IF(BRINGAUTO_TESTS)
     ENABLE_TESTING()
+    ADD_SUBDIRECTORY(lib/StateSmurf)
     ADD_SUBDIRECTORY(test)
 ENDIF()
 

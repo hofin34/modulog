@@ -1,6 +1,5 @@
 #pragma once
 #include <modulog/meta_lib/StateGraphHandler.hpp>
-
 #ifdef BRINGAUTO_TESTS
     #include <state_smurf/diagram/StateDiagram.hpp>
     #include <state_smurf/transition/StateTransition.hpp>

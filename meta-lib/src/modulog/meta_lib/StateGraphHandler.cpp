@@ -14,6 +14,8 @@ namespace modulog::meta_lib{
         auto stopAgent = stateDiagram.addVertex("StopAgent");
         auto cleanExit = stateDiagram.addVertex("CleanExit");
 
+        stateDiagram.setStartVertex(start);
+
         stateDiagram.setEdge(start, serverCreated);
         stateDiagram.setEdge(serverCreated, creatingAgent);
         stateDiagram.setEdge(creatingAgent, creatingAgent);

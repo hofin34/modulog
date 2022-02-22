@@ -7,7 +7,4 @@ ADD_LIBRARY(agent_client_lib ${source_files})
 TARGET_INCLUDE_DIRECTORIES(agent_client_lib PUBLIC "include/")
 TARGET_INCLUDE_DIRECTORIES(agent_client_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-if(NOT TARGET CommunicationLib)
-    ADD_SUBDIRECTORY(../communication communication-lib-build)
-endif()
 TARGET_LINK_LIBRARIES(agent_client_lib CommunicationLib)
