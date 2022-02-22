@@ -1,13 +1,24 @@
 {
   "setup" : [
-    "echo \"notExistingAgentXXX\" > not-existing-enabled-agents.conf",
-    "echo \"../../build/test/smurf-test/agents/on-off-agent\" > on-off-enabled-agents.conf ",
-    "echo \"../../build/test/smurf-test/agents/not-connecting-freezed-agent\" > not-connecting-freezed-enabled-agents.conf ",
-    "echo \"../../build/test/smurf-test/agents/freezed-agent\" > freezed-enabled-agents.conf ",
-    "echo \"../../build/test/smurf-test/agents/killed-agent\" > killed-enabled-agents.conf ",
-    "echo \"../../build/test/smurf-test/agents/simple-log-agent\" > simple-log-enabled-agents.conf ",
-    "echo \"../../build/test/smurf-test/agents/start-fail-agent\" > start-fail-enabled-agents.conf ",
-    "echo \"../../build/test/smurf-test/agents/start-fail-delay-agent\" > start-fail-delay-enabled-agents.conf "
+    "echo \"${CMAKE_BINARY_DIR}/notExistingAgentXXX\" > not-existing-enabled-agents.conf",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/on-off-agent\" > on-off-enabled-agents.conf ",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/not-connecting-freezed-agent\" > not-connecting-freezed-enabled-agents.conf ",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/freezed-agent\" > freezed-enabled-agents.conf ",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/killed-agent\" > killed-enabled-agents.conf ",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/simple-log-agent\" > simple-log-enabled-agents.conf ",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/start-fail-agent\" > start-fail-enabled-agents.conf",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/start-fail-delay-agent\" > start-fail-delay-enabled-agents.conf",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/permanent-log-agent\" > permanent-log-enabled-agents.conf",
+    "",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/permanent-log-agent\n\" > more-agents-enabled-agents.conf",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/permanent-log-agent\n\" >> more-agents-enabled-agents.conf",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/permanent-log-agent\" >> more-agents-enabled-agents.conf",
+    "",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/killed-agent\n\" > killed-freezed-enabled-agents.conf",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/freezed-agent\" >> killed-freezed-enabled-agents.conf"
+    "",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/killed-agent\n\" > double-kill-enabled-agents.conf",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/killed-agent\" >> double-kill-enabled-agents.conf"
   ],
   "between_runs" : [ "" ],
   "scenarios" : [
@@ -65,6 +76,13 @@
       "timeout" : 10,
       "arguments" : {
         "--enabled-agents" : "start-fail-delay-enabled-agents.conf"
+      }
+    },
+    {
+      "name" : "permanent-log",
+      "timeout" : 5,
+      "arguments" : {
+        "--enabled-agents" : "permanent-log-enabled-agents.conf"
       }
     }
   ],
