@@ -31,6 +31,7 @@ ADD_TEST(NAME ModulogTests COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/lib
         -s ${CMAKE_BINARY_DIR}/scenarios.json
         -e ${CMAKE_BINARY_DIR}/modulog
         --evaluator ${CMAKE_BINARY_DIR}/lib/StateSmurf/SmurfEvaluator/smurfEvaluator
-        #-C
+        --output ${CMAKE_SOURCE_DIR}/test/smurf-test/
+        #-c
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test/smurf-test)# ${EXECUTABLE_OUTPUT_PATH} )
 
