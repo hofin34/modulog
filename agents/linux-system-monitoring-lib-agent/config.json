@@ -1,0 +1,6 @@
+{
+  "id": "linux-system-monitoring-lib-agent",
+  "cpuNotBiggerThanPercent": 5,
+  "ramNotBiggerThanPercent": 30,
+  "logInterval": 4
+}

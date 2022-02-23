@@ -96,7 +96,7 @@ namespace modulog::agent_client{
 
     void AgentClient::sendLog(const std::shared_ptr<communication::LogMessage> &logMessage) {
         if(isDebug_){
-            bringauto::logging::Logger::logInfo("Simulated send (not same as real send): {}", logMessage->serialize());
+            std::cout << "Simulated log send (just debug): " << logMessage->serialize() << std::endl;
         }else{
             messageExchanger_->sendLog(logMessage);
         }
@@ -104,7 +104,7 @@ namespace modulog::agent_client{
 
     void AgentClient::sendControl(const std::shared_ptr<communication::ControlMessage> &controlMessage) {
         if (isDebug_) {
-            bringauto::logging::Logger::logInfo("Simulated control send (not same as real send): {}", controlMessage->serialize());
+            std::cout << "Simulated control send (just debug): " << controlMessage->serialize() << std::endl;
         } else {
             messageExchanger_->sendControl(controlMessage);
         }

@@ -1,10 +1,6 @@
 {
   "agentsToCompile": [
     {
-      "agentPath": "agents/ram-agent",
-      "enabled": true
-    },
-    {
       "agentPath": "agents/space-agent",
       "enabled": true
     },
@@ -13,16 +9,24 @@
       "enabled": true
     },
     {
-      "agentPath": "agents/temperature-agent",
+      "agentPath": "agents/linux-system-monitoring-lib-agent",
       "enabled": true
+    },
+    {
+      "agentPath": "agents/ram-agent",
+      "enabled": false
+    },
+    {
+      "agentPath": "agents/temperature-agent",
+      "enabled": false
     },
     {
       "agentPath": "agents/net-connectivity-agent",
-      "enabled": true
+      "enabled": false
     },
     {
       "agentPath": "agents/test-random-agent",
-      "enabled": true
+      "enabled": false
     }
   ]
 }

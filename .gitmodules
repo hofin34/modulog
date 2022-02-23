@@ -1,3 +1,6 @@
 [submodule "lib/StateSmurf"]
 	path = lib/StateSmurf
 	url = git@github.com:Melky-Phoe/StateSmurf.git
+[submodule "agents/linux-system-monitoring-lib-agent/lib/Linux-System-Monitoring-Library"]
+	path = agents/linux-system-monitoring-lib-agent/lib/Linux-System-Monitoring-Library
+	url = https://github.com/fuxey/Linux-System-Monitoring-Library.git
