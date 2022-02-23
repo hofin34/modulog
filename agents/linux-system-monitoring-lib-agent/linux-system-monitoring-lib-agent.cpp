@@ -40,6 +40,10 @@ int main(int argc, char **argv) {
     auto memoryMonitoring = std::make_unique<memoryLoad>();
 
     cpuMonitoring->initCpuUsage();
+    auto maxRamToSend = std::make_shared<modulog::communication::LogMessage>(
+            modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "maxRamKB", std::to_string(memoryMonitoring->getTotalMemoryInKB()));
+    agentClient.sendLog(maxRamToSend);
+
     // print cpu usage of all cpu cores
     Timer::periodicShot([&] {
         auto currRam = memoryMonitoring->getCurrentMemUsageInPercent();
@@ -51,6 +55,10 @@ int main(int argc, char **argv) {
             ramToSend = std::make_shared<modulog::communication::LogMessage>(
                     modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "ramTotal", std::to_string(currRam));
         agentClient.sendLog(ramToSend);
+        auto usedRamToSendKb = std::make_shared<modulog::communication::LogMessage>(
+                modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "usedRamKb", std::to_string(memoryMonitoring->getCurrentMemUsageInKB()));
+        agentClient.sendLog(usedRamToSendKb);
+
 
         auto currCpu = cpuMonitoring->getCurrentCpuUsage();
         std::shared_ptr<modulog::communication::LogMessage> toSend;
