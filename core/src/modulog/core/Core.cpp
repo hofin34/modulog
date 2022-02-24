@@ -57,6 +57,7 @@ namespace modulog::core {
                         continue;
                     } else if (controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR) {
                         std::cerr << "Core received EXIT_ERR from " << actAgent->getId() << std::endl;
+                        logSaver.logAgentCrash(actAgent->getId());
                         agentsToDel.push_back(actAgent);
                         continue;
                     } else if (controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::ACK) {

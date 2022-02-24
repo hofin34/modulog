@@ -26,7 +26,7 @@ namespace modulog::communication{
                 : io_context_(io_context),
                   acceptor_(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), sharedSettings->ServerSettings.portNumber)),
                   messageMutex_(messageMutex), messageConditionVariable_(messageConditionVariable),
-                  totalReceivedMsgs_(totalReceivedMsgs) {}
+                  totalReceivedMsgs_(totalReceivedMsgs){}
 
         /**
          * Start accepting incoming connections

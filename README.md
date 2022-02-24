@@ -55,9 +55,8 @@ And also flowchart diagram:
 * rest same as above, just modify cmake variable `-DCMAKE_TOOLCHAIN_FILE=../toolchains/aarch_toolchain.cmake`
 
 ## Implementation TODO
-* Log somewhere if agent crash 
-* When too much agents and running with Valgrind, connection freeze and crashes - TODO fix 
-* Compile just enabled agents
+* log somewhere if agent crash 
+* better agent exit handling and cleaning
 
 ## TODO
 * Write to doc, how to create agents

@@ -3,6 +3,7 @@
 #include <modulog/communication/ControlMessage.hpp>
 #include <modulog/communication/MessageSerializer.hpp>
 #include <modulog/communication/MessageProcessor.hpp>
+#include <modulog/meta_lib/SharedSettings.hpp>
 
 #include <bringauto/logging/Logger.hpp>
 #include <asio.hpp>
@@ -11,17 +12,21 @@
 #include <utility>
 
 namespace modulog::communication {
+    /**
+     * This class represents TcpConnection - it is used between Core and AgentClient for communication
+     */
     class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     public:
         TcpConnection(asio::io_context &io_context, std::string &connectionName,
                       std::shared_ptr<MessageProcessor> messageProcessor) : socket_(io_context),
                                                                             connectionName_(connectionName),
                                                                             messageProcessor_(
-                                                                                    std::move(messageProcessor)) {
+                                                                                    std::move(messageProcessor)){
             msgBuffer_ = std::make_shared<asio::streambuf>();
         }
 
-        const int MAX_PACKET_SIZE = 512; // how big packets are read
+        const int MAX_PACKET_SIZE = 512;
+
 
         /**
          * Sends message msg

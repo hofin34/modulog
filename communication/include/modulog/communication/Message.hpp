@@ -1,5 +1,7 @@
 #pragma once
 
+#include <modulog/meta_lib/Helpers.h>
+
 #include <nlohmann/json.hpp>
 
 #include <string>
@@ -37,6 +39,7 @@ namespace modulog::communication {
          * @return timestamp string
          */
         std::string getTimestamp();
+
     private:
         std::string timestamp_ = "notDefinedTimestamp";
     };

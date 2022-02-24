@@ -8,3 +8,4 @@ TARGET_INCLUDE_DIRECTORIES(agent_client_lib PUBLIC "include/")
 TARGET_INCLUDE_DIRECTORIES(agent_client_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 TARGET_LINK_LIBRARIES(agent_client_lib CommunicationLib)
+TARGET_LINK_LIBRARIES(agent_client_lib MetaLib)

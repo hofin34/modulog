@@ -18,6 +18,12 @@ namespace modulog::core{
          */
         void saveLog(const std::string& agentId, const std::shared_ptr<communication::LogMessage>& logMessage);
 
+        /**
+         * Function saves crashed agent name into file.
+         * @param agentId name of crashed agent
+         */
+        void logAgentCrash(std::string agentId);
+
     private:
         /**
          * If received log is of ERROR type, this function is called - creates directory for error logs and saves it

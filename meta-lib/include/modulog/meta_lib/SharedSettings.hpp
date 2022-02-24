@@ -12,6 +12,7 @@ namespace modulog::meta_lib{
         struct ServerSettings{
             int portNumber = 1234; // Port number, where will be TCP server listening
             int connectionTimeoutSec = 3; // How many seconds has agent to connect to server before is killed
+            const int MAX_PACKET_SIZE = 512; // Packet size, which will be read in TcpConnection
         } ServerSettings;
         struct LogSettings{
             std::filesystem::path enabledAgentsPath = "./agents-enabled.conf";
