@@ -54,29 +54,19 @@ And also flowchart diagram:
 * install `gcc-aarch64-linux-gnu` (tested version 9.3.0)
 * rest same as above, just modify cmake variable `-DCMAKE_TOOLCHAIN_FILE=../toolchains/aarch_toolchain.cmake`
 
-## Implementation TODO
-* log somewhere if agent crash 
-* better agent exit handling and cleaning
+
+---
+
 
 ## TODO
 * Write to doc, how to create agents
 
-
----
-
-
-
-
-
---- 
-
 ## Pitfalls we will work on
 1. Not the most effective - like sending logs in json etc.
 2. Not rotating log files
-3. Not the most clean exit with CTRL+C
+3. Not the best agent ending
 
 # END PROGRAM DOCUMENTATION (continuing just some notes)
----
 
 ---
 
