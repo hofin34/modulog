@@ -15,7 +15,7 @@
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/permanent-log-agent\" >> more-agents-enabled-agents.conf",
     "",
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/killed-agent\n\" > killed-freezed-enabled-agents.conf",
-    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/freezed-agent\" >> killed-freezed-enabled-agents.conf"
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/freezed-agent\" >> killed-freezed-enabled-agents.conf",
     "",
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/killed-agent\n\" > double-kill-enabled-agents.conf",
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/killed-agent\" >> double-kill-enabled-agents.conf"
