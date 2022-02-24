@@ -3,7 +3,6 @@ PROJECT(Tests)
 # GoogleTest requires at least C++11
 SET(CMAKE_CXX_STANDARD 17)
 
-
 MACRO(SUBDIRLIST result curdir)
     FILE(GLOB children ${curdir}/*)
     SET(dirlist "")
@@ -30,8 +29,8 @@ message("Python_VERSION:${Python3_EXECUTABLE}")
 ADD_TEST(NAME ModulogTests COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/lib/StateSmurf/SmurfTestingScripts/CompareScenarios.py
         -s ${CMAKE_BINARY_DIR}/scenarios.json
         -e ${CMAKE_BINARY_DIR}/modulog
+        #-c
         --evaluator ${CMAKE_BINARY_DIR}/lib/StateSmurf/SmurfEvaluator/smurfEvaluator
         --output ${CMAKE_SOURCE_DIR}/test/smurf-test/
-        #-c
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test/smurf-test)# ${EXECUTABLE_OUTPUT_PATH} )
 

@@ -5,5 +5,5 @@ ADD_EXECUTABLE(${AG_NAME} ${AG_NAME}.cpp)
 CONFIGURE_FILE(config.json config.json COPYONLY)
 TARGET_LINK_LIBRARIES(${AG_NAME} agent_client_lib)
 
-INCLUDE(lib/Linux-System-Monitoring-Library/CMakeLists.txt)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/lib/Linux-System-Monitoring-Library/CMakeLists.txt)
 TARGET_LINK_LIBRARIES(${AG_NAME} linuxmonitoring)

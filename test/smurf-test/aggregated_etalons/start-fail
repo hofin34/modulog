@@ -1,5 +1,0 @@
-[2022-02-23 15:44:27.254] [modulog] [debug] [TransitionSmurf] Start of Run -- Aggregated
-[2022-02-23 15:44:27.255] [modulog] [debug] [TransitionSmurf] Going to state Start
-[2022-02-23 15:44:27.255] [modulog] [debug] [TransitionSmurf] Going to state ServerCreated
-In circuit 0: [CreatingAgent, ]
-[2022-02-23 15:44:30.255] [modulog] [warning] [TransitionSmurf] Couldn't change state { "to":CleanExit "from": CreatingAgent }

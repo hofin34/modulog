@@ -1,6 +1,7 @@
 /*
  * Agent using linux-system-monitoring library from GitHub, that can monitor CPU, RAM, ... (look at README.md for more info)
  */
+
 #include <modulog/agent_client/AgentClient.hpp>
 #include <modulog/agent_client/Helpers.hpp>
 #include "lib/Linux-System-Monitoring-Library/lib/linux_cpuload.hpp"
@@ -41,7 +42,8 @@ int main(int argc, char **argv) {
 
     cpuMonitoring->initCpuUsage();
     auto maxRamToSend = std::make_shared<modulog::communication::LogMessage>(
-            modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "maxRamKB", std::to_string(memoryMonitoring->getTotalMemoryInKB()));
+            modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "maxRamKB",
+            std::to_string(memoryMonitoring->getTotalMemoryInKB()));
     agentClient.sendLog(maxRamToSend);
 
     // print cpu usage of all cpu cores
@@ -56,7 +58,8 @@ int main(int argc, char **argv) {
                     modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "ramTotal", std::to_string(currRam));
         agentClient.sendLog(ramToSend);
         auto usedRamToSendKb = std::make_shared<modulog::communication::LogMessage>(
-                modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "usedRamKb", std::to_string(memoryMonitoring->getCurrentMemUsageInKB()));
+                modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "usedRamKb",
+                std::to_string(memoryMonitoring->getCurrentMemUsageInKB()));
         agentClient.sendLog(usedRamToSendKb);
 
 

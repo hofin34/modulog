@@ -9,6 +9,7 @@
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/start-fail-agent\" > start-fail-enabled-agents.conf",
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/start-fail-delay-agent\" > start-fail-delay-enabled-agents.conf",
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/permanent-log-agent\" > permanent-log-enabled-agents.conf",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/big-log-agent\" > big-log-enabled-agents.conf",
     "",
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/permanent-log-agent\n\" > more-agents-enabled-agents.conf",
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/permanent-log-agent\n\" >> more-agents-enabled-agents.conf",
@@ -83,6 +84,34 @@
       "timeout" : 5,
       "arguments" : {
         "--enabled-agents" : "permanent-log-enabled-agents.conf"
+      }
+    },
+    {
+      "name" : "big-log",
+      "timeout" : 5,
+      "arguments" : {
+        "--enabled-agents" : "big-log-enabled-agents.conf"
+      }
+    },
+    {
+      "name" : "more-agents",
+      "timeout" : 5,
+      "arguments" : {
+        "--enabled-agents" : "more-agents-enabled-agents.conf"
+      }
+    },
+    {
+      "name": "killed-freezed",
+      "timeout": 5,
+      "arguments": {
+        "--enabled-agents": "killed-freezed-enabled-agents.conf"
+      }
+    },
+    {
+      "name": "double-kill",
+      "timeout": 5,
+      "arguments": {
+        "--enabled-agents": "double-kill-enabled-agents.conf"
       }
     }
   ],
