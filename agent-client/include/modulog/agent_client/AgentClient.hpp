@@ -84,7 +84,7 @@ namespace modulog::agent_client {
         std::string sharedConfig;
         std::atomic<bool> simulatedFreeze = false;
         // Sync vars:
-        std::atomic<bool> confirmedExit_;
+        std::atomic<bool> shouldExit_;
         std::mutex msgMutex_;
         std::condition_variable msgCondVar_;
         int totalMsgsReceived_ = 0;

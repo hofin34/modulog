@@ -5,7 +5,7 @@ namespace modulog::agent_client{
 
     AgentClient::AgentClient(std::shared_ptr<asio::io_context> &ioContext, bool isDebug, std::string agentName)
             : ioContext_(ioContext), isDebug_(isDebug), agentName_(agentName){
-        confirmedExit_ = false;
+        shouldExit_ = false;
         msgProcessor_ = std::make_shared<communication::MessageProcessor>(totalMsgsReceived_, msgCondVar_, msgMutex_);
     }
 
@@ -61,7 +61,7 @@ namespace modulog::agent_client{
 
 
     void AgentClient::handleResponses() {
-        while(confirmedExit_.load() != true){
+        while(shouldExit_.load() != true){
             auto controlMsg = messageExchanger_->waitForControlMessage(-1);
             if(controlMsg == nullptr){ // This should not happen
                 std::cerr << "No control message!"<< std::endl;
@@ -73,9 +73,7 @@ namespace modulog::agent_client{
                 auto ackAliveMsg = std::make_shared<communication::ControlMessage>(modulog::communication::ControlMessage::CONTROL_MSG_TYPE::ACK, "");
                 messageExchanger_->sendControl(ackAliveMsg);
             }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT){
-                std::cout << "Agent received EXIT - should exit now." << std::endl; //TODO exit
-            }else if(controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT_ACK){
-                confirmedExit_ = true;
+                shouldExit_ = true;
             }
         }
     }
@@ -87,7 +85,7 @@ namespace modulog::agent_client{
     void AgentClient::exitConnection() {
         auto exitMsg = std::make_shared<communication::ControlMessage>(modulog::communication::ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
         sendControl(exitMsg);
-        while(confirmedExit_.load() != true){ // Active waiting, but just a few millis, so its ok
+        while(shouldExit_.load() != true){ // Active waiting, but just a few millis, so its ok
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
         responseHandleThread.join();

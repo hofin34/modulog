@@ -26,7 +26,13 @@ namespace modulog::core{
         return messageExchanger_;
     }
 
+    bool Agent::getExpectedExit() {
+        return expectedExit_;
+    }
 
+    void Agent::setExpectedExit(bool expectedExit) {
+        expectedExit_ = expectedExit;
+    }
 
 
 }

@@ -7,19 +7,20 @@ namespace modulog::core {
             server_(*ioContext, messageMutex_, messageConditionVar_, totalReceivedMessages_, sharedSettings),
             sharedSettings_(sharedSettings) {
         ioContext_ = ioContext;
-        agentHandler_ = std::make_shared<AgentHandler>(std::filesystem::absolute(sharedSettings_->LogSettings.enabledAgentsPath));
+        agentHandler_ = std::make_shared<AgentHandler>(
+                std::filesystem::absolute(sharedSettings_->LogSettings.enabledAgentsPath));
     }
 
     void Core::start() {
         // start server:
-        #ifdef BRINGAUTO_TESTS
-            sharedSettings_->Testing.transitions->goToState("Start");
-        #endif
+#ifdef BRINGAUTO_TESTS
+        sharedSettings_->Testing.transitions->goToState("Start");
+#endif
         server_.startAccept();
         serverThread_ = std::thread{[this]() { ioContext_->run(); }};
-        #ifdef BRINGAUTO_TESTS
-            sharedSettings_->Testing.transitions->goToState("ServerCreated");
-        #endif
+#ifdef BRINGAUTO_TESTS
+        sharedSettings_->Testing.transitions->goToState("ServerCreated");
+#endif
         try {
             initAllAgents();
         } catch (std::exception &e) {
@@ -31,34 +32,36 @@ namespace modulog::core {
         LogSaver logSaver(sharedSettings_->LogSettings.logsDestination);
         bringauto::logging::Logger::logInfo("Logging...");
         while (!stopFlag.load() && !agentHandler_->getRunningAgents().empty()) {
-            #ifdef BRINGAUTO_TESTS
-                if(!stopFlag.load())
-                        sharedSettings_->Testing.transitions->goToState("WaitForMessage");
-            #endif
+#ifdef BRINGAUTO_TESTS
+            if (!stopFlag.load())
+                sharedSettings_->Testing.transitions->goToState("WaitForMessage");
+#endif
             {
                 std::unique_lock<std::mutex> lck(messageMutex_);
                 messageConditionVar_.wait(lck, [this] { return totalReceivedMessages_; });
                 totalReceivedMessages_--;
             }
-            #ifdef BRINGAUTO_TESTS
-                if(!stopFlag.load())
-                        sharedSettings_->Testing.transitions->goToState("ProcessMessage");
-            #endif
+#ifdef BRINGAUTO_TESTS
+            if (!stopFlag.load())
+                sharedSettings_->Testing.transitions->goToState("ProcessMessage");
+#endif
             std::vector<std::shared_ptr<Agent>> agentsToDel;
             int i = 0;
             for (auto &actAgent: agentHandler_->getRunningAgents()) {
                 auto controlMsg = actAgent->getMessageExchanger()->popControlMessage();
                 if (controlMsg != nullptr) {
                     if (controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT) {
-                        std::cerr << "Agent " << actAgent->getId() << " wants to exit..." << std::endl;
+                        actAgent->setExpectedExit(true);
                         auto exitControlMsg = std::make_shared<communication::ControlMessage>(
-                                communication::ControlMessage::CONTROL_MSG_TYPE::EXIT_ACK, "");
+                                communication::ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
                         actAgent->getMessageExchanger()->sendControl(exitControlMsg);
                         agentsToDel.push_back(actAgent);
                         continue;
                     } else if (controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR) {
                         std::cerr << "Core received EXIT_ERR from " << actAgent->getId() << std::endl;
-                        logSaver.logAgentCrash(actAgent->getId());
+                        if (!actAgent->getExpectedExit()) {
+                            logSaver.logAgentCrash(actAgent->getId());
+                        }
                         agentsToDel.push_back(actAgent);
                         continue;
                     } else if (controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::ACK) {
@@ -75,9 +78,9 @@ namespace modulog::core {
             }
             agentsToDel.clear();
         }
-        #ifdef BRINGAUTO_TESTS
-            sharedSettings_->Testing.transitions->goToState("Exiting");
-        #endif
+#ifdef BRINGAUTO_TESTS
+        sharedSettings_->Testing.transitions->goToState("Exiting");
+#endif
         cleanAll();
     }
 
@@ -123,13 +126,14 @@ namespace modulog::core {
     void Core::initAllAgents() {
         std::shared_ptr<AgentProcess> agentInfo;
         while ((agentInfo = agentHandler_->runNextAgent()) != nullptr) {
-            #ifdef BRINGAUTO_TESTS
-                sharedSettings_->Testing.transitions->goToState("CreatingAgent");
-            #endif
+#ifdef BRINGAUTO_TESTS
+            sharedSettings_->Testing.transitions->goToState("CreatingAgent");
+#endif
             bringauto::logging::Logger::logInfo("waiting for ag. connection...");
             std::shared_ptr<communication::TcpConnection> agentConnection;
             auto endConnectionTime =
-                    std::chrono::system_clock::now() + std::chrono::seconds(sharedSettings_->ServerSettings.connectionTimeoutSec);
+                    std::chrono::system_clock::now() +
+                    std::chrono::seconds(sharedSettings_->ServerSettings.connectionTimeoutSec);
             while ((endConnectionTime > std::chrono::system_clock::now()) &&
                    (agentConnection = server_.popConnection()) == nullptr) {
                 std::this_thread::sleep_for(std::chrono::microseconds(
@@ -159,7 +163,7 @@ namespace modulog::core {
 
             //Now expecting ACK response with agent name:
             std::string agentName = respControlMessage->getValue();
-            if(agentName.empty())
+            if (agentName.empty())
                 throw std::runtime_error("Agent didn't send name!");
             agentInfo->setAgentId(agentName);
             agentHandler_->addNewAgent(messageExchanger, agentInfo);
@@ -185,17 +189,20 @@ namespace modulog::core {
             agentsToDel.push_back(toDel); // Cannot delete from inside for range - its removing from vector
         }
         for (auto &toDel: agentsToDel) {
-            #ifdef BRINGAUTO_TESTS
-                sharedSettings_->Testing.transitions->goToState("StopAgent");
-            #endif
+#ifdef BRINGAUTO_TESTS
+            sharedSettings_->Testing.transitions->goToState("StopAgent");
+#endif
+            auto exitMsg = std::make_shared<communication::ControlMessage>(
+                    communication::ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
+            toDel->getMessageExchanger()->sendControl(exitMsg);
             agentHandler_->deleteAgent(toDel);
         }
         ioContext_->stop();
         serverThread_.join();
         sendAliveTimer_.cancel();
-        #ifdef BRINGAUTO_TESTS
-            sharedSettings_->Testing.transitions->goToState("CleanExit");
-        #endif
+#ifdef BRINGAUTO_TESTS
+        sharedSettings_->Testing.transitions->goToState("CleanExit");
+#endif
     }
 
 
