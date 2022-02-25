@@ -9,11 +9,6 @@ TARGET_INCLUDE_DIRECTORIES(CommunicationLib PUBLIC "include/")
 TARGET_INCLUDE_DIRECTORIES(CommunicationLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # ----------- nlohmann json library
-# TODO downloads too long?
-#FetchContent_Declare(json
-#        GIT_REPOSITORY https://github.com/nlohmann/json.git
-#        GIT_TAG v3.10.4)
-
 FetchContent_Declare(json
         URL https://github.com/nlohmann/json/releases/download/v3.10.5/json.tar.xz
         )

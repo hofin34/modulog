@@ -30,6 +30,7 @@ SET(CMAKE_CXX_STANDARD 17)
 SET(modulog_VERSION 1.0.0)
 SET(AG_BUILT_LIST ${CMAKE_BINARY_DIR}/agents-enabled.conf)
 
+ADD_EXECUTABLE(modulog main.cpp)
 
 ADD_SUBDIRECTORY(core)
 ADD_SUBDIRECTORY(communication)
@@ -37,30 +38,7 @@ ADD_SUBDIRECTORY(meta-lib)
 ADD_SUBDIRECTORY(agent-client)
 ADD_SUBDIRECTORY(agents)
 
-ADD_EXECUTABLE(modulog main.cpp)
 
-# What will be compiled:
-FILE(READ ${CMAKE_SOURCE_DIR}/agents-to-compile.json TO_COMPILE_JSON)
-STRING(JSON AGENTS_COUNT LENGTH ${TO_COMPILE_JSON} agentsToCompile)
-MATH(EXPR AGENTS_COUNT "${AGENTS_COUNT}-1") # Decrementing by one - foreach needs number (count-1)
-FILE(REMOVE ${AG_BUILT_LIST}) # list of built agents is deleted - now we can start appending
-FOREACH (IDX RANGE ${AGENTS_COUNT})
-    # Get the name from the current JSON element.
-    STRING(JSON AG_PATH GET ${TO_COMPILE_JSON} agentsToCompile ${IDX} agentPath)
-    STRING(JSON AG_ENABLED GET ${TO_COMPILE_JSON} agentsToCompile ${IDX} enabled)
-    IF (${AG_ENABLED})
-        #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output-pack/agents/${AG_NAME})
-        GET_FILENAME_COMPONENT(AG_NAME ${AG_PATH} NAME)
-        ADD_SUBDIRECTORY(${AG_PATH})
-        ADD_DEPENDENCIES(modulog ${AG_NAME}) # Agent target has same name as its folder
-        FILE(APPEND ${AG_BUILT_LIST} ${AG_PATH} "\n")
-
-        IF(BRINGAUTO_INSTALL)
-            INSTALL(TARGETS ${AG_NAME} DESTINATION agents/${AG_NAME})
-            INSTALL(FILES ${AG_PATH}/config.json DESTINATION agents/${AG_NAME})
-        ENDIF()
-    ENDIF ()
-ENDFOREACH ()
 # ------------ linking
 
 TARGET_LINK_LIBRARIES(modulog CoreLib)

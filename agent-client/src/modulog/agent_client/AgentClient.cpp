@@ -29,7 +29,7 @@ namespace modulog::agent_client{
             connection->getSocket().connect(endpoint);
             messageExchanger_ = std::make_shared<communication::MessageExchanger>(connection);
             clientThread = std::thread{[this]() { ioContext_->run(); }};
-            auto configMessage = messageExchanger_->waitForControlMessage(2000); //TODO if timeout 2 ms and run with valgrind, error occur
+            auto configMessage = messageExchanger_->waitForControlMessage(2000); // If small timeout (like 2 ms), app crashes in Valgrind
             if(configMessage == nullptr){
                 bringauto::logging::Logger::logError("{} didnt receive configMessage", agentName_);
                 exit(EXIT_FAILURE);

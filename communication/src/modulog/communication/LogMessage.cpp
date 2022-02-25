@@ -11,7 +11,7 @@ namespace modulog::communication{
     }
     LogMessage::LogMessage(std::string jsonInit) {
         setTimestampNow();
-        nlohmann::json jsonObj = nlohmann::json::parse(jsonInit); // TODO if wrong json
+        nlohmann::json jsonObj = nlohmann::json::parse(jsonInit);
         logType_ = jsonObj["logMsgType"];
         key_ = jsonObj["key"];
         value_ = jsonObj["value"];

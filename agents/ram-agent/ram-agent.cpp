@@ -32,7 +32,7 @@ int main(int argc, char** argv){
     if(configJson.contains("freeNotSmallerThan")){
         freeNotSmallerThan = configJson["freeNotSmallerThan"];
     }
-    int logInterval = 4; // TODO default in variable
+    int logInterval = 4;
     if(configJson.contains("logInterval")){
         logInterval = configJson["logInterval"];
     }

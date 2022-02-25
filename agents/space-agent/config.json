@@ -1,5 +1,5 @@
 {
-  "id": "space-logger",
+  "id": "space-agent",
   "logInterval": 5,
   "folderToMonitor": "/"
 }

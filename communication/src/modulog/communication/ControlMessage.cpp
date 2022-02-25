@@ -5,7 +5,7 @@ namespace modulog::communication{
         setTimestampNow();
         nlohmann::json jsonObj = nlohmann::json::parse(jsonInit);
         type_ = jsonObj["controlMsgType"];
-        value_ = jsonObj["value"]; // TODO check if correct type
+        value_ = jsonObj["value"];
 
     }
     ControlMessage::ControlMessage(ControlMessage::CONTROL_MSG_TYPE msgType, std::string value) {

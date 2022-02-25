@@ -26,6 +26,16 @@ Now you can run with `./modulog`.
 2. DaanDeMeyer/reproc (reproc++)
 3. nlohman/json
 
+# Create own agent
+You can look in [agents folder link] to find out, how to create agents.
+In CMake, just link it against `agent_client_lib`, then in code initialize client and start sending logs.
+Agent folder must have the same name as the executable inside.
+You can enable client debug mode when creating agent - in AgentClient constructor, pass `true` to `isDebug` parameter.
+With this, you can use agent standalone without core (client will just print to output, what would be sent).
+
+When is agent ready to use, you can add path to directory to the file [agents-to-compile.json]. 
+**In this directory must be executable with same name as the directory name.**
+When you have got same CMake structure as built-in agents, main CMake will take care of compiling everything and agent should be built automatically.
 
 # How it works
 This is, how architecture of modulog looks like: 
@@ -57,14 +67,13 @@ And also flowchart diagram:
 
 ---
 
-
-## TODO
-* Write to doc, how to create agents
-
 ## Pitfalls we will work on
 1. Not the most effective - like sending logs in json etc.
 2. Not rotating log files
 3. Not the best agent ending
+
+[agents folder link]: agents
+[agents-to-compile.json]: agents-to-compile.json
 
 # END PROGRAM DOCUMENTATION (continuing just some notes)
 
@@ -75,16 +84,6 @@ And also flowchart diagram:
 ---
 
 # Test cases
-* Test communication library - sending big logs / big frequency
-* add return codes for different exits:
-  * Agent fails to start
-  * Couldn't open file
-  * Runtime err
-* If agent fails during startup
-* If agent asks to exit
-* if is agent killed
-* If all agents are killed - should exit with 0
-* if all agents asks to exit
 * if agent freezes - will it kill him? (also with more agents)
 * if is logging correctly? and errors?
 * logging with a lot of agents and big log frequency

@@ -111,11 +111,9 @@ void logNetState(bool stateValue, modulog::agent_client::AgentClient &agentClien
 int main(int argc, char **argv) {
     auto programStart = std::chrono::system_clock::now();
     nlohmann::json configJson = modulog::agent_client::Helpers::parseConfig(argv[0]);// nlohmann::json::parse(ifs);
-    if (!configJson.contains("id")) {
-        std::cerr << "Include config with id defined." << std::endl;
-        throw std::runtime_error("...");
-    }
-    int checkInterval = 4; // TODO default in variable
+    if (!configJson.contains("id"))
+        throw std::runtime_error("Include config with id defined.");
+    int checkInterval = 4;
     if (configJson.contains("checkInterval")) {
         checkInterval = configJson["checkInterval"];
     }

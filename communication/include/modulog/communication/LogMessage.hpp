@@ -24,7 +24,7 @@ namespace modulog::communication{
         /**
          * Init this class with all attributes (if you want to create instance from code)
          * @param logMsgType  what is message type (like LOG, ERROR, ...)
-         * @param key key of log - must be json key, like "logTemperature" //TODO check if user pass everywhere json key
+         * @param key key of log - must be json key, like "logTemperature"
          * @param value value of log
          */
         LogMessage(LOG_MSG_TYPE logMsgType, std::string key, std::string value);

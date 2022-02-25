@@ -19,7 +19,10 @@
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/freezed-agent\" >> killed-freezed-enabled-agents.conf",
     "",
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/killed-agent\n\" > double-kill-enabled-agents.conf",
-    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/killed-agent\" >> double-kill-enabled-agents.conf"
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/killed-agent\" >> double-kill-enabled-agents.conf",
+    "",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/big-log-agent\n\" > multi-big-log-enabled-agents.conf",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/big-log-agent\" >> multi-big-log-enabled-agents.conf"
   ],
   "between_runs" : [ "" ],
   "scenarios" : [
@@ -112,6 +115,13 @@
       "timeout": 5,
       "arguments": {
         "--enabled-agents": "double-kill-enabled-agents.conf"
+      }
+    },
+    {
+      "name": "multi-big-log",
+      "timeout": 5,
+      "arguments": {
+        "--enabled-agents": "multi-big-log-enabled-agents.conf"
       }
     }
   ],

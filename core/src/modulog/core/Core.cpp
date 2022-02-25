@@ -29,6 +29,7 @@ namespace modulog::core {
         notifyAllAgentsToSendLogs();
         startSendAlive();
         LogSaver logSaver(sharedSettings_->LogSettings.logsDestination);
+        bringauto::logging::Logger::logInfo("Logging...");
         while (!stopFlag.load() && !agentHandler_->getRunningAgents().empty()) {
             #ifdef BRINGAUTO_TESTS
                 if(!stopFlag.load())
