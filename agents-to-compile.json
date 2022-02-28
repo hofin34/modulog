@@ -13,6 +13,10 @@
       "enabled": true
     },
     {
+      "agentPath": "agents/udp-watchdog-agent",
+      "enabled": true
+    },
+    {
       "agentPath": "agents/ram-agent",
       "enabled": false
     },

@@ -1,0 +1,9 @@
+{
+  "id": "udp-watchdog-agent",
+  "port": 6127,
+  "checkInterval": 3,
+  "devices": [
+    "GREENBUTTON1",
+    "GREENBUTTON2"
+  ]
+}
