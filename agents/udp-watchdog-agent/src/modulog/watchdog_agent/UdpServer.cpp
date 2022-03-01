@@ -1,9 +1,9 @@
-#include <modulog/watchdog_agent/UdpServer.h>
+#include <modulog/watchdog_agent/UdpServer.hpp>
 namespace modulog::watchdog_agent{
-    UdpServer::UdpServer(asio::io_service &ioContext, int port, std::shared_ptr<WatchdogHandler> watchdogHandler) : socket_(ioContext,
-                                                                                                                            asio::ip::udp::endpoint(asio::ip::udp::v4(),
+    UdpServer::UdpServer(std::shared_ptr<asio::io_context> &ioContext, int port, std::shared_ptr<WatchdogHandler> watchdogHandler) : socket_(*ioContext,
+                                                                                                                                             asio::ip::udp::endpoint(asio::ip::udp::v4(),
                                                                                                    port)),
-                                                                                                   watchdogHandler_(watchdogHandler){
+                                                                                                                                     watchdogHandler_(watchdogHandler){
         startReceive();
     }
 

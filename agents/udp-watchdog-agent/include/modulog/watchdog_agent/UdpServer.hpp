@@ -1,6 +1,6 @@
 #pragma once
 
-#include <modulog/watchdog_agent/WatchdogHandler.h>
+#include <modulog/watchdog_agent/WatchdogHandler.hpp>
 
 #include <string>
 #include <iostream>
@@ -9,7 +9,7 @@
 namespace modulog::watchdog_agent{
     class UdpServer {
     public:
-        UdpServer(asio::io_context &ioContext, int port, std::shared_ptr<WatchdogHandler> watchdogHandler);
+        UdpServer(std::shared_ptr<asio::io_context> &ioContext, int port, std::shared_ptr<WatchdogHandler> watchdogHandler);
 
     private:
         void startReceive();

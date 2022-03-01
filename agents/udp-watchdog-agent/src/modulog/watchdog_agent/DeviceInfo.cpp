@@ -1,4 +1,4 @@
-#include <modulog/watchdog_agent/DeviceInfo.h>
+#include <modulog/watchdog_agent/DeviceInfo.hpp>
 
 namespace modulog::watchdog_agent{
 
@@ -21,4 +21,15 @@ namespace modulog::watchdog_agent{
     void DeviceInfo::setTimestamp(uint64_t timestamp) {
         timestamp_ = timestamp;
     }
+
+    void DeviceInfo::nextInactive() {
+        inactiveCounter_++;
+        if(inactiveCounter_ > MAX_INACTIVE){
+            //TODO restart device
+            alreadyRestarted_ = true;
+        }
+
+    }
+
+
 }
