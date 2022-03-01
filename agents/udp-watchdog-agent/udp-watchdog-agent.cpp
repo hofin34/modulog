@@ -21,12 +21,12 @@ int main(int argc, char **argv) {
         std::cout << "dev: " << device << std::endl;
         deviceVector.push_back(device);
     }
-    auto watchdogHandler = std::make_shared<modulog::watchdog_agent::WatchdogHandler>();
-    watchdogHandler->init(deviceVector);
     try {
-        asio::io_service io_service;
-        modulog::watchdog_agent::UdpServer server(io_service, 6127, watchdogHandler);
-        io_service.run();
+        asio::io_context ioContext;
+        auto watchdogHandler = std::make_shared<modulog::watchdog_agent::WatchdogHandler>(ioContext);
+        watchdogHandler->init(deviceVector);
+        modulog::watchdog_agent::UdpServer server(ioContext, 6127, watchdogHandler);
+        ioContext.run();
     }
     catch (std::exception &e) {
         std::cerr << e.what() << std::endl;

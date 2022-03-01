@@ -4,6 +4,7 @@
   "checkInterval": 3,
   "devices": [
     "GREENBUTTON1",
-    "GREENBUTTON2"
+    "GREENBUTTON2",
+    "A"
   ]
 }

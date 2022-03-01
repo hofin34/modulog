@@ -9,7 +9,7 @@
 namespace modulog::watchdog_agent{
     class UdpServer {
     public:
-        UdpServer(asio::io_service &io_service, int port, std::shared_ptr<WatchdogHandler> watchdogHandler);
+        UdpServer(asio::io_context &ioContext, int port, std::shared_ptr<WatchdogHandler> watchdogHandler);
 
     private:
         void startReceive();
@@ -20,6 +20,6 @@ namespace modulog::watchdog_agent{
         asio::ip::udp::socket socket_;
         asio::ip::udp::endpoint remoteEndpoint_;
         std::array<char, 1024> recvBuffer_{'\0'};
-        std::shared_ptr<WatchdogHandler> watchdogHandler;
+        std::shared_ptr<WatchdogHandler> watchdogHandler_;
     };
 }
