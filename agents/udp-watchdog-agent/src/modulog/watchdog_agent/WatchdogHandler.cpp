@@ -26,7 +26,7 @@ namespace modulog::watchdog_agent {
 
     void WatchdogHandler::init(std::vector<std::string> devices) {
         for (auto &deviceName: devices) {
-            DeviceInfo deviceInfo{deviceName};
+            DeviceInfo deviceInfo{deviceName, agentClient_};
             deviceInfoVector_.push_back(deviceInfo);
         }
         checkoutTimer_.async_wait([this](const asio::error_code &ec) { checkAllDevices(ec); });
@@ -37,11 +37,7 @@ namespace modulog::watchdog_agent {
         std::lock_guard<std::mutex> lock(mtx_);
         for (auto &device: deviceInfoVector_) {
             if (device.getSentMessage() == false) {
-                std::cerr << device.getName() << " didnt send!" << std::endl;
                 device.nextInactive();
-                //auto errMsg = std::make_shared<communication::LogMessage>(
-                //        communication::LogMessage::LOG_MSG_TYPE::ERROR, "inactive", device.getName());
-
             }
             device.setSentMessage(false);
         }

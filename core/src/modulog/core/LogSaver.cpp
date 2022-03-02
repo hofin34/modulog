@@ -16,8 +16,9 @@ namespace modulog::core {
         std::string logFileName = logMessage->getKey() + ".txt";
         std::filesystem::path logFilePath = whereSave / logFileName;
         logFile.open(logFilePath, std::ios_base::app);
-        logFile << "[" << logMessage->getTimestamp() << "] " << logMessage->getValue() << " "
-                << communication::LogMessage::getTypeStr(logMessage->getType()) << std::endl;
+        logFile << "[" << logMessage->getTimestamp() << "] " << "["
+                << communication::LogMessage::getTypeStr(logMessage->getType()) << "] " << logMessage->getValue() << " "
+                << std::endl;
         logFile.close();
         if (logMessage->getType() == communication::LogMessage::LOG_MSG_TYPE::ERROR) {
             saveErrorLog(agentId, logMessage);

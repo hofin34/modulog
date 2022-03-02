@@ -1,11 +1,13 @@
 #pragma once
 
 #include <string>
+#include <memory>
+#include <modulog/agent_client/AgentClient.hpp>
 
 namespace modulog::watchdog_agent{
     class DeviceInfo {
     public:
-        DeviceInfo(std::string name) : name_(name){};
+        DeviceInfo(std::string name, std::shared_ptr<agent_client::AgentClient> agentClient) : name_(name), agentClient_(agentClient){};
         void setSentMessage(bool sent);
         bool getSentMessage();
         std::string getName();
@@ -22,6 +24,8 @@ namespace modulog::watchdog_agent{
         bool sentMessage_ = false;
         uint64_t timestamp_ = 0;
         const int MAX_INACTIVE = 3;
+        std::shared_ptr<agent_client::AgentClient> agentClient_;
+
     };
 }
 

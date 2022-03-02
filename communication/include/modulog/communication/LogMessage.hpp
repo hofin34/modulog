@@ -12,7 +12,7 @@ namespace modulog::communication{
          * Message types - in future can be more (like in syslog)
          */
         enum class LOG_MSG_TYPE {
-            LOG, ERROR, DEBUG
+            LOG, ERROR, DEBUG, WARNING
         };
 
         /**

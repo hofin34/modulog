@@ -14,10 +14,11 @@
 namespace modulog::watchdog_agent {
     class WatchdogHandler {
     public:
-        WatchdogHandler(std::shared_ptr<asio::io_context> &ioContext, int checkoutInterval, std::shared_ptr<AgentClient> agentClient) : checkoutInterval_(checkoutInterval),
+        WatchdogHandler(std::shared_ptr<asio::io_context> &ioContext, int checkoutInterval, std::shared_ptr<agent_client::AgentClient> agentClient) : checkoutInterval_(checkoutInterval),
                                                                              checkoutTimer_(*ioContext,
                                                                                             std::chrono::seconds(
-                                                                                                    checkoutInterval_)) {};
+                                                                                                    checkoutInterval_)),
+                                                                                                    agentClient_(agentClient){};
 
         void processMessage(const std::string &message);
 
@@ -27,6 +28,7 @@ namespace modulog::watchdog_agent {
         void checkAllDevices(const asio::error_code &);
 
         std::vector<DeviceInfo> deviceInfoVector_;
+        std::shared_ptr<agent_client::AgentClient> agentClient_;
         asio::steady_timer checkoutTimer_;
         int checkoutInterval_ = 10;
         std::mutex mtx_;

@@ -38,7 +38,8 @@ namespace modulog::communication{
                 return "ERROR";
             case LOG_MSG_TYPE::LOG:
                 return "LOG";
-                ;
+            case LOG_MSG_TYPE::WARNING:
+                return "WARNING";
             default:
                 return "UNKNOWN";
         }

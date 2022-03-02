@@ -32,7 +32,8 @@ int main(int argc, char **argv) {
     }
     try {
         auto ioContext = std::make_shared<asio::io_context>();
-        auto agentClient = std::make_shared<modulog::agent_client::AgentClient>(ioContext, true, agentId);
+        auto agentClient = std::make_shared<modulog::agent_client::AgentClient>(ioContext, false, agentId);
+        agentClient->initClient();
         auto watchdogHandler = std::make_shared<modulog::watchdog_agent::WatchdogHandler>(ioContext, checkoutInterval, agentClient);
         watchdogHandler->init(deviceVector);
         modulog::watchdog_agent::UdpServer server(ioContext, 6127, watchdogHandler);
