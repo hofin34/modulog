@@ -14,6 +14,8 @@ After start, enabled agents are created and they collect logs. These logs are sa
 You can select, which agents will be compiled in file `agents-to-compile.json`.
 Then compile all with:
 
+`git submodule update --init --recursive`
+
 `mkdir build && cd build && cmake .. && make`
 
 In built folder file `agents-enabled.conf`, you can enable/disable agents, that will be used during runtime (simply delete line or comment with `#` character).
