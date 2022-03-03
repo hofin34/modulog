@@ -32,14 +32,13 @@ namespace modulog::watchdog_agent {
             auto errorMsg = std::make_shared<communication::LogMessage>(communication::LogMessage::LOG_MSG_TYPE::ERROR,
                                                                         name_, "Not responding even after restart");
             agentClient_->sendLog(errorMsg);
-        }else if (inactiveCounter_ > MAX_INACTIVE) {
-            //TODO restart device
+        }else if (inactiveCounter_ >= MAX_INACTIVE) {
+            //TODO restart device or something like this
             auto warningMsg = std::make_shared<communication::LogMessage>(
                     communication::LogMessage::LOG_MSG_TYPE::WARNING, name_, "Not received alive msg");
             agentClient_->sendLog(warningMsg);
             alreadyRestarted_ = true;
         }
-
     }
 
 

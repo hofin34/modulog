@@ -3,18 +3,20 @@
 namespace modulog::watchdog_agent {
     void WatchdogHandler::processMessage(const std::string &message) {
         const std::regex msgRegex("^[a-zA-Z0-9]+\\_[0-9]+$");
-        std::cout << "Msg:" << message << std::endl;
+        std::cout << "rec msg: " << message << std::endl;
         if (!std::regex_match(message, msgRegex)) {
             std::cerr << "Bad msg format" << std::endl;
             return; //TODO log error -  sent bad msg format
         }
-        std::cout << "rec msg: " << message << std::endl;
         std::lock_guard<std::mutex> lock(mtx_);
         std::string delimiter = "_";
         int delimPos = message.find(delimiter);
         std::string deviceName = message.substr(0, delimPos);
-        std::string timestampStr = message.substr(delimiter.length() + 1);
+        std::cout << "name msg: " << deviceName << std::endl;
+        std::string timestampStr = message.substr(delimPos + delimiter.length());
+        std::cout << "timestamp msg: " << timestampStr<< std::endl;
         uint64_t timestamp = std::stoi(timestampStr);
+        std::cout << "timestamp  " << timestamp << std::endl;
         for (auto &dev: deviceInfoVector_) {
             if (dev.getName() == deviceName) {
                 dev.setSentMessage(true);
@@ -29,6 +31,7 @@ namespace modulog::watchdog_agent {
             DeviceInfo deviceInfo{deviceName, agentClient_};
             deviceInfoVector_.push_back(deviceInfo);
         }
+        checkoutTimer_.expires_from_now(std::chrono::seconds(checkoutInterval_));
         checkoutTimer_.async_wait([this](const asio::error_code &ec) { checkAllDevices(ec); });
     }
 

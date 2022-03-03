@@ -23,7 +23,7 @@ namespace modulog::watchdog_agent{
         int lastMessageTime_ = 0;
         bool sentMessage_ = false;
         uint64_t timestamp_ = 0;
-        const int MAX_INACTIVE = 3;
+        const int MAX_INACTIVE = 1;
         std::shared_ptr<agent_client::AgentClient> agentClient_;
 
     };

@@ -22,9 +22,8 @@ Now you can run with `./modulog`.
 
 
 ## Dependencies
-1. boost asio (no need for whole boost, asio is developed standalone)
-2. DaanDeMeyer/reproc (reproc++)
-3. nlohman/json
+Look at the [Dependencies.cmake].
+Agents have their dependencies inside their folder.
 
 # Create own agent
 You can look in [agents folder link] to find out, how to create agents.
@@ -56,7 +55,7 @@ And also flowchart diagram:
 * now you can build:
    * `mkdir build`
    * `cd build`
-   * `cmake -DCMAKE_TOOLCHAIN_FILE=../toolchains/raspberry_toolchain.cmake -DCMADE_SYSROOT=/path/to/sysroot -DCMAKE_INSTALL_PREFIX="someDir" ..`
+   * `cmake -DCMAKE_TOOLCHAIN_FILE=../toolchains/raspberry_toolchain.cmake -DCMAKE_SYSROOT=/path/to/sysroot -DCMAKE_INSTALL_PREFIX="someDir" ..`
    * `make -j 8 install`
    * output in `someDir` can be moved to RPI
 
@@ -74,6 +73,7 @@ And also flowchart diagram:
 
 [agents folder link]: agents
 [agents-to-compile.json]: agents-to-compile.json
+[Dependencies.cmake]: cmake/Dependencies.cmake
 
 # END PROGRAM DOCUMENTATION (continuing just some notes)
 

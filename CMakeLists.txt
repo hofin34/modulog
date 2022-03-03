@@ -26,11 +26,15 @@ IF(BRINGAUTO_PACKAGE)
     ENDIF()
 ENDIF()
 
+
 SET(CMAKE_CXX_STANDARD 17)
 SET(modulog_VERSION 1.0.0)
 SET(AG_BUILT_LIST ${CMAKE_BINARY_DIR}/agents-enabled.conf)
 
+INCLUDE(cmake/Dependencies.cmake)
+
 ADD_EXECUTABLE(modulog main.cpp)
+
 
 ADD_SUBDIRECTORY(core)
 ADD_SUBDIRECTORY(communication)
@@ -57,6 +61,6 @@ IF(BRINGAUTO_PACKAGE)
     SET(CPACK_GENERATOR ZIP)
     SET(CPACK_PACKAGE_CONTACT "Martin Hofbauer <martin.hofbauer@bringauto.com>")
     SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Hofbauer <martin.hofbauer@bringauto.com>")
-    SET(CPACK_PACKAGE_VERSION ${libbringauto_logger_VERSION})
+    SET(CPACK_PACKAGE_VERSION ${modulog_VERSION})
     INCLUDE(CPack)
 ENDIF()

@@ -7,3 +7,6 @@ TARGET_LINK_LIBRARIES(${AG_NAME} agent_client_lib)
 
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/lib/Linux-System-Monitoring-Library/CMakeLists.txt)
 TARGET_LINK_LIBRARIES(${AG_NAME} linuxmonitoring)
+IF(BRINGAUTO_INSTALL)
+    INSTALL(IMPORTED_RUNTIME_ARTIFACTS linuxmonitoring DESTINATION lib)
+ENDIF()

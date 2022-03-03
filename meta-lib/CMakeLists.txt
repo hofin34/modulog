@@ -11,13 +11,4 @@ IF(BRINGAUTO_TESTS)
     TARGET_LINK_LIBRARIES(MetaLib PUBLIC DiagramSmurfLib TransitionSmurfLib)
 ENDIF()
 
-execute_process(
-        COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_x86-64-ubuntu-2004.zip
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
-
-FIND_PACKAGE(libbringauto_logger PATHS ${CMAKE_BINARY_DIR})
 TARGET_LINK_LIBRARIES(MetaLib PUBLIC bringauto_logger::bringauto_logger)
-IF(BRINGAUTO_INSTALL)
-    INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger::bringauto_logger_spdlog DESTINATION lib)
-ENDIF()

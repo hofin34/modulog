@@ -17,7 +17,7 @@ namespace modulog::meta_lib{
         struct LogSettings{
             std::filesystem::path enabledAgentsPath = "./agents-enabled.conf";
             std::filesystem::path logsDestination = "./logs"; // Where will be saved logs (folder is created if not existing)
-            int isAliveIntervalSec = 1; // How often check, if agent is not freezed (in seconds)
+            int isAliveIntervalSec = 8; // How often check, if agent is not freezed (in seconds)
             int isAliveTimeoutSec = 2; // How long wait for agents isAlive response
             std::filesystem::path sharedAgentsConfig = ""; // Path to file - its content will be sent to all agents (if not using, leave this variable empty)
         } LogSettings;
