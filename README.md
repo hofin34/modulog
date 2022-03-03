@@ -2,9 +2,17 @@
 This program can be used to log GNU/Linux systems.
 Processes collecting logs are called agents.
 
+
+After start, enabled agents are created and they collect logs. They send these logs to the Core, which saves them in default folder `logs/`. 
+This folder and also other properties can be changed in file [SharedSettings.hpp] (in the future will be better config file)
+
 ## How to use
 First, you must select, which agents will be compiled in file [agents-to-compile.json] (set "enabled" to true/false)
 You can add also your own agents into this file, they will be compiled automatically with whole program, if they are enabled.
+
+You can configure agents with their config files - settings like how often take log, which values are considered as error etc.
+These settings should be in each agent folder named [config.json] (this file is copied with each build into build directory, so if you would like to change some values, you can change it in agent source
+folder and then recompile whole program or change config file in agent build folder)
 
 Then compile all with:
 
@@ -71,6 +79,8 @@ And also flowchart diagram:
 [agents-to-compile.json]: agents-to-compile.json
 [Dependencies.cmake]: cmake/Dependencies.cmake
 [agents-to-compile.json]: agents-to-compile.json
+[config.json]: agents/uptime-agent/config.json
+[SharedSettings.hpp]: meta-lib/include/modulog/meta_lib/SharedSettings.hpp
 
 # END PROGRAM DOCUMENTATION (continuing just some notes)
 
