@@ -2,26 +2,20 @@
 This program can be used to log GNU/Linux systems.
 Processes collecting logs are called agents.
 
-You can select, which agents will be collecting in file `agents-list.conf`.
-On each line must be path to folder (folder name cannot contain empty spaces), in which is agent executable with same name as the folder.
-You can use `#` as a comment.
-
-You can configure agents with their config files - settings like how often take log, which values are considered as error etc.
-
-After start, enabled agents are created and they collect logs. These logs are saved in `logs/` folder, which is created after program termination.
-
 ## How to use
-You can select, which agents will be compiled in file `agents-to-compile.json`.
+First, you must select, which agents will be compiled in file [agents-to-compile.json] (set "enabled" to true/false)
+You can add also your own agents into this file, they will be compiled automatically with whole program, if they are enabled.
+
 Then compile all with:
 
 `git submodule update --init --recursive`
 
 `mkdir build && cd build && cmake .. && make`
 
-In built folder file `agents-enabled.conf`, you can enable/disable agents, that will be used during runtime (simply delete line or comment with `#` character).
+In build folder is now created file `agents-enabled.conf` - here, you can enable/disable agents, that will be used during runtime (simply delete line or comment with `#` character).
+All agents in this file must be already compiled!
+
 Now you can run with `./modulog`.
-
-
 
 ## Dependencies
 Look at the [Dependencies.cmake].
@@ -76,6 +70,7 @@ And also flowchart diagram:
 [agents folder link]: agents
 [agents-to-compile.json]: agents-to-compile.json
 [Dependencies.cmake]: cmake/Dependencies.cmake
+[agents-to-compile.json]: agents-to-compile.json
 
 # END PROGRAM DOCUMENTATION (continuing just some notes)
 
