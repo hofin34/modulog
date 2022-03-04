@@ -1,3 +1,5 @@
+INCLUDE(FetchContent)
+
 # ----------- nlohmann json library
 FetchContent_Declare(json
         URL https://github.com/nlohmann/json/releases/download/v3.10.5/json.tar.xz
@@ -47,6 +49,28 @@ EXECUTE_PROCESS(
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 FIND_PACKAGE(libbringauto_logger PATHS ${CMAKE_BINARY_DIR})
-IF(BRINGAUTO_INSTALL)
-    INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger::bringauto_logger_spdlog DESTINATION lib)
-ENDIF()
+#FetchContent_Declare(bringauto_logger
+#        GIT_REPOSITORY ssh://git@gitlab.bringauto.com:1999/bring-auto/host-platform/bringauto-logger.git
+#        GIT_TAG v1.1.0
+#        )
+#SET(LIB_TYPE SPDLOG)
+#FetchContent_MakeAvailable(bringauto_logger)
+##FIND_PACKAGE(libbringauto_logger)
+#
+#IF(BRINGAUTO_INSTALL)
+#    INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger::bringauto_logger_spdlog DESTINATION lib)
+#ENDIF()
+
+
+# ----------- cxxopts
+FetchContent_Declare(
+        cxxopts
+        GIT_REPOSITORY https://github.com/jarro2783/cxxopts.git
+        GIT_TAG        v3.0.0
+        GIT_SHALLOW    TRUE
+)
+set(CXXOPTS_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(CXXOPTS_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(CXXOPTS_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
+set(CXXOPTS_ENABLE_WARNINGS OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(cxxopts)

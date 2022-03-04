@@ -4,10 +4,12 @@
 
 #include <modulog/agent_client/AgentClient.hpp>
 #include <modulog/agent_client/Helpers.hpp>
-#include "lib/Linux-System-Monitoring-Library/lib/linux_cpuload.hpp"
-#include "lib/Linux-System-Monitoring-Library/lib/linux_process_load.hpp"
-#include "lib/Linux-System-Monitoring-Library/lib/util/timer.hpp"
-#include "lib/Linux-System-Monitoring-Library/lib/linux_memoryload.hpp"
+
+#include <linux_memoryload.hpp>
+#include <linux_process_load.hpp>
+#include <linux_cpuload.hpp>
+#include <timer.hpp>
+
 
 
 int main(int argc, char **argv) {
