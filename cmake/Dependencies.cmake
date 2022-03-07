@@ -1,4 +1,39 @@
 INCLUDE(FetchContent)
+FIND_PACKAGE(CMLIB REQUIRED)
+
+# ----------- BringAuto logger
+#CMLIB_DEPENDENCY(
+#        URI "https://github.com/bringauto/balogger-package.git"
+#        URI_TYPE GIT
+#        GIT_TAG v1.1.0
+#        TYPE MODULE
+#)
+#FIND_PACKAGE(balogger_package REQUIRED)
+#FIND_PACKAGE(libbringauto_logger)
+
+SET(BALOGGER_ZIP none)
+IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
+    message("Architecture: aarch ${CMAKE_SYSTEM_PROCESSOR}")
+    SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_aarch64-ubuntu-1804.zip)
+    LIST(APPEND CMAKE_FIND_ROOT_PATH ${CMAKE_BINARY_DIR})
+ELSE()
+    message("Architecture: else ${CMAKE_SYSTEM_PROCESSOR}")
+    SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_x86-64-ubuntu-2004.zip)
+ENDIF()
+
+EXECUTE_PROCESS(
+        COMMAND ${CMAKE_COMMAND} -E tar xzf  ${BALOGGER_ZIP}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+message("adsf: ${CMAKE_FIND_ROOT_PATH}")
+#message("BD: ${CMAKE_BINARY_DIR}")
+FIND_PACKAGE(libbringauto_logger PATHS ${CMAKE_BINARY_DIR})
+message("xxx: ${libbringauto_logger_DIR}")
+
+IF(BRINGAUTO_INSTALL)
+    INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger::bringauto_logger_spdlog DESTINATION lib)
+ENDIF()
 
 # ----------- nlohmann json library
 FetchContent_Declare(json
@@ -36,30 +71,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(reproc++)
 
-# ----------- BringAuto logger
-SET(BALOGGER_ZIP none)
-IF(CMAKE_SYSTEM_PROCESSOR EQUAL aarch)
-       SET(BALOGGER_ZIP TODO)
-ELSE()
-    SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_x86-64-ubuntu-2004.zip)
-ENDIF()
-
-EXECUTE_PROCESS(
-        COMMAND ${CMAKE_COMMAND} -E tar xzf  ${BALOGGER_ZIP}
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
-FIND_PACKAGE(libbringauto_logger PATHS ${CMAKE_BINARY_DIR})
-#FetchContent_Declare(bringauto_logger
-#        GIT_REPOSITORY ssh://git@gitlab.bringauto.com:1999/bring-auto/host-platform/bringauto-logger.git
-#        GIT_TAG v1.1.0
-#        )
-#SET(LIB_TYPE SPDLOG)
-#FetchContent_MakeAvailable(bringauto_logger)
-##FIND_PACKAGE(libbringauto_logger)
-#
-#IF(BRINGAUTO_INSTALL)
-#    INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger::bringauto_logger_spdlog DESTINATION lib)
-#ENDIF()
 
 
 # ----------- cxxopts

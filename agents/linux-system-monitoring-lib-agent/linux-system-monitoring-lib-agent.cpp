@@ -5,11 +5,10 @@
 #include <modulog/agent_client/AgentClient.hpp>
 #include <modulog/agent_client/Helpers.hpp>
 
-#include <linux_memoryload.hpp>
-#include <linux_process_load.hpp>
-#include <linux_cpuload.hpp>
-#include <timer.hpp>
-
+#include <linux_monitoring/linux_memoryload.hpp>
+#include <linux_monitoring/linux_cpuload.hpp>
+#include <linux_monitoring/linux_process_load.hpp>
+#include <linux_monitoring/util/timer.hpp>
 
 
 int main(int argc, char **argv) {
@@ -38,9 +37,9 @@ int main(int argc, char **argv) {
     modulog::agent_client::AgentClient agentClient(ioContext, false, configJson["id"]);
     agentClient.initClient();
 
-    auto processes = std::make_unique<linuxProcessLoad>();
-    auto cpuMonitoring = std::make_unique<cpuLoad>("/proc/stat");
-    auto memoryMonitoring = std::make_unique<memoryLoad>();
+    auto processes = std::make_unique<linux_monitoring::linuxProcessLoad>();
+    auto cpuMonitoring = std::make_unique<linux_monitoring::cpuLoad>("/proc/stat");
+    auto memoryMonitoring = std::make_unique<linux_monitoring::memoryLoad>();
 
     cpuMonitoring->initCpuUsage();
     auto maxRamToSend = std::make_shared<modulog::communication::LogMessage>(
@@ -49,7 +48,7 @@ int main(int argc, char **argv) {
     agentClient.sendLog(maxRamToSend);
 
     // print cpu usage of all cpu cores
-    Timer::periodicShot([&] {
+    linux_monitoring::util::Timer::periodicShot([&] {
         auto currRam = memoryMonitoring->getCurrentMemUsageInPercent();
         std::shared_ptr<modulog::communication::LogMessage> ramToSend;
         if (currRam <= ramNotBiggerThanPercent)
@@ -84,10 +83,10 @@ int main(int argc, char **argv) {
         }
     }, std::chrono::seconds(logInterval));
 
-    while (Timer::isRunning()) {
+    while (linux_monitoring::util::Timer::isRunning()) {
         std::this_thread::sleep_for(std::chrono::seconds(std::numeric_limits<int>::max()));
     }
-    Timer::stop();
+    linux_monitoring::util::Timer::stop();
     return 0;
 }
 
