@@ -1,0 +1,8 @@
+Run number 1:
+Logs aren't equal:
+  Etalon: [2022-02-24 08:56:57.629] [modulog] [debug] [TransitionSmurf] Going to state Exiting
+  Compared: 
+Logs aren't equal:
+  Etalon: [2022-02-24 08:56:57.629] [modulog] [debug] [TransitionSmurf] Going to state CleanExit
+  Compared: 
+----------------------------------------------------

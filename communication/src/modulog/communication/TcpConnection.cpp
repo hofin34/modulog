@@ -93,7 +93,7 @@ namespace modulog::communication {
     }
 
     void TcpConnection::closeConnection() {
-        bringauto::logging::Logger::logDebug("Closing conn");
+        bringauto::logging::Logger::logDebug("Closing connection");
         asio::error_code ec;
         socket_.shutdown(asio::ip::tcp::socket::shutdown_both, ec);
         if (ec)

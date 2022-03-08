@@ -1,0 +1,4 @@
+[2022-02-24 10:39:06.510] [modulog] [debug] [TransitionSmurf] Start of Run -- Aggregated
+[2022-02-24 10:39:06.510] [modulog] [debug] [TransitionSmurf] Going to state Start
+[2022-02-24 10:39:06.510] [modulog] [debug] [TransitionSmurf] Going to state ServerCreated
+[2022-02-24 10:39:06.510] [modulog] [warning] [TransitionSmurf] Couldn't change state { "to":CleanExit "from": ServerCreated }

@@ -8,14 +8,6 @@ FetchContent_Declare(linuxmonitoring
         )
 FetchContent_MakeAvailable(linuxmonitoring)
 
-#FetchContent_GetProperties(linuxmonitoring)
-#if(NOT linuxmonitoring_POPULATED)
-#    FetchContent_Populate(linuxmonitoring)
-#    add_subdirectory(${linuxmonitoring_SOURCE_DIR} ${linuxmonitoring_BINARY_DIR})
-#    TARGET_INCLUDE_DIRECTORIES(linuxmonitoring PUBLIC "${linuxmonitoring_SOURCE_DIR}/lib/include/linux_monitoring")
-#    #TARGET_INCLUDE_DIRECTORIES(linuxmonitoring PUBLIC "${linuxmonitoring_SOURCE_DIR}/lib/util/")
-#endif()
-
 ADD_EXECUTABLE(${AG_NAME} ${AG_NAME}.cpp)
 CONFIGURE_FILE(config.json config.json COPYONLY)
 TARGET_LINK_LIBRARIES(${AG_NAME} agent_client_lib)

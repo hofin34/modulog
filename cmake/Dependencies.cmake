@@ -2,6 +2,14 @@ INCLUDE(FetchContent)
 FIND_PACKAGE(CMLIB REQUIRED)
 
 # ----------- BringAuto logger
+#FetchContent_Declare(
+#        balogger
+#        GIT_REPOSITORY ssh://git@gitlab.bringauto.com:1999/bring-auto/host-platform/bringauto-logger.git
+#        GIT_TAG        v1.1.0
+#)
+#set(LIB_TYPE SPDLOG)
+#FetchContent_MakeAvailablelogging(balogger)
+
 #CMLIB_DEPENDENCY(
 #        URI "https://github.com/bringauto/balogger-package.git"
 #        URI_TYPE GIT
@@ -10,6 +18,9 @@ FIND_PACKAGE(CMLIB REQUIRED)
 #)
 #FIND_PACKAGE(balogger_package REQUIRED)
 #FIND_PACKAGE(libbringauto_logger)
+
+
+
 
 SET(BALOGGER_ZIP none)
 IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
@@ -26,10 +37,7 @@ EXECUTE_PROCESS(
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
-message("adsf: ${CMAKE_FIND_ROOT_PATH}")
-#message("BD: ${CMAKE_BINARY_DIR}")
 FIND_PACKAGE(libbringauto_logger PATHS ${CMAKE_BINARY_DIR})
-message("xxx: ${libbringauto_logger_DIR}")
 
 IF(BRINGAUTO_INSTALL)
     INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger::bringauto_logger_spdlog DESTINATION lib)
@@ -71,6 +79,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(reproc++)
 
+# ---------- StateSmurf - downloaded just when testing enabled
+FetchContent_Declare(
+        stateSmurf
+        GIT_REPOSITORY git@github.com:Melky-Phoe/StateSmurf.git
+        GIT_TAG b5f321b1f86eb4d0d8eeee1e979d38fcf0976fb5 # TODO add version
+)
 
 
 # ----------- cxxopts
