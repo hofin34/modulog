@@ -10,6 +10,7 @@ SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 OPTION(BRINGAUTO_TESTS "Tests" OFF)
 OPTION(BRINGAUTO_INSTALL "Install" OFF)
 OPTION(BRINGAUTO_PACKAGE "Create package" OFF)
+OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
 OPTION(STATESMURF_TESTS "Testing library StateSmurf" OFF)
 
 IF (BRINGAUTO_TESTS)
@@ -42,11 +43,10 @@ ADD_SUBDIRECTORY(agent-client)
 ADD_SUBDIRECTORY(agents)
 
 
-TARGET_LINK_LIBRARIES(modulog CoreLib cxxopts)
+TARGET_LINK_LIBRARIES(modulog CoreLib cxxopts::cxxopts)
 
 IF (BRINGAUTO_TESTS)
     ENABLE_TESTING()
-    #ADD_SUBDIRECTORY(lib/StateSmurf)
     FetchContent_MakeAvailable(stateSmurf)
     ADD_SUBDIRECTORY(test)
 ENDIF ()

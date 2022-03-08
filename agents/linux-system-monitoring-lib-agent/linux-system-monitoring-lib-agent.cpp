@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
 
     cpuMonitoring->initCpuUsage();
     auto maxRamToSend = std::make_shared<modulog::communication::LogMessage>(
-            modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "maxRamKB",
+            modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "deviceRamCapacityKb",
             std::to_string(memoryMonitoring->getTotalMemoryInKB()));
     agentClient.sendLog(maxRamToSend);
 
@@ -53,10 +53,10 @@ int main(int argc, char **argv) {
         std::shared_ptr<modulog::communication::LogMessage> ramToSend;
         if (currRam <= ramNotBiggerThanPercent)
             ramToSend = std::make_shared<modulog::communication::LogMessage>(
-                    modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "ramTotal", std::to_string(currRam));
+                    modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "usedRamPercent", std::to_string(currRam));
         else
             ramToSend = std::make_shared<modulog::communication::LogMessage>(
-                    modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "ramTotal", std::to_string(currRam));
+                    modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "usedRamPercent", std::to_string(currRam));
         agentClient.sendLog(ramToSend);
         auto usedRamToSendKb = std::make_shared<modulog::communication::LogMessage>(
                 modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "usedRamKb",
@@ -68,15 +68,15 @@ int main(int argc, char **argv) {
         std::shared_ptr<modulog::communication::LogMessage> toSend;
         if (currCpu <= cpuNotBiggerThanPercent)
             toSend = std::make_shared<modulog::communication::LogMessage>(
-                    modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "cpuTotal", std::to_string(currCpu));
+                    modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "usedAvgCpu", std::to_string(currCpu));
         else
             toSend = std::make_shared<modulog::communication::LogMessage>(
-                    modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "cpuTotal", std::to_string(currCpu));
+                    modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "usedAvgCpu", std::to_string(currCpu));
         agentClient.sendLog(toSend);
 
         auto cpus = cpuMonitoring->getCurrentMultiCoreUsage();
         for (int i = 0; i < cpus.size(); i++) {
-            auto cpuId = std::string("cpu" + std::to_string(i));
+            auto cpuId = std::string("usedCpu" + std::to_string(i));
             auto cpuX = std::make_shared<modulog::communication::LogMessage>(
                     modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, cpuId, std::to_string(cpus.at(i)));
             agentClient.sendLog(cpuX);

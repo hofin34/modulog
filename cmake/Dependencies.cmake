@@ -1,5 +1,10 @@
 INCLUDE(FetchContent)
 FIND_PACKAGE(CMLIB REQUIRED)
+IF(BRINGAUTO_SYSTEM_DEP)
+    LIST(APPEND CMAKE_FIND_ROOT_PATH ${CMAKE_BINARY_DIR})
+ELSE()
+    LIST(APPEND CMAKE_FIND_ROOT_PATH ${CMLIB_REQUIRED_ENV_TMP_PATH})
+ENDIF()
 
 # ----------- BringAuto logger
 #FetchContent_Declare(
@@ -10,49 +15,57 @@ FIND_PACKAGE(CMLIB REQUIRED)
 #set(LIB_TYPE SPDLOG)
 #FetchContent_MakeAvailablelogging(balogger)
 
-#CMLIB_DEPENDENCY(
-#        URI "https://github.com/bringauto/balogger-package.git"
-#        URI_TYPE GIT
-#        GIT_TAG v1.1.0
-#        TYPE MODULE
-#)
-#FIND_PACKAGE(balogger_package REQUIRED)
-#FIND_PACKAGE(libbringauto_logger)
-
-
-
-
-SET(BALOGGER_ZIP none)
-IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
-    message("Architecture: aarch ${CMAKE_SYSTEM_PROCESSOR}")
-    SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_aarch64-ubuntu-1804.zip)
-    LIST(APPEND CMAKE_FIND_ROOT_PATH ${CMAKE_BINARY_DIR})
-ELSE()
-    message("Architecture: else ${CMAKE_SYSTEM_PROCESSOR}")
-    SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_x86-64-ubuntu-2004.zip)
-ENDIF()
-
-EXECUTE_PROCESS(
-        COMMAND ${CMAKE_COMMAND} -E tar xzf  ${BALOGGER_ZIP}
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
-
-FIND_PACKAGE(libbringauto_logger PATHS ${CMAKE_BINARY_DIR})
+#IF(BRINGAUTO_SYSTEM_DEP) #TODO cmlib not working with crosscompile - wait for fix and then integrate
+    SET(BALOGGER_ZIP none)
+    IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
+        message("Architecture: aarch ${CMAKE_SYSTEM_PROCESSOR}")
+        SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_aarch64-ubuntu-1804.zip)
+    ELSE()
+        message("Architecture: else ${CMAKE_SYSTEM_PROCESSOR}")
+        SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_x86-64-ubuntu-2004.zip)
+    ENDIF()
+    EXECUTE_PROCESS(
+            COMMAND ${CMAKE_COMMAND} -E tar xzf  ${BALOGGER_ZIP}
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+    FIND_PACKAGE(libbringauto_logger PATHS ${CMAKE_BINARY_DIR})
+#ELSE()
+#    CMLIB_DEPENDENCY(
+#            URI "https://github.com/bringauto/balogger-package.git"
+#            URI_TYPE GIT
+#            GIT_TAG v1.1.0
+#            TYPE MODULE
+#    )
+#    FIND_PACKAGE(balogger_package REQUIRED)
+#    FIND_PACKAGE(libbringauto_logger)
+#ENDIF()
 
 IF(BRINGAUTO_INSTALL)
     INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger::bringauto_logger_spdlog DESTINATION lib)
 ENDIF()
 
 # ----------- nlohmann json library
-FetchContent_Declare(json
-        URL https://github.com/nlohmann/json/releases/download/v3.10.5/json.tar.xz
-        )
 
-FetchContent_GetProperties(json)
-IF (NOT json_POPULATED)
-    FetchContent_Populate(json)
-    ADD_SUBDIRECTORY(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
-ENDIF ()
+IF(BRINGAUTO_SYSTEM_DEP)
+    FetchContent_Declare(json
+            URL https://github.com/nlohmann/json/archive/refs/tags/v3.9.1.tar.gz
+            )
+
+    FetchContent_GetProperties(json)
+    IF (NOT json_POPULATED)
+        FetchContent_Populate(json)
+        ADD_SUBDIRECTORY(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+    ENDIF ()
+ELSE()
+    CMLIB_DEPENDENCY(
+            URI "git@github.com:bringauto/nlohmann_json-package.git"
+            URI_TYPE GIT
+            GIT_TAG v3.9.1
+            TYPE MODULE
+    )
+    FIND_PACKAGE(nlohmann_json_package REQUIRED)
+    FIND_PACKAGE(nlohmann_json)
+ENDIF()
 
 # ----------- asio library
 FetchContent_Declare(asio
@@ -88,14 +101,25 @@ FetchContent_Declare(
 
 
 # ----------- cxxopts
-FetchContent_Declare(
-        cxxopts
-        GIT_REPOSITORY https://github.com/jarro2783/cxxopts.git
-        GIT_TAG        v3.0.0
-        GIT_SHALLOW    TRUE
-)
-set(CXXOPTS_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(CXXOPTS_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(CXXOPTS_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
-set(CXXOPTS_ENABLE_WARNINGS OFF CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(cxxopts)
+IF(BRINGAUTO_SYSTEM_DEP) # TODO fix - not working 3.0.0 with cmlib
+    FetchContent_Declare(
+            cxxopts
+            GIT_REPOSITORY https://github.com/jarro2783/cxxopts.git
+            GIT_TAG        v3.0.0
+            GIT_SHALLOW    TRUE
+    )
+    set(CXXOPTS_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(CXXOPTS_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(CXXOPTS_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
+    set(CXXOPTS_ENABLE_WARNINGS OFF CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(cxxopts)
+ELSE()
+    CMLIB_DEPENDENCY(
+            URI "https://github.com/bringauto/cxxopts-package.git"
+            URI_TYPE GIT
+            GIT_TAG v3.0.0
+            TYPE MODULE
+    )
+    FIND_PACKAGE(cxxopts_package 3.0.0 REQUIRED)
+    FIND_PACKAGE(cxxopts)
+ENDIF()
