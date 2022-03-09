@@ -17,10 +17,6 @@
       "enabled": false
     },
     {
-      "agentPath": "agents/ram-agent",
-      "enabled": false
-    },
-    {
       "agentPath": "agents/temperature-agent",
       "enabled": false
     },
@@ -30,6 +26,10 @@
     },
     {
       "agentPath": "agents/test-random-agent",
+      "enabled": false
+    },
+    {
+      "agentPath": "agents/smart-agent",
       "enabled": false
     }
   ]

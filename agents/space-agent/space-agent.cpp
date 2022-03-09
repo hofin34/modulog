@@ -23,10 +23,13 @@ int main(int argc, char** argv){
     auto ioContext = std::make_shared<asio::io_context>();
     modulog::agent_client::AgentClient agentClient(ioContext, false, configJson["id"]);
     agentClient.initClient();
+
+    auto logMsg2 = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "totalCapacityMiB", std::to_string(spaceInfo.capacity/(1024*1024)));
+    agentClient.sendLog(logMsg2);
     while(true){
-        auto logMsg2 = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "availableSpaceMB", std::to_string(spaceInfo.available/1024));
+        auto logMsg2 = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "availableSpaceMiB", std::to_string(spaceInfo.available/(1024*1024)));
         agentClient.sendLog(logMsg2);
-        auto logMsg3 = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "freeSpaceMB", std::to_string(spaceInfo.free/1024));
+        auto logMsg3 = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "freeSpaceMiB", std::to_string(spaceInfo.free/(1024*1024)));
         agentClient.sendLog(logMsg3);
         std::this_thread::sleep_for(std::chrono::seconds(logInterval));
     }
