@@ -16,14 +16,29 @@ folder and then recompile whole program or change config file in agent build fol
 
 Then compile all with:
 
-`git submodule update --init --recursive`
+`mkdir build && cd build`
 
-`mkdir build && cd build && cmake .. && make`
+`cmake -DBRINGAUTO_SYSTEM_DEP=OFF -DBRINGAUTO_INSTALL=ON -DCMAKE_INSTALL_PREFIX="someDir" -DBRINGAUTO_PACKAGE=ON -DCMLIB_DIR=/home/martin/Work/cmakelib -DCMAKE_BUILD_TYPE=Release .. && make -j 8`
 
 In build folder is now created file `agents-enabled.conf` - here, you can enable/disable agents, that will be used during runtime (simply delete line or comment with `#` character).
 All agents in this file must be already compiled!
 
 Now you can run with `./modulog`.
+
+**CMake options:**
+
+BRINGAUTO_SYSTEM_DEP -
+if ON, then using FetchContent and compiling dependencies
+(not 100%, ba_logger using precompiled, will be fixed in the future).
+If OFF, then is used [cmakelib] for dependency management.
+
+BRINGAUTO_INSTALL - if on, then create install target (after `make`, you can type `make install`, which will install binaries to `CMAKE_INSTALL_PREFIX` folder)
+ 
+BRINGAUTO_PACKAGE - if on, target for creating package is generated (after `make`, you can type `make install && make package`)
+
+CMLIB_DIR - if you set BRINGAUTO_SYSTEM_DEP to OFF, then you have to set path to [cmakelib] in this variable
+
+
 
 ## Dependencies
 Look at the [Dependencies.cmake].
@@ -81,6 +96,7 @@ And also flowchart diagram:
 [agents-to-compile.json]: agents-to-compile.json
 [config.json]: agents/uptime-agent/config.json
 [SharedSettings.hpp]: meta-lib/include/modulog/meta_lib/SharedSettings.hpp
+[cmakelib]: https://github.com/cmakelib/cmakelib
 
 # END PROGRAM DOCUMENTATION (continuing just some notes)
 
