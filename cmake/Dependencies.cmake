@@ -56,7 +56,7 @@ IF(BRINGAUTO_SYSTEM_DEP)
     ENDIF ()
 ELSE()
     CMLIB_DEPENDENCY(
-            URI "git@github.com:bringauto/nlohmann_json-package.git"
+            URI "https://github.com/bringauto/nlohmann_json-package.git"
             URI_TYPE GIT
             GIT_TAG v3.9.1
             TYPE MODULE
@@ -93,7 +93,7 @@ FetchContent_MakeAvailable(reproc++)
 # ---------- StateSmurf - downloaded just when testing enabled
 FetchContent_Declare(
         stateSmurf
-        GIT_REPOSITORY git@github.com:Melky-Phoe/StateSmurf.git
+        GIT_REPOSITORY git@github.com:Melky-Phoe/StateSmurf.git # TODO https
         GIT_TAG b5f321b1f86eb4d0d8eeee1e979d38fcf0976fb5 # TODO add version
 )
 
