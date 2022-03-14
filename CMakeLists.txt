@@ -4,7 +4,7 @@ PROJECT(modulog)
 # for linking .so after make install (we have ba_logger):
 SET(CMAKE_SKIP_BUILD_RPATH FALSE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-SET(CMAKE_INSTALL_RPATH lib)#${CMAKE_INSTALL_PREFIX}/lib)
+SET(CMAKE_INSTALL_RPATH lib)
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 OPTION(BRINGAUTO_TESTS "Tests" OFF)
@@ -47,7 +47,8 @@ TARGET_LINK_LIBRARIES(modulog CoreLib cxxopts::cxxopts)
 
 IF (BRINGAUTO_TESTS)
     ENABLE_TESTING()
-    FetchContent_MakeAvailable(stateSmurf)
+    FetchContent_MakeAvailable(statesmurf)
+    MESSAGE("ADSF ${statesmurf_SOURCE_DIR}")
     ADD_SUBDIRECTORY(test)
 ENDIF ()
 

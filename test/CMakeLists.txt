@@ -25,7 +25,8 @@ MESSAGE("Python_FOUND:${Python3_FOUND}")
 MESSAGE("Python_VERSION:${Python3_VERSION}")
 MESSAGE("Python_VERSION:${Python3_EXECUTABLE}")
 
-ADD_TEST(NAME ModulogTests COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/lib/StateSmurf/SmurfTestingScripts/CompareScenarios.py
+MESSAGE("XXXADSF ${statesmurf_SOURCE_DIR}")
+ADD_TEST(NAME ModulogTests COMMAND ${Python3_EXECUTABLE} ${stateSmurf_SOURCE_DIR}/SmurfTestingScripts/CompareScenarios.py
         -s ${CMAKE_BINARY_DIR}/scenarios.json
         -e ${CMAKE_BINARY_DIR}/modulog
         #-c

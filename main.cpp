@@ -29,6 +29,29 @@ void signalHandler(int signum) {
     core->stop();
 }
 
+/**
+ * Function parsing cmd line arguments
+ * @param argc argument count
+ * @param argv pointer to arguments
+ * @return returns nullptr if --help argument contained, if error occured, then throwing exception, if parsed successfully, returned shared pointer to SharedSettings
+ */
+std::shared_ptr<modulog::meta_lib::SharedSettings> parseArgs(int argc, const char **argv) {
+    auto sharedSettings = std::make_shared<modulog::meta_lib::SharedSettings>();
+    cxxopts::Options options("modulog", "Modular light-weighted logging program");
+    options.add_options()
+            ("h,help", "Print usage")
+            ("e,enabled-agents", "Enabled agents file - in this file can be just compiled agents!",
+             cxxopts::value<std::string>());
+    auto result = options.parse(argc, argv);
+    if (result.count("help")) {
+        std::cout << options.help() << std::endl;
+        return nullptr;
+    }
+    if (result.count("enabled-agents"))
+        sharedSettings->LogSettings.enabledAgentsPath = result["enabled-agents"].as<std::string>();
+
+    return sharedSettings;
+}
 
 int main(int argc, const char **argv) {
     struct sigaction sigAct{};
@@ -39,21 +62,9 @@ int main(int argc, const char **argv) {
     initLogger("./ba-logs", true);
 
     try {
-        auto sharedSettings = std::make_shared<modulog::meta_lib::SharedSettings>();
-        cxxopts::Options options("modulog", "Modular light-weighted logging program");
-        options.add_options()
-                ("h,help", "Print usage")
-                ("e,enabled-agents", "Enabled agents file - in this file can be just compiled agents!", cxxopts::value<std::string>())
-                ;
-        auto result = options.parse(argc, argv);
-        if (result.count("help")){
-            std::cout << options.help() << std::endl;
-            exit(EXIT_SUCCESS);
-        }
-        if(result.count("enabled-agents"))
-            sharedSettings->LogSettings.enabledAgentsPath = result["enabled-agents"].as<std::string>();
-
-
+        auto sharedSettings = parseArgs(argc, argv);
+        if (!sharedSettings) // if --help arg
+            return EXIT_SUCCESS;
         auto ioContext = std::make_shared<asio::io_context>();
         core = std::make_unique<modulog::core::Core>(ioContext, sharedSettings);
         core->start();

@@ -92,10 +92,11 @@ FetchContent_MakeAvailable(reproc++)
 
 # ---------- StateSmurf - downloaded just when testing enabled
 FetchContent_Declare(
-        stateSmurf
+        statesmurf
         GIT_REPOSITORY git@github.com:Melky-Phoe/StateSmurf.git # TODO https
-        GIT_TAG b5f321b1f86eb4d0d8eeee1e979d38fcf0976fb5 # TODO add version
+        GIT_TAG 9841f414ffe014398c4ff03031d8418cd65c0ef6 # TODO add version
 )
+
 
 
 # ----------- cxxopts

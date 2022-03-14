@@ -21,7 +21,7 @@ int main(int argc, char** argv){
         logInterval = configJson["logInterval"];
     std::filesystem::space_info spaceInfo = std::filesystem::space(configJson["folderToMonitor"]);
     auto ioContext = std::make_shared<asio::io_context>();
-    modulog::agent_client::AgentClient agentClient(ioContext, false, configJson["id"]);
+    modulog::agent_client::AgentClient agentClient(ioContext, configJson["id"]);
     agentClient.initClient();
 
     auto logMsg2 = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "totalCapacityMiB", std::to_string(spaceInfo.capacity/(1024*1024)));

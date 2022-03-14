@@ -30,7 +30,7 @@ int main(int argc, char** argv){
     }
 
     auto ioContext = std::make_shared<asio::io_context>();
-    modulog::agent_client::AgentClient agentClient(ioContext, false, configJson["id"]);
+    modulog::agent_client::AgentClient agentClient(ioContext, configJson["id"]);
     agentClient.initClient();
 
     std::random_device rd;

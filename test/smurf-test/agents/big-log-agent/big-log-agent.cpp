@@ -2,7 +2,7 @@
 
 int main() {
     auto ioContext = std::make_shared<asio::io_context>();
-    modulog::agent_client::AgentClient agentClient(ioContext, false, "big-log-agent");
+    modulog::agent_client::AgentClient agentClient(ioContext, "big-log-agent");
     agentClient.initClient();
     std::string bigString = "";
     for (int i = 0; i < 20000; i++){

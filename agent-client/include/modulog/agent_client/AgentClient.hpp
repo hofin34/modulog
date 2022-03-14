@@ -17,17 +17,16 @@ namespace modulog::agent_client {
      * This class is used by agents to easily send logs to the core.
      * At the beginning has to be initialized via initClient() and can be sent logs
      * with function sendLog(). In the background, class responds to IS_ALIVE messages
-     * and process other messages.
+     * and process other messages. You can enable debug mode by setting AGENT_CLIENT_DEBUG macro.
+     * If set, client doesn't try to connect to Core and just prints messages, that should be sent normally.
      */
     class AgentClient {
     public:
         /**
          * @param ioContext asio io context
-         * @param isDebug if true, you can use client standalone - client
-         *  is not connecting to server and if you send log, it is just printed but not sent
          * @param agentName under which name will be saved logs later
          */
-        AgentClient(std::shared_ptr<asio::io_context> &ioContext, bool isDebug, std::string agentName);
+        AgentClient(std::shared_ptr<asio::io_context> &ioContext, std::string agentName);
 
         /**
          * Sends log to the Core, which will save it. If is client in debug mode, log is just printed
@@ -77,12 +76,13 @@ namespace modulog::agent_client {
 
         std::string agentName_ = "AgentDefaultName";
         std::shared_ptr<asio::io_context> ioContext_;
-        bool isDebug_;
-        std::thread clientThread;
-        std::thread responseHandleThread;
+        std::thread clientThread_;
+        std::thread responseHandleThread_;
         std::shared_ptr<communication::MessageExchanger> messageExchanger_;
-        std::string sharedConfig;
+        std::string sharedConfig_;
         std::atomic<bool> simulatedFreeze = false;
+        std::string coreIp_ = "127.0.0.1";
+        int corePort_ = 1234;
         // Sync vars:
         std::atomic<bool> shouldExit_;
         std::mutex msgMutex_;

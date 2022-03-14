@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     }
 
     auto ioContext = std::make_shared<asio::io_context>();
-    modulog::agent_client::AgentClient agentClient(ioContext, false, configJson["id"]);
+    modulog::agent_client::AgentClient agentClient(ioContext, configJson["id"]);
     agentClient.initClient();
     auto programBegin = std::chrono::steady_clock::now();
     auto logStartMsg = std::make_shared<modulog::communication::LogMessage>(

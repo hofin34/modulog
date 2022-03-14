@@ -48,7 +48,7 @@ Agents have their dependencies inside their folder.
 You can look in [agents folder link] to find out, how to create agents.
 In CMake, just link it against `agent_client_lib`, then in code initialize client and start sending logs.
 Agent folder must have the same name as the executable inside.
-You can enable client debug mode when creating agent - in AgentClient constructor, pass `true` to `isDebug` parameter.
+You can enable client debug mode when creating agent - just set AGENT_CLIENT_DEBUG macro by passing -DAGENT_CLIENT_DEBUG=ON to agent CMake.
 With this, you can use agent standalone without core (client will just print to output, what would be sent).
 
 When is agent ready to use, you can add path to directory to the file [agents-to-compile.json]. 
