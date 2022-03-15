@@ -76,7 +76,7 @@ FetchContent_MakeAvailable(reproc++)
 FetchContent_Declare(
         statesmurf
         GIT_REPOSITORY git@github.com:Melky-Phoe/StateSmurf.git # TODO https
-        GIT_TAG 9841f414ffe014398c4ff03031d8418cd65c0ef6 # TODO add version
+        GIT_TAG v0.1.0
 )
 
 
