@@ -8,26 +8,35 @@
 int main(int argc, char **argv) {
     nlohmann::json jsonConfig = modulog::agent_client::Helpers::parseConfig(argv[0]);
 
-    if (!jsonConfig.contains("id"))
-        throw std::runtime_error("No id in json config!");
+    if (!jsonConfig.contains("id")){
+        std::cerr << "No id in json config!" << std::endl;
+        return EXIT_FAILURE;
+    }
     std::string agentId = jsonConfig["id"];
 
-    if (!jsonConfig.contains("port"))
-        throw std::runtime_error("No port in json config!");
+    if (!jsonConfig.contains("port")){
+        std::cerr << "No port in json config!" << std::endl;
+        return EXIT_FAILURE;
+    }
     int port = jsonConfig["port"];
 
-    if (!jsonConfig.contains("devices"))
-        throw std::runtime_error("No devices key in json config!");
-    if (jsonConfig["devices"].empty())
-        throw std::runtime_error("No devices in json config!");
-    if (!jsonConfig.contains("checkoutInterval"))
-        throw std::runtime_error("No checkoutInterval in json config!");
+    if (!jsonConfig.contains("devices")){
+        std::cerr << "No devices key in json config!" << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (jsonConfig["devices"].empty()){
+        std::cerr << "No devices in json config!" << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (!jsonConfig.contains("checkoutInterval")){
+        std::cerr << "No checkoutInterval in json config!" << std::endl;
+        return EXIT_FAILURE;
+    }
     int checkoutInterval = jsonConfig["checkoutInterval"];
 
 
     std::vector<std::string> deviceVector;
     for (auto &device: jsonConfig["devices"]) {
-        std::cout << "dev: " << device << std::endl;
         deviceVector.push_back(device);
     }
     try {
@@ -40,7 +49,8 @@ int main(int argc, char **argv) {
         ioContext->run();
     }
     catch (std::exception &e) {
-        std::cerr << e.what() << std::endl;
+        std::cerr << "udp-watchdog-agent exception: " << e.what() << std::endl;
+        return EXIT_FAILURE;
     }
-    return 0;
+    return EXIT_SUCCESS;
 }

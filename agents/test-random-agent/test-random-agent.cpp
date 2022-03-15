@@ -12,21 +12,21 @@ int main(int argc, char** argv){
     nlohmann::json configJson = modulog::agent_client::Helpers::parseConfig(argv[0]);
     if(!configJson.contains("id")){
         std::cerr << "Include config with id defined." << std::endl;
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
     int logIntervalMin;
     if(configJson.contains("logIntervalMin")){
         logIntervalMin = configJson["logIntervalMin"];
     }else{
         std::cerr << "specify logIntervalMin" << std::endl;
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
     int logIntervalMax;
     if(configJson.contains("logIntervalMax")){
         logIntervalMax = configJson["logIntervalMax"];
     }else{
         std::cerr << "specify logIntervalMax" << std::endl;
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
     auto ioContext = std::make_shared<asio::io_context>();

@@ -14,7 +14,7 @@
     },
     {
       "agentPath": "agents/udp-watchdog-agent",
-      "enabled": false
+      "enabled": true
     },
     {
       "agentPath": "agents/temperature-agent",

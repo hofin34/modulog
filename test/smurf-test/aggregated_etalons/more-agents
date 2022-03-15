@@ -1,9 +1,0 @@
-[2022-02-24 08:56:34.534] [modulog] [debug] [TransitionSmurf] Start of Run -- Aggregated
-[2022-02-24 08:56:34.535] [modulog] [debug] [TransitionSmurf] Going to state Start
-[2022-02-24 08:56:34.535] [modulog] [debug] [TransitionSmurf] Going to state ServerCreated
-In circuit 0: [CreatingAgent, ]
-In circuit 2: [WaitForMessage, ProcessMessage, ]
-[2022-02-24 08:56:39.510] [modulog] [debug] [TransitionSmurf] Going to state WaitForMessage
-[2022-02-24 08:56:39.560] [modulog] [debug] [TransitionSmurf] Going to state Exiting
-In circuit 1: [StopAgent, ]
-[2022-02-24 08:56:39.561] [modulog] [debug] [TransitionSmurf] Going to state CleanExit

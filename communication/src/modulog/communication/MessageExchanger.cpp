@@ -9,7 +9,7 @@ namespace modulog::communication{
         MessageSerializer messageSerializer(logMessage);
         std::string toSend = messageSerializer.serialize();
 
-        if(connection_ != nullptr)
+        if(connection_)
             connection_->sendMessage(toSend);
         else
             bringauto::logging::Logger::logError("Connection not set, trying to send: {}", toSend);

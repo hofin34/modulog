@@ -10,8 +10,8 @@
 
 namespace modulog::communication{
     /**
-     * This class represents a TCP server. It is used by the Core - agents then connects to this server
-     * and Core can communicate with them via TCP
+     * This class represents a TCP server. It is used by the Core - agents connect to this server
+     *  after creation and Core can communicate with them via TCP
      */
     class TcpServer {
     public:

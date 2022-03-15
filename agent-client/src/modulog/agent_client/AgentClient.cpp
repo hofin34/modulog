@@ -6,7 +6,7 @@ namespace modulog::agent_client {
     AgentClient::AgentClient(std::shared_ptr<asio::io_context> &ioContext, std::string agentName)
             : ioContext_(ioContext), agentName_(agentName) {
 #ifdef AGENT_CLIENT_DEBUG
-        bringauto::logging::Logger::logInfo("AGENT_CLIENT_DEBUG macro is ON!");
+        std::cout << "AGENT_CLIENT_DEBUG macro is ON!" << std::endl;
 #endif
         shouldExit_ = false;
         msgProcessor_ = std::make_shared<communication::MessageProcessor>(totalMsgsReceived_, msgCondVar_, msgMutex_);
@@ -24,6 +24,7 @@ namespace modulog::agent_client {
         sigaction(SIGINT, &sigAct, nullptr);
         sigaction(SIGTERM, &sigAct, nullptr);
 
+
 #ifdef AGENT_CLIENT_DEBUG
         return;
 #endif
@@ -36,7 +37,7 @@ namespace modulog::agent_client {
             auto configMessage = messageExchanger_->waitForControlMessage(
                     2000); // If small timeout (like 2 ms), app crashes in Valgrind
             if (configMessage == nullptr) {
-                bringauto::logging::Logger::logError("{} didnt receive configMessage", agentName_);
+                std::cerr << agentName_ << " didn't received configMessage" << std::endl;
                 exit(EXIT_FAILURE);
             }
             std::cout << agentName_ << " received config: " << configMessage->getValue() << std::endl;
@@ -66,15 +67,13 @@ namespace modulog::agent_client {
 
 
     void AgentClient::handleResponses() {
-        while (shouldExit_.load() != true) {
+        while (!shouldExit_.load()) {
             auto controlMsg = messageExchanger_->waitForControlMessage(-1);
             if (controlMsg == nullptr) { // This should not happen
                 std::cerr << "No control message!" << std::endl;
                 continue;
             }
             if (controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE) {
-                if (simulatedFreeze.load()) // for testing purposes, you can simulate, that client doesn't respond to IS_ALIVE messages
-                    continue;
                 auto ackAliveMsg = std::make_shared<communication::ControlMessage>(
                         modulog::communication::ControlMessage::CONTROL_MSG_TYPE::ACK, "");
                 messageExchanger_->sendControl(ackAliveMsg);
@@ -89,7 +88,7 @@ namespace modulog::agent_client {
         auto exitMsg = std::make_shared<communication::ControlMessage>(
                 modulog::communication::ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
         sendControl(exitMsg);
-        while (shouldExit_.load() != true) { // Active waiting, but just a few millis, so its ok
+        while (!shouldExit_.load()) { // Active waiting, but just a few millis, so its ok
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
         responseHandleThread_.join();
@@ -114,10 +113,6 @@ namespace modulog::agent_client {
 
     std::string AgentClient::getSharedConfig() {
         return sharedConfig_;
-    }
-
-    void AgentClient::freezeClient() {
-        simulatedFreeze = true;
     }
 
 

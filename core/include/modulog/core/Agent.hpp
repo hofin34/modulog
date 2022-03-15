@@ -58,7 +58,8 @@ namespace modulog::core {
         std::shared_ptr<communication::MessageExchanger> getMessageExchanger();
 
         /**
-         * if is agent exiting by core, this should be marked as true to know, that agent didn't fail
+         * When is core exiting agent, this must be marked as true - if it is marked as false (which is default),
+         * then agent exit is logged as error
          * @param expectedExit
          */
         void setExpectedExit(bool expectedExit);

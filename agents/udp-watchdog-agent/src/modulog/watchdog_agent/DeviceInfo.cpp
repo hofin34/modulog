@@ -24,7 +24,7 @@ namespace modulog::watchdog_agent {
 
     void DeviceInfo::nextInactive() {
         inactiveCounter_++;
-        if(isBroken_) // TODO reset flags when reseted agent
+        if (isBroken_) // TODO reset flags when reseted agent
             return;
         else if (alreadyRestarted_) {
             //TODO do something when not responding even after restart
@@ -32,7 +32,7 @@ namespace modulog::watchdog_agent {
             auto errorMsg = std::make_shared<communication::LogMessage>(communication::LogMessage::LOG_MSG_TYPE::ERROR,
                                                                         name_, "Not responding even after restart");
             agentClient_->sendLog(errorMsg);
-        }else if (inactiveCounter_ >= MAX_INACTIVE) {
+        } else if (inactiveCounter_ >= MAX_INACTIVE) {
             //TODO restart device or something like this
             auto warningMsg = std::make_shared<communication::LogMessage>(
                     communication::LogMessage::LOG_MSG_TYPE::WARNING, name_, "Not received alive msg");

@@ -22,7 +22,10 @@
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/killed-agent\" >> double-kill-enabled-agents.conf",
     "",
     "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/big-log-agent\n\" > multi-big-log-enabled-agents.conf",
-    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/big-log-agent\" >> multi-big-log-enabled-agents.conf"
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/big-log-agent\" >> multi-big-log-enabled-agents.conf",
+    "",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/freezed-agent\n\" > freezed-freezed-enabled-agents.conf",
+    "echo \"${CMAKE_BINARY_DIR}/test/smurf-test/agents/freezed-agent\" >> freezed-freezed-enabled-agents.conf"
   ],
   "between_runs" : [ "" ],
   "scenarios" : [
@@ -42,7 +45,7 @@
     },
     {
       "name" : "not-connecting-freezed",
-      "timeout" : 10,
+      "timeout" : 15,
       "arguments" : {
         "--enabled-agents" : "not-connecting-freezed-enabled-agents.conf"
       }
@@ -105,7 +108,7 @@
     },
     {
       "name": "killed-freezed",
-      "timeout": 5,
+      "timeout": 15,
       "arguments": {
         "--enabled-agents": "killed-freezed-enabled-agents.conf"
       }
@@ -122,6 +125,13 @@
       "timeout": 5,
       "arguments": {
         "--enabled-agents": "multi-big-log-enabled-agents.conf"
+      }
+    },
+    {
+      "name": "freezed-freezed",
+      "timeout": 15,
+      "arguments": {
+        "--enabled-agents": "freezed-freezed-enabled-agents.conf"
       }
     }
   ],

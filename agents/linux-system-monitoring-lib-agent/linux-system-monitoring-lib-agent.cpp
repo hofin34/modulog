@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 
     if (!configJson.contains("id")) {
         std::cerr << "Include config with id defined." << std::endl;
-        throw std::runtime_error("...");
+        return EXIT_FAILURE;
     }
     int cpuNotBiggerThanPercent = 0;
     if (configJson.contains("cpuNotBiggerThanPercent")) {
@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
     agentClient.initClient();
 
     auto processes = std::make_unique<linux_monitoring::linuxProcessLoad>();
-    auto cpuMonitoring = std::make_unique<linux_monitoring::cpuLoad>("/proc/stat");
+    auto cpuMonitoring = std::make_unique<linux_monitoring::cpuLoad>(configJson["statLocation"]);
     auto memoryMonitoring = std::make_unique<linux_monitoring::memoryLoad>();
 
     cpuMonitoring->initCpuUsage();

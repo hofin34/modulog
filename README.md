@@ -38,6 +38,8 @@ BRINGAUTO_PACKAGE - if on, target for creating package is generated (after `make
 
 CMLIB_DIR - if you set BRINGAUTO_SYSTEM_DEP to OFF, then you have to set path to [cmakelib] in this variable
 
+BRINGAUTO_TESTS - if on, then test target is generated.
+You can run them after `make` with `ctest --verbose`
 
 
 ## Dependencies

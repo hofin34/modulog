@@ -96,7 +96,7 @@ bool isInternet() {
 
 void logNetState(bool stateValue, modulog::agent_client::AgentClient &agentClient) {
     std::shared_ptr<modulog::communication::LogMessage> msg;
-    if (stateValue == true) {
+    if (stateValue) {
         msg = std::make_shared<modulog::communication::LogMessage>(
                 modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "isInternetConnectivity",
                 std::to_string(stateValue));
@@ -111,8 +111,10 @@ void logNetState(bool stateValue, modulog::agent_client::AgentClient &agentClien
 int main(int argc, char **argv) {
     auto programStart = std::chrono::system_clock::now();
     nlohmann::json configJson = modulog::agent_client::Helpers::parseConfig(argv[0]);// nlohmann::json::parse(ifs);
-    if (!configJson.contains("id"))
-        throw std::runtime_error("Include config with id defined.");
+    if (!configJson.contains("id")){
+        std::cerr << "Include config with id defined" << std::endl;
+        return EXIT_FAILURE;
+    }
     int checkInterval = 4;
     if (configJson.contains("checkInterval")) {
         checkInterval = configJson["checkInterval"];

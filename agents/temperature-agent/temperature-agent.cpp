@@ -27,7 +27,7 @@ int main(int argc, char** argv){
 
     if(!configJson.contains("id")){
         std::cerr << "Include config with id defined." << std::endl;
-        throw std::runtime_error("...");
+        return EXIT_FAILURE;
     }
     int temperatureNotSmallerThan = std::numeric_limits<int>::min();
     if(configJson.contains("temperatureNotSmallerThan")){
@@ -44,16 +44,15 @@ int main(int argc, char** argv){
 
     if(!configJson.contains("temperatureSource")){
         std::cerr << "Specify temperatureSource!" << std::endl;
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
-    std::cout << configJson["temp"] << std::endl;
     std::filesystem::path src = configJson["temperatureSource"];
     std::ifstream tempSource(src);
 
     if(!tempSource.is_open()){
         std::cerr << "Cannot open file temperature source." << std::endl;
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
     auto ioContext = std::make_shared<asio::io_context>();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
+#include <bringauto/logging/ConsoleSink.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -27,6 +28,7 @@ namespace modulog::agent_client {
          * @return parsed nlohmann::json object
          */
         static nlohmann::json parseConfig(const std::filesystem::path &execPath);
+
     };
 
 }

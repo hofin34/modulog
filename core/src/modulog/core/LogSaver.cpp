@@ -4,12 +4,7 @@ namespace modulog::core {
     void LogSaver::saveLog(const std::string &agentId, const std::shared_ptr<communication::LogMessage> &logMessage) {
         std::filesystem::path whereSave = logsPath_ / agentId;
         if (!std::filesystem::exists(whereSave)) {
-            try {
                 std::filesystem::create_directories(whereSave);
-            } catch (std::exception &e) {
-                std::cerr << e.what() << std::endl;
-                throw std::runtime_error(e.what());
-            }
         }
 
         std::ofstream logFile;

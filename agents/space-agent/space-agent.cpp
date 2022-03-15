@@ -14,7 +14,7 @@ int main(int argc, char** argv){
     nlohmann::json configJson = modulog::agent_client::Helpers::parseConfig(argv[0]);
     if(!configJson.contains("id") || !configJson.contains("folderToMonitor")){
         std::cerr << "You must specify id and folderToMonitor in config." << std::endl;
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
     int logInterval = 10;
     if(configJson.contains("logInterval"))

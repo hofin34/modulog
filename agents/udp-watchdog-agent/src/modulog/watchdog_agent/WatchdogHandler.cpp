@@ -6,7 +6,10 @@ namespace modulog::watchdog_agent {
         std::cout << "rec msg: " << message << std::endl;
         if (!std::regex_match(message, msgRegex)) {
             std::cerr << "Bad msg format" << std::endl;
-            return; //TODO log error -  sent bad msg format
+            auto errMsg = std::make_shared<communication::LogMessage>(communication::LogMessage::LOG_MSG_TYPE::ERROR,
+                                                                      "errorMessage", "bad device msg format:" + message);
+            agentClient_->sendLog(errMsg);
+            return;
         }
         std::lock_guard<std::mutex> lock(mtx_);
         std::string delimiter = "_";
@@ -14,7 +17,7 @@ namespace modulog::watchdog_agent {
         std::string deviceName = message.substr(0, delimPos);
         std::cout << "name msg: " << deviceName << std::endl;
         std::string timestampStr = message.substr(delimPos + delimiter.length());
-        std::cout << "timestamp msg: " << timestampStr<< std::endl;
+        std::cout << "timestamp msg: " << timestampStr << std::endl;
         uint64_t timestamp = std::stoi(timestampStr);
         std::cout << "timestamp  " << timestamp << std::endl;
         for (auto &dev: deviceInfoVector_) {

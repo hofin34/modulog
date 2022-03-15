@@ -25,12 +25,11 @@ MESSAGE("Python_FOUND:${Python3_FOUND}")
 MESSAGE("Python_VERSION:${Python3_VERSION}")
 MESSAGE("Python_VERSION:${Python3_EXECUTABLE}")
 
-MESSAGE("XXXADSF ${statesmurf_SOURCE_DIR}")
-ADD_TEST(NAME ModulogTests COMMAND ${Python3_EXECUTABLE} ${stateSmurf_SOURCE_DIR}/SmurfTestingScripts/CompareScenarios.py
+ADD_TEST(NAME ModulogTests COMMAND ${Python3_EXECUTABLE} ${statesmurf_SOURCE_DIR}/SmurfTestingScripts/CompareScenarios.py
         -s ${CMAKE_BINARY_DIR}/scenarios.json
         -e ${CMAKE_BINARY_DIR}/modulog
-        #-c
-        --evaluator ${CMAKE_BINARY_DIR}/lib/StateSmurf/SmurfEvaluator/smurfEvaluator
+        #-c # uncomment, if you want to create new etalons
+        --evaluator ${statesmurf_BINARY_DIR}/SmurfEvaluator/smurfEvaluator
         --output ${CMAKE_SOURCE_DIR}/test/smurf-test/
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test/smurf-test)# ${EXECUTABLE_OUTPUT_PATH} )
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test/smurf-test)
 

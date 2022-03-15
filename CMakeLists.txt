@@ -48,7 +48,6 @@ TARGET_LINK_LIBRARIES(modulog CoreLib cxxopts::cxxopts)
 IF (BRINGAUTO_TESTS)
     ENABLE_TESTING()
     FetchContent_MakeAvailable(statesmurf)
-    MESSAGE("ADSF ${statesmurf_SOURCE_DIR}")
     ADD_SUBDIRECTORY(test)
 ENDIF ()
 

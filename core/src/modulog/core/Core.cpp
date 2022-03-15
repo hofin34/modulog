@@ -30,7 +30,7 @@ namespace modulog::core {
         notifyAllAgentsToSendLogs();
         startSendAlive();
         LogSaver logSaver(sharedSettings_->LogSettings.logsDestination);
-        bringauto::logging::Logger::logInfo("Logging...");
+        bringauto::logging::Logger::logInfo("Modulog is now logging... For termination, press CTRL+C");
         while (!stopFlag.load() && !agentHandler_->getRunningAgents().empty()) {
 #ifdef BRINGAUTO_TESTS
             if (!stopFlag.load())
@@ -49,7 +49,7 @@ namespace modulog::core {
             int i = 0;
             for (auto &actAgent: agentHandler_->getRunningAgents()) {
                 auto controlMsg = actAgent->getMessageExchanger()->popControlMessage();
-                if (controlMsg != nullptr) {
+                if (controlMsg) {
                     if (controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT) {
                         actAgent->setExpectedExit(true);
                         auto exitControlMsg = std::make_shared<communication::ControlMessage>(

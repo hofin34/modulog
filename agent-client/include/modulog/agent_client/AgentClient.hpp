@@ -63,16 +63,13 @@ namespace modulog::agent_client {
          */
         static void signalHandler(int signum);
 
-        /*
-         * For testing purposes - client stops responding to IS_ALIVE messages
-         */
-        void freezeClient();
-
     private:
         /*
-         * Function running in own thread - it is receiving messages and processing them
+         * Function running in own thread - it is receiving messages and processing them.
+         * It is virtual, because it is overriden in tests to simulate freezed agent.
          */
-        void handleResponses();
+        virtual void handleResponses();
+
 
         std::string agentName_ = "AgentDefaultName";
         std::shared_ptr<asio::io_context> ioContext_;
@@ -80,7 +77,6 @@ namespace modulog::agent_client {
         std::thread responseHandleThread_;
         std::shared_ptr<communication::MessageExchanger> messageExchanger_;
         std::string sharedConfig_;
-        std::atomic<bool> simulatedFreeze = false;
         std::string coreIp_ = "127.0.0.1";
         int corePort_ = 1234;
         // Sync vars:

@@ -52,24 +52,20 @@ namespace modulog::core{
     }
 
     void AgentHandler::parseEnabledAgentsList(const std::filesystem::path& pathToListFile) {
-        try{
-            std::ifstream input( pathToListFile);
-            if(!input.is_open())
-                throw std::runtime_error(pathToListFile.generic_string() + " cannot be opened. (maybe not existing...)");
-            for( std::string line; getline( input, line ); )
-            {
-                line.erase(remove(line.begin(), line.end(), ' '), line.end());
-                int commentPos = line.find('#');
-                if(commentPos != std::string::npos) { // line contains comment
-                    line = line.substr(0, commentPos);
-                }
-                if(line.empty())
-                    continue;
-                std::filesystem::path actAgentPath = line;
-                agentsPaths_.push_back(actAgentPath);
+        std::ifstream input( pathToListFile);
+        if(!input.is_open())
+            throw std::runtime_error(pathToListFile.generic_string() + " cannot be opened. (maybe not existing...)");
+        for( std::string line; getline( input, line ); )
+        {
+            line.erase(remove(line.begin(), line.end(), ' '), line.end());
+            int commentPos = line.find('#');
+            if(commentPos != std::string::npos) { // line contains comment
+                line = line.substr(0, commentPos);
             }
-        }catch(std::exception& e){
-            throw;
+            if(line.empty())
+                continue;
+            std::filesystem::path actAgentPath = line;
+            agentsPaths_.push_back(actAgentPath);
         }
     }
 
