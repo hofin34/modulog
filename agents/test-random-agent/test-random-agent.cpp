@@ -38,7 +38,6 @@ int main(int argc, char** argv){
     std::uniform_int_distribution<int> distr(logIntervalMin, logIntervalMax);
     while(true){
         int newRandom = distr(eng);
-        std::cout << newRandom << std::endl;
         auto logMsg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "randomTime", std::to_string(newRandom));
         agentClient.sendLog(logMsg);
         std::this_thread::sleep_for(std::chrono::milliseconds (newRandom));

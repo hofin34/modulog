@@ -21,12 +21,7 @@ namespace modulog::core {
 #ifdef BRINGAUTO_TESTS
         sharedSettings_->Testing.transitions->goToState("ServerCreated");
 #endif
-        try {
-            initAllAgents();
-        } catch (std::exception &e) {
-            cleanAll();
-            throw;
-        }
+        initAllAgents();
         notifyAllAgentsToSendLogs();
         startSendAlive();
         LogSaver logSaver(sharedSettings_->LogSettings.logsDestination);
@@ -81,7 +76,6 @@ namespace modulog::core {
 #ifdef BRINGAUTO_TESTS
         sharedSettings_->Testing.transitions->goToState("Exiting");
 #endif
-        cleanAll();
     }
 
 
@@ -203,6 +197,12 @@ namespace modulog::core {
 #ifdef BRINGAUTO_TESTS
         sharedSettings_->Testing.transitions->goToState("CleanExit");
 #endif
+    }
+
+    Core::~Core() {
+        stop();
+        cleanAll();
+        std::cout << "destructor" << std::endl;
     }
 
 

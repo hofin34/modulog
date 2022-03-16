@@ -6,7 +6,7 @@
 #include <modulog/core/LogSaver.hpp>
 #include <modulog/core/AgentHandler.hpp>
 
-namespace modulog::core{
+namespace modulog::core {
     /**
      * Core class - takes care of creating agents, connecting to them, checking if they are alive and collecting their logs
      */
@@ -14,11 +14,17 @@ namespace modulog::core{
     public:
         Core(std::shared_ptr<asio::io_context> ioContext,
              std::shared_ptr<meta_lib::SharedSettings> sharedSettings);
+
+        ~Core();
+
         /**
          * Start core functionality after creating instance of this class
          */
         void start();
 
+        /**
+         * Function used to stop receiving messages in the Core
+         */
         void stop();
 
     private:
@@ -36,6 +42,7 @@ namespace modulog::core{
          * Check all agents, if they responded to isAlive. If not, they are killed and removed
          */
         void checkIfAgentsAlive();
+
         /**
          * Run all agents and init connection with them
          */

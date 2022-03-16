@@ -70,8 +70,10 @@ int main(int argc, const char **argv) {
         core->start();
     } catch (std::exception &e) {
         bringauto::logging::Logger::logError("Exception in main.cpp: {}", e.what());
+        core.reset();
         return EXIT_FAILURE;
     }
+    core.reset();
     bringauto::logging::Logger::logInfo("---- END ----");
     return EXIT_SUCCESS;
 }
