@@ -24,9 +24,17 @@ void initLogger(const std::string &logPath, bool verbose) {
 
 std::unique_ptr<modulog::core::Core> core;
 
-void signalHandler(int signum) {
-    bringauto::logging::Logger::logInfo("Interrupt signal {} received", signum);
-    core->stop();
+/**
+ * When is modulog interrupted by SIGINT/SIGTERM signal, this function is called - it will stop the core
+ * @param error
+ * @param signum
+ */
+void signalHandler(const std::error_code &error,
+                   int signum) {
+    if (!error) {
+        bringauto::logging::Logger::logInfo("Interrupt signal {} received", signum);
+        core->stop();
+    }
 }
 
 /**
@@ -54,11 +62,7 @@ std::shared_ptr<modulog::meta_lib::SharedSettings> parseArgs(int argc, const cha
 }
 
 int main(int argc, const char **argv) {
-    struct sigaction sigAct{};
-    memset(&sigAct, -1, sizeof(sigAct));
-    sigAct.sa_handler = signalHandler;
-    sigaction(SIGINT, &sigAct, nullptr);
-    sigaction(SIGTERM, &sigAct, nullptr);
+
     initLogger("./ba-logs", true);
 
     try {
@@ -66,6 +70,8 @@ int main(int argc, const char **argv) {
         if (!sharedSettings) // if --help arg
             return EXIT_SUCCESS;
         auto ioContext = std::make_shared<asio::io_context>();
+        asio::signal_set signals(*ioContext, SIGINT, SIGTERM);
+        signals.async_wait(signalHandler);
         core = std::make_unique<modulog::core::Core>(ioContext, sharedSettings);
         core->start();
     } catch (std::exception &e) {

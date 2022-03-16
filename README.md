@@ -93,7 +93,10 @@ And also flowchart diagram:
 1. Not the most effective - like sending logs in json etc.
 2. Not rotating log files
 3. Not the best agent ending
-4. Create agent template for better agent creation
+
+TODO:
+1. Create agent template for better agent creation - when this done, split big agents into smaller parts
+2. Remove Core global variable and make it local 
 
 [agents folder link]: agents
 [agents-to-compile.json]: agents-to-compile.json
