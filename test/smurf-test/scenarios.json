@@ -108,28 +108,28 @@
     },
     {
       "name": "killed-freezed",
-      "timeout": 15,
+      "timeout": 20,
       "arguments": {
         "--enabled-agents": "killed-freezed-enabled-agents.conf"
       }
     },
     {
       "name": "double-kill",
-      "timeout": 5,
+      "timeout": 20,
       "arguments": {
         "--enabled-agents": "double-kill-enabled-agents.conf"
       }
     },
     {
       "name": "multi-big-log",
-      "timeout": 5,
+      "timeout": 20,
       "arguments": {
         "--enabled-agents": "multi-big-log-enabled-agents.conf"
       }
     },
     {
       "name": "freezed-freezed",
-      "timeout": 15,
+      "timeout": 20,
       "arguments": {
         "--enabled-agents": "freezed-freezed-enabled-agents.conf"
       }

@@ -113,7 +113,7 @@ namespace modulog::core {
             }
         }
         for (auto &toDel: agentsToDel) {
-            agentHandler_->deleteAgent(toDel); //TODO create from two for loops one (with deleting inside)
+            agentHandler_->deleteAgent(toDel);
             { // if is last agent killed, program freezes - waits for other messages. This simulates message receive
                 std::lock_guard<std::mutex> lck(messageMutex_);
                 totalReceivedMessages_++;

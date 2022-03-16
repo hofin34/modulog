@@ -9,5 +9,5 @@ int main(){
         agentClient.sendLog(msg);
     }
     std::this_thread::sleep_for(std::chrono::seconds(2));
-    return EXIT_FAILURE; // simulates agent kill
+    exit(EXIT_FAILURE); // simulates agent kill
 }

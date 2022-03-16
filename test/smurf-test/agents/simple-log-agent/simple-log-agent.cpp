@@ -7,4 +7,5 @@ int main(){
     auto msg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "simpleLog", "simpleValue");
     agentClient.sendLog(msg);
     agentClient.exitConnection();
+    return 0;
 }

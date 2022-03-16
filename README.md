@@ -39,7 +39,9 @@ BRINGAUTO_PACKAGE - if on, target for creating package is generated (after `make
 CMLIB_DIR - if you set BRINGAUTO_SYSTEM_DEP to OFF, then you have to set path to [cmakelib] in this variable
 
 BRINGAUTO_TESTS - if on, then test target is generated.
-You can run them after `make` with `ctest --verbose`
+You can run them after `make` with `ctest --verbose`.
+Before testing, make sure, that you have got same values in [SharedSettings.hpp] as in github branch, where you pulled it from!
+(tests will not pass, if there will be different timeouts)
 
 
 ## Dependencies
@@ -107,13 +109,6 @@ And also flowchart diagram:
 ---
 
 ---
-
-# Test cases
-* if agent freezes - will it kill him? (also with more agents)
-* if is logging correctly? and errors?
-* logging with a lot of agents and big log frequency
-* Test it with valgrind?
-* 
 
 
 # Already existing tools - research
