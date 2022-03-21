@@ -16,16 +16,21 @@ namespace modulog::meta_lib{
         } ServerSettings;
         struct LogSettings{
             std::filesystem::path enabledAgentsPath = "./agents-enabled.conf";
-            std::filesystem::path logsDestination = "./logs"; // Where will be saved logs (folder is created if not existing)
+            std::filesystem::path logsDestination = "./logs/"; // Where will be saved logs (folder must exists)
             int isAliveIntervalSec = 8; // How often check, if agent is not freezed (in seconds)
             int isAliveTimeoutSec = 2; // How long wait for agents isAlive response
+            int exitSendTimeoutSec = 2; // How many seconds will agent have to send remaining logs, when is whole program interrupted
             std::filesystem::path sharedAgentsConfig = ""; // Path to file - its content will be sent to all agents (if not using, leave this variable empty)
+            bool oneFileLog = false;
         } LogSettings;
 
+        #ifdef BRINGAUTO_TESTS
         struct Testing{
-            #ifdef BRINGAUTO_TESTS
-                std::shared_ptr<state_smurf::transition::StateTransition> transitions = std::make_shared<state_smurf::transition::StateTransition>(StateGraphHandler::createStateDiagram());
-            #endif
+                std::shared_ptr<state_smurf::transition::StateTransition> transitions; // this must be initialized by function initTesting()!
+                void initTesting(){
+                    transitions = std::make_shared<state_smurf::transition::StateTransition>(StateGraphHandler::createStateDiagram());
+                };
         } Testing;
+        #endif
     };
 }

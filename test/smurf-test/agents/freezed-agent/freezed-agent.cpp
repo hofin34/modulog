@@ -12,7 +12,6 @@ public:
 };
 
 int main(){
-    std::cout <<"here" <<std::endl;
     auto ioContext = std::make_shared<asio::io_context>();
     FreezedClient freezedClient(ioContext, "freezed-agent");
     freezedClient.initClient();

@@ -24,9 +24,29 @@ namespace modulog::core {
         initAllAgents();
         notifyAllAgentsToSendLogs();
         startSendAlive();
-        LogSaver logSaver(sharedSettings_->LogSettings.logsDestination);
+        LogSaver logSaver(sharedSettings_);
         bringauto::logging::Logger::logInfo("Modulog is now logging... For termination, press CTRL+C");
-        while (!stopFlag.load() && !agentHandler_->getRunningAgents().empty()) {
+        bool shouldExit = false, exitMessagesSent = false;
+        auto exitTime = std::chrono::system_clock::now(); // will be changed on interrupt
+        while (!shouldExit && !agentHandler_->getRunningAgents().empty()) {
+            if (stopFlag.load()) {
+                // program was interrupted, send EXIT message to agents and wait X seconds to receive last messages from agents
+                if (!exitMessagesSent) {
+                    const auto time_point = std::chrono::system_clock::now() +
+                                            std::chrono::seconds(sharedSettings_->LogSettings.exitSendTimeoutSec);
+                    for (const auto &agent: agentHandler_->getRunningAgents()) {
+                        auto exitMsg = std::make_shared<communication::ControlMessage>(
+                                communication::ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
+                        agent->getMessageExchanger()->sendControl(exitMsg);
+                        agent->setExpectedExit(true);
+                    }
+                    exitMessagesSent = true;
+                }else{
+                    if(std::chrono::system_clock::now() > exitTime){
+                        shouldExit = true;
+                    }
+                }
+            }
 #ifdef BRINGAUTO_TESTS
             if (!stopFlag.load())
                 sharedSettings_->Testing.transitions->goToState("WaitForMessage");
@@ -53,7 +73,6 @@ namespace modulog::core {
                         agentsToDel.push_back(actAgent);
                         continue;
                     } else if (controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR) {
-                        std::cerr << "Core received EXIT_ERR from " << actAgent->getId() << std::endl;
                         if (!actAgent->getExpectedExit()) {
                             logSaver.logAgentCrash(actAgent->getId());
                         }
@@ -186,9 +205,6 @@ namespace modulog::core {
 #ifdef BRINGAUTO_TESTS
             sharedSettings_->Testing.transitions->goToState("StopAgent");
 #endif
-            auto exitMsg = std::make_shared<communication::ControlMessage>(
-                    communication::ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
-            toDel->getMessageExchanger()->sendControl(exitMsg);
             agentHandler_->deleteAgent(toDel);
         }
         ioContext_->stop();
@@ -202,7 +218,6 @@ namespace modulog::core {
     Core::~Core() {
         stop();
         cleanAll();
-        std::cout << "destructor" << std::endl;
     }
 
 

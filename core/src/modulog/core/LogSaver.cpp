@@ -2,9 +2,13 @@
 
 namespace modulog::core {
     void LogSaver::saveLog(const std::string &agentId, const std::shared_ptr<communication::LogMessage> &logMessage) {
+        if (oneFileLog) {
+            bringauto::logging::Logger::logInfo("{}={}", logMessage->getKey(), logMessage->getValue());
+            return;
+        }
         std::filesystem::path whereSave = logsPath_ / agentId;
         if (!std::filesystem::exists(whereSave)) {
-                std::filesystem::create_directories(whereSave);
+            std::filesystem::create_directories(whereSave);
         }
 
         std::ofstream logFile;
@@ -22,6 +26,10 @@ namespace modulog::core {
 
     void
     LogSaver::saveErrorLog(const std::string &agentId, const std::shared_ptr<communication::LogMessage> &logMessage) {
+        if (oneFileLog) {
+            bringauto::logging::Logger::logError("{}={}", logMessage->getKey(), logMessage->getValue());
+            return;
+        }
         std::filesystem::path errorsDir = logsPath_ / "errors" / agentId;
         bool firstError = false;
         if (!std::filesystem::exists(errorsDir)) {
@@ -47,6 +55,10 @@ namespace modulog::core {
     }
 
     void LogSaver::logAgentCrash(std::string agentId) {
+        if (oneFileLog) {
+            bringauto::logging::Logger::logError("Agent \"{}\" crashe!!!", agentId);
+            return;
+        }
         std::ofstream crashedAgentsFile;
         std::filesystem::path filePath = logsPath_ / "crashedAgents.txt";
         crashedAgentsFile.open(filePath, std::ios_base::app);

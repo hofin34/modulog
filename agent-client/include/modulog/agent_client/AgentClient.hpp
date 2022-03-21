@@ -8,6 +8,7 @@
 
 #include <nlohmann/json.hpp>
 #include <bringauto/logging/Logger.hpp>
+#include <bringauto/logging/ConsoleSink.hpp>
 
 #include <iostream>
 #include <filesystem>
@@ -28,6 +29,8 @@ namespace modulog::agent_client {
          */
         AgentClient(std::shared_ptr<asio::io_context> &ioContext, std::string agentName);
 
+        ~AgentClient();
+
         /**
          * Sends log to the Core, which will save it. If is client in debug mode, log is just printed
          * @param logMessage Message to log
@@ -46,25 +49,38 @@ namespace modulog::agent_client {
          */
         void initClient();
 
-        /*
+        /**
          * Sends to Core exit message
          */
         void exitConnection();
 
-        /*
+        /**
          * Get shared config - it is sent to all agents on the beginning (what will be sent is defined
          * in SharedSettings file
          */
         std::string getSharedConfig();
 
-        /*
+        /**
+         * You can log until this function returns true
+         * @return true, if can be logs sent to the core.
+         */
+        bool canLog();
+
+        /**
          * reproc++ library sends interrupt signal to all spawned processes - we want to catch it and ignore, because
          * agent exiting is managed by Core.cxx
          */
         static void signalHandler(int signum);
 
+        /**
+         * Sleep this thread for sleepTime sec - when is agent interrupted by Core, it stops waiting.
+         * @param sleepTime how long wait (in seconds)
+         * @return true if waited whole time, false if was interrupted during waiting
+         */
+        bool sleepFor(const std::chrono::seconds sleepTime);
+
     private:
-        /*
+        /**
          * Function running in own thread - it is receiving messages and processing them.
          * It is virtual, because it is overriden in tests to simulate freezed agent.
          */
@@ -79,7 +95,11 @@ namespace modulog::agent_client {
         std::string sharedConfig_;
         std::string coreIp_ = "127.0.0.1";
         int corePort_ = 1234;
-        // Sync vars:
+        // Sync vars waiting:
+        std::condition_variable waitCondVar_;
+        std::mutex waitMutex_;
+        bool waitEnd_ = false;
+        // Sync vars messages:
         std::atomic<bool> shouldExit_;
         std::mutex msgMutex_;
         std::condition_variable msgCondVar_;

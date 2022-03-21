@@ -23,15 +23,14 @@ int main(int argc, char **argv) {
     auto logStartMsg = std::make_shared<modulog::communication::LogMessage>(
             modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "agentStarted", "start");
     agentClient.sendLog(logStartMsg);
-    while (true) {
+    while (agentClient.canLog()) {
         auto now = std::chrono::steady_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - programBegin).count();
         auto logMsg = std::make_shared<modulog::communication::LogMessage>(
                 modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "howLongRunning", std::to_string(duration));
         agentClient.sendLog(logMsg);
 
-        std::this_thread::sleep_for(std::chrono::seconds(logInterval));
+        agentClient.sleepFor(std::chrono::seconds(logInterval));
     }
-
     return 0;
 }

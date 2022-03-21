@@ -2,7 +2,7 @@
   "agentsToCompile": [
     {
       "agentPath": "agents/space-agent",
-      "enabled": true
+      "enabled": false
     },
     {
       "agentPath": "agents/uptime-agent",
@@ -10,11 +10,11 @@
     },
     {
       "agentPath": "agents/linux-system-monitoring-lib-agent",
-      "enabled": true
+      "enabled": false
     },
     {
       "agentPath": "agents/udp-watchdog-agent",
-      "enabled": true
+      "enabled": false
     },
     {
       "agentPath": "agents/temperature-agent",

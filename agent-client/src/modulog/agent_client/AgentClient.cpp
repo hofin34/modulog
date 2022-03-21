@@ -6,10 +6,17 @@ namespace modulog::agent_client {
     AgentClient::AgentClient(std::shared_ptr<asio::io_context> &ioContext, std::string agentName)
             : ioContext_(ioContext), agentName_(agentName) {
 #ifdef AGENT_CLIENT_DEBUG
-        std::cout << "AGENT_CLIENT_DEBUG macro is ON!" << std::endl;
+        bringauto::logging::Logger::logWarning("AGENT_CLIENT_DEBUG macro is ON!");
 #endif
         shouldExit_ = false;
         msgProcessor_ = std::make_shared<communication::MessageProcessor>(totalMsgsReceived_, msgCondVar_, msgMutex_);
+    }
+
+    AgentClient::~AgentClient() {
+        responseHandleThread_.join();
+        messageExchanger_->getConnection()->closeConnection();
+        ioContext_->stop();
+        clientThread_.join();
     }
 
     void AgentClient::signalHandler(int signum) {
@@ -18,6 +25,12 @@ namespace modulog::agent_client {
     }
 
     void AgentClient::initClient() {
+        bringauto::logging::Logger::addSink<bringauto::logging::ConsoleSink>();
+        bringauto::logging::Logger::LoggerSettings params{agentName_,
+                                                          bringauto::logging::Logger::Verbosity::Debug};
+        bringauto::logging::Logger::init(params);
+
+
         struct sigaction sigAct{};
         memset(&sigAct, 0, sizeof(sigAct));
         sigAct.sa_handler = signalHandler;
@@ -28,41 +41,26 @@ namespace modulog::agent_client {
 #ifdef AGENT_CLIENT_DEBUG
         return;
 #endif
-        try {
-            auto connection = std::make_shared<communication::TcpConnection>(*ioContext_, agentName_, msgProcessor_);
-            asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string(coreIp_), corePort_);
-            connection->getSocket().connect(endpoint);
-            messageExchanger_ = std::make_shared<communication::MessageExchanger>(connection);
-            clientThread_ = std::thread{[this]() { ioContext_->run(); }};
-            auto configMessage = messageExchanger_->waitForControlMessage(
-                    2000); // If small timeout (like 2 ms), app crashes in Valgrind
-            if (configMessage == nullptr) {
-                std::cerr << agentName_ << " didn't received configMessage" << std::endl;
-                exit(EXIT_FAILURE);
-            }
-            std::cout << agentName_ << " received config: " << configMessage->getValue() << std::endl;
-            sharedConfig_ = configMessage->getValue();
-            auto ackMessage = std::make_shared<communication::ControlMessage>(
-                    modulog::communication::ControlMessage::CONTROL_MSG_TYPE::ACK, agentName_);
-            messageExchanger_->sendControl(ackMessage);
-            auto canStartSending = messageExchanger_->waitForControlMessage(-1);
-            if (canStartSending == nullptr) {
-                std::cerr << agentName_ << " didnt receive can start sending logs! " << std::endl;
-                exit(EXIT_FAILURE);
-            }
-            if (canStartSending->getType() != communication::ControlMessage::CONTROL_MSG_TYPE::ACK) {
-                std::cerr << "Not received ACK for start sending logs.";
-                exit(EXIT_FAILURE);
-            }
-            responseHandleThread_ = std::thread{[this]() { handleResponses(); }};
-
-        } catch (std::exception &e) {
-            std::cerr << e.what() << std::endl;
-            exit(EXIT_FAILURE);
-        } catch (...) {
-            std::cerr << "Error in AgentClient init..." << std::endl;
-            exit(EXIT_FAILURE);
-        }
+        auto connection = std::make_shared<communication::TcpConnection>(*ioContext_, agentName_, msgProcessor_);
+        asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string(coreIp_), corePort_);
+        connection->getSocket().connect(endpoint);
+        messageExchanger_ = std::make_shared<communication::MessageExchanger>(connection);
+        clientThread_ = std::thread{[this]() { ioContext_->run(); }};
+        auto configMessage = messageExchanger_->waitForControlMessage(
+                2000); // If small timeout (like 2 ms), app crashes in Valgrind
+        if (configMessage == nullptr)
+            throw std::runtime_error("Not received config!");
+        bringauto::logging::Logger::logInfo("Received config: {}", configMessage->getValue());
+        sharedConfig_ = configMessage->getValue();
+        auto ackMessage = std::make_shared<communication::ControlMessage>(
+                modulog::communication::ControlMessage::CONTROL_MSG_TYPE::ACK, agentName_);
+        messageExchanger_->sendControl(ackMessage);
+        auto canStartSending = messageExchanger_->waitForControlMessage(-1);
+        if (canStartSending == nullptr)
+            throw std::runtime_error("Not received can start sending logs!");
+        if (canStartSending->getType() != communication::ControlMessage::CONTROL_MSG_TYPE::ACK)
+            throw std::runtime_error("Not received ACK for start sending logs!");
+        responseHandleThread_ = std::thread{[this]() { handleResponses(); }};
     }
 
 
@@ -70,7 +68,7 @@ namespace modulog::agent_client {
         while (!shouldExit_.load()) {
             auto controlMsg = messageExchanger_->waitForControlMessage(-1);
             if (controlMsg == nullptr) { // This should not happen
-                std::cerr << "No control message!" << std::endl;
+                bringauto::logging::Logger::logError("No control message!");
                 continue;
             }
             if (controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::IS_ALIVE) {
@@ -78,6 +76,11 @@ namespace modulog::agent_client {
                         modulog::communication::ControlMessage::CONTROL_MSG_TYPE::ACK, "");
                 messageExchanger_->sendControl(ackAliveMsg);
             } else if (controlMsg->getType() == communication::ControlMessage::CONTROL_MSG_TYPE::EXIT) {
+                {
+                    std::lock_guard<std::mutex> lock(waitMutex_);
+                    waitEnd_ = true;
+                }
+                waitCondVar_.notify_all();
                 shouldExit_ = true;
             }
         }
@@ -91,13 +94,11 @@ namespace modulog::agent_client {
         while (!shouldExit_.load()) { // Active waiting, but just a few millis, so its ok
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
-        responseHandleThread_.join();
-        messageExchanger_->getConnection()->closeConnection();
     }
 
     void AgentClient::sendLog(const std::shared_ptr<communication::LogMessage> &logMessage) {
 #ifdef AGENT_CLIENT_DEBUG
-        std::cout << "Simulated log send (just debug): " << logMessage->serialize() << std::endl;
+        bringauto::logging::Logger::logInfo("Simulated log send (just debug): {}", logMessage->serialize());
 #else
         messageExchanger_->sendLog(logMessage);
 #endif
@@ -105,7 +106,7 @@ namespace modulog::agent_client {
 
     void AgentClient::sendControl(const std::shared_ptr<communication::ControlMessage> &controlMessage) {
 #ifdef AGENT_CLIENT_DEBUG
-        std::cout << "Simulated control send (just debug): " << controlMessage->serialize() << std::endl;
+        bringauto::logging::Logger::logInfo("Simulated log send (just debug): {}", controlMessage->serialize());
 #else
         messageExchanger_->sendControl(controlMessage);
 #endif
@@ -113,6 +114,25 @@ namespace modulog::agent_client {
 
     std::string AgentClient::getSharedConfig() {
         return sharedConfig_;
+    }
+
+    bool AgentClient::canLog() {
+        return !shouldExit_;
+    }
+
+    bool AgentClient::sleepFor(const std::chrono::seconds sleepTime) {
+        const auto time_point = std::chrono::system_clock::now() + sleepTime;
+        while (!waitEnd_) {
+            std::unique_lock<std::mutex> lock(waitMutex_);
+            const std::cv_status status = waitCondVar_.wait_until(lock, time_point);
+            if (status == std::cv_status::timeout) {
+                return true;
+            } else { // no timeout
+                if (waitEnd_) // else is spurious wakeup
+                    return false;
+            }
+        }
+        return true;
     }
 
 

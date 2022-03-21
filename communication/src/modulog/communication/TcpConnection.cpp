@@ -86,7 +86,6 @@ namespace modulog::communication {
     }
 
     void TcpConnection::signalErrExit() {
-        bringauto::logging::Logger::logDebug("Signal err");
         auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR, "");
         MessageSerializer messageSerializer(exitControlMsg);
         messageProcessor_->processMessage(messageSerializer.serialize());
@@ -98,6 +97,7 @@ namespace modulog::communication {
         socket_.shutdown(asio::ip::tcp::socket::shutdown_both, ec);
         if (ec)
             bringauto::logging::Logger::logError("Closing connection error: {}", ec.message());
+            //std::cerr << "Closing connection error: " << ec.message() << std::endl;
         else{
             connectionClosed_ = true;
             socket_.close();

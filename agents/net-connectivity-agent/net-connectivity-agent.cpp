@@ -126,8 +126,8 @@ int main(int argc, char **argv) {
     auto lastNetState = isInternet();
     logNetState(lastNetState, agentClient);
 
-    while (true) {
-        std::this_thread::sleep_for(std::chrono::seconds(checkInterval));
+    while (agentClient.canLog()) {
+        agentClient.sleepFor(std::chrono::seconds(checkInterval));
         auto newNetState = isInternet();
         if (newNetState != lastNetState) {
             logNetState(newNetState, agentClient);
