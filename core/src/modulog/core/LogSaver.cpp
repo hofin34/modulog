@@ -3,6 +3,7 @@
 namespace modulog::core {
     void LogSaver::saveLog(const std::string &agentId, const std::shared_ptr<communication::LogMessage> &logMessage) {
         if (oneFileLog) {
+            bringauto::logging::Logger::logInfo("TODO remove");
             bringauto::logging::Logger::logInfo("{}={}", logMessage->getKey(), logMessage->getValue());
             return;
         }

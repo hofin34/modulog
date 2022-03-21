@@ -1,7 +1,7 @@
 {
   "id": "linux-system-monitoring-lib-agent",
-  "cpuNotBiggerThanPercent": 5,
-  "ramNotBiggerThanPercent": 30,
+  "cpuNotBiggerThanPercent": 80,
+  "ramNotBiggerThanPercent": 80,
   "logInterval": 4,
   "statLocation": "/proc/stat"
 }

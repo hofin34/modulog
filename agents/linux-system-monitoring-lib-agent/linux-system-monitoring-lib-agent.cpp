@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
                     modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "usedRamPercent", std::to_string(currRam));
         agentClient.sendLog(ramToSend);
         auto usedRamToSendKb = std::make_shared<modulog::communication::LogMessage>(
-                modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "usedRamKb",
+                modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "usedRamKb",
                 std::to_string(memoryMonitoring->getCurrentMemUsageInKB()));
         agentClient.sendLog(usedRamToSendKb);
 

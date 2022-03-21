@@ -1,5 +1,5 @@
 {
   "id": "space-agent",
   "logInterval": 5,
-  "folderToMonitor": "/"
+  "folderToMonitor": "/dev/nvme0n1"
 }
