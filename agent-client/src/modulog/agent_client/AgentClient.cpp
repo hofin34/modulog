@@ -5,6 +5,10 @@ namespace modulog::agent_client {
 
     AgentClient::AgentClient(std::shared_ptr<asio::io_context> &ioContext, std::string agentName)
             : ioContext_(ioContext), agentName_(agentName) {
+        bringauto::logging::Logger::addSink<bringauto::logging::ConsoleSink>();
+        bringauto::logging::Logger::LoggerSettings params{agentName_,
+                                                          bringauto::logging::Logger::Verbosity::Debug};
+        bringauto::logging::Logger::init(params);
 #ifdef AGENT_CLIENT_DEBUG
         bringauto::logging::Logger::logWarning("AGENT_CLIENT_DEBUG macro is ON!");
 #endif
@@ -13,10 +17,12 @@ namespace modulog::agent_client {
     }
 
     AgentClient::~AgentClient() {
+#ifndef AGENT_CLIENT_DEBUG
         responseHandleThread_.join();
         messageExchanger_->getConnection()->closeConnection();
         ioContext_->stop();
         clientThread_.join();
+#endif
     }
 
     void AgentClient::signalHandler(int signum) {
@@ -25,10 +31,6 @@ namespace modulog::agent_client {
     }
 
     void AgentClient::initClient() {
-        bringauto::logging::Logger::addSink<bringauto::logging::ConsoleSink>();
-        bringauto::logging::Logger::LoggerSettings params{agentName_,
-                                                          bringauto::logging::Logger::Verbosity::Debug};
-        bringauto::logging::Logger::init(params);
 
 
         struct sigaction sigAct{};

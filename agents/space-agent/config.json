@@ -1,5 +1,7 @@
 {
   "id": "space-agent",
   "logInterval": 5,
-  "folderToMonitor": "/dev/nvme0n1"
+  "availableNotSmallerThanPercent": 70,
+  "foldersToMonitor": ["/home"],
+  "partitionsToMonitor": ["/dev/nvme0n1p2", "/dev/nvme0n1p4"]
 }
