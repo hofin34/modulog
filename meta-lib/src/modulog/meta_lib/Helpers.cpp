@@ -1,4 +1,4 @@
-#include <modulog/meta_lib/Helpers.h>
+#include <modulog/meta_lib/Helpers.hpp>
 
 namespace modulog::meta_lib{
     std::string Helpers::getTimestamp() {

@@ -1,10 +1,11 @@
 #include <modulog/agent_client/AgentClient.hpp>
+#include <utility>
 
 
 namespace modulog::agent_client {
 
     AgentClient::AgentClient(std::shared_ptr<asio::io_context> &ioContext, std::string agentName)
-            : ioContext_(ioContext), agentName_(agentName) {
+            : ioContext_(ioContext), agentName_(std::move(agentName)) {
         bringauto::logging::Logger::addSink<bringauto::logging::ConsoleSink>();
         bringauto::logging::Logger::LoggerSettings params{agentName_,
                                                           bringauto::logging::Logger::Verbosity::Debug};

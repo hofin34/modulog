@@ -24,9 +24,9 @@ namespace modulog::core {
          * @param agentInfo representing running agent process
          * @param messageExchanger for sending and receiving messages from/to agent
          */
-        Agent(const std::shared_ptr<AgentProcess> &agentInfo,
-              const std::shared_ptr<communication::MessageExchanger> &messageExchanger) :
-                agentProcess_(agentInfo), messageExchanger_(messageExchanger) {}
+        Agent(std::shared_ptr<AgentProcess> agentInfo,
+              std::shared_ptr<communication::MessageExchanger> messageExchanger) :
+                agentProcess_(std::move(agentInfo)), messageExchanger_(std::move(messageExchanger)) {}
 
         /**
          * Gets agent's id - when is agent process created, he sends message with this id and then is set.

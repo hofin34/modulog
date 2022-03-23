@@ -1,8 +1,8 @@
 #include <modulog/core/Core.hpp>
 
 namespace modulog::core {
-    Core::Core(std::shared_ptr<asio::io_context> ioContext,
-               std::shared_ptr<meta_lib::SharedSettings> sharedSettings) :
+    Core::Core(const std::shared_ptr<asio::io_context>& ioContext,
+               const std::shared_ptr<meta_lib::SharedSettings>& sharedSettings) :
             sendAliveTimer_(*ioContext),
             server_(*ioContext, messageMutex_, messageConditionVar_, totalReceivedMessages_, sharedSettings),
             sharedSettings_(sharedSettings) {
@@ -61,7 +61,6 @@ namespace modulog::core {
                 sharedSettings_->Testing.transitions->goToState("ProcessMessage");
 #endif
             std::vector<std::shared_ptr<Agent>> agentsToDel;
-            int i = 0;
             for (auto &actAgent: agentHandler_->getRunningAgents()) {
                 auto controlMsg = actAgent->getMessageExchanger()->popControlMessage();
                 if (controlMsg) {
@@ -199,7 +198,7 @@ namespace modulog::core {
     void Core::cleanAll() {
         std::vector<std::shared_ptr<Agent>> agentsToDel;
         for (auto &toDel: agentHandler_->getRunningAgents()) {
-            agentsToDel.push_back(toDel); // Cannot delete from inside for range - its removing from vector
+            agentsToDel.push_back(toDel); // Cannot delete from inside for range - it's removing from vector
         }
         for (auto &toDel: agentsToDel) {
 #ifdef BRINGAUTO_TESTS

@@ -10,7 +10,7 @@ namespace modulog::communication{
                                [this, new_connection](const asio::error_code& e){TcpServer::handleAccept(new_connection, e);});
     }
 
-    void TcpServer::handleAccept(std::shared_ptr<TcpConnection> new_connection,
+    void TcpServer::handleAccept(const std::shared_ptr<TcpConnection>& new_connection,
                                  const asio::error_code& error)
     {
         if (!error)

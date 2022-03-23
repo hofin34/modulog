@@ -7,6 +7,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <utility>
 
 namespace modulog::core {
     class LogSaver {
@@ -15,7 +16,7 @@ namespace modulog::core {
          * @param logsPath Path, where to save logs
          * @param sharedSettings shared setting - it will read from this file, if should log in one file or folder structure
          */
-        LogSaver(std::shared_ptr<meta_lib::SharedSettings> sharedSettings) : sharedSettings_(sharedSettings) {
+        explicit LogSaver(std::shared_ptr<meta_lib::SharedSettings> sharedSettings) : sharedSettings_(std::move(sharedSettings)) {
             logsPath_ = sharedSettings_->LogSettings.logsDestination;
             oneFileLog = sharedSettings_->LogSettings.oneFileLog;
         };
@@ -31,7 +32,7 @@ namespace modulog::core {
          * Function saves crashed agent name into file.
          * @param agentId name of crashed agent
          */
-        void logAgentCrash(std::string agentId);
+        void logAgentCrash(const std::string& agentId);
 
     private:
         /**

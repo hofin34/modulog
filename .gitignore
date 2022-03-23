@@ -4,3 +4,6 @@ build-*/
 .idea/
 logs/
 _tmp/
+test/smurf-test/aggregated_output
+test/smurf-test/output
+test/smurf-test/evaluator_output

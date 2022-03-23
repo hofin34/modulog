@@ -1,12 +1,12 @@
 #include <modulog/communication/MessageSerializer.hpp>
 
 namespace modulog::communication{
-    MessageSerializer::MessageSerializer(std::shared_ptr<LogMessage> logMessage) {
+    MessageSerializer::MessageSerializer(const std::shared_ptr<LogMessage>& logMessage) {
         message_ = std::dynamic_pointer_cast<Message>(logMessage);
         messageType_ = MSG_TYPE::LOG_MSG;
     }
 
-    MessageSerializer::MessageSerializer(std::shared_ptr<ControlMessage> controlMessage) {
+    MessageSerializer::MessageSerializer(const std::shared_ptr<ControlMessage>& controlMessage) {
         message_ = std::dynamic_pointer_cast<Message>(controlMessage);
         messageType_ = MSG_TYPE::CONTROL_MSG;
     }

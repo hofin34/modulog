@@ -100,7 +100,7 @@ namespace modulog::agent_client {
         std::mutex waitMutex_;
         bool waitEnd_ = false;
         // Sync vars messages:
-        std::atomic<bool> shouldExit_;
+        std::atomic<bool> shouldExit_ = false;
         std::mutex msgMutex_;
         std::condition_variable msgCondVar_;
         int totalMsgsReceived_ = 0;

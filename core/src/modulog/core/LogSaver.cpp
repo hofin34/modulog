@@ -31,7 +31,6 @@ namespace modulog::core {
             return;
         }
         std::filesystem::path errorsDir = logsPath_ / "errors" / agentId;
-        bool firstError = false;
         if (!std::filesystem::exists(errorsDir)) {
             try {
                 std::filesystem::create_directories(errorsDir);
@@ -54,7 +53,7 @@ namespace modulog::core {
         }
     }
 
-    void LogSaver::logAgentCrash(std::string agentId) {
+    void LogSaver::logAgentCrash(const std::string& agentId) {
         if (oneFileLog) {
             bringauto::logging::Logger::logError("Agent \"{}\" crashe!!!", agentId);
             return;

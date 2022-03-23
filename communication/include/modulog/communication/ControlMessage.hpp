@@ -14,7 +14,7 @@ namespace modulog::communication {
             CONFIG, ACK, IS_ALIVE, EXIT, EXIT_ERR
         };
 
-        ControlMessage(std::string jsonInit);
+        explicit ControlMessage(std::string jsonInit);
 
         ControlMessage(CONTROL_MSG_TYPE msgType, std::string value);
 

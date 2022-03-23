@@ -19,7 +19,7 @@ namespace modulog::communication{
          * Constructor, if you want to init this class with json (useful when deserializing)
          * @param jsonInit
          */
-        LogMessage(std::string jsonInit);
+        explicit LogMessage(std::string jsonInit);
 
         /**
          * Init this class with all attributes (if you want to create instance from code)

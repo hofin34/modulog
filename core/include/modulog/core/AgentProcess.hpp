@@ -18,9 +18,9 @@ namespace modulog::core{
          * @param agentProcess process representing running agent
          * @param agentProcessOptions options with defined stop argument - used to send SIGTERM first and after time SIGKILL
          */
-        AgentProcess(const std::string &agentId, const std::filesystem::path &agentPath,
-                     const std::shared_ptr<reproc::process> &agentProcess,
-                     const std::shared_ptr<reproc::options> &agentProcessOptions);
+        AgentProcess(std::string agentId, std::filesystem::path agentPath,
+                     std::shared_ptr<reproc::process> agentProcess,
+                     std::shared_ptr<reproc::options> agentProcessOptions);
 
         /**
          * Setter

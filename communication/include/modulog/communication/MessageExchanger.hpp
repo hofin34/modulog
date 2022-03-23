@@ -11,7 +11,7 @@ namespace modulog::communication{
         /**
          * @param connection active connection with someone
          */
-        MessageExchanger(std::shared_ptr<TcpConnection> connection);
+        explicit MessageExchanger(const std::shared_ptr<TcpConnection>& connection);
         /**
          * send log to the second side of connection
          * @param logMessage message to send

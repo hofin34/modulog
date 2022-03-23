@@ -1,6 +1,6 @@
 #pragma once
 
-#include <modulog/meta_lib/Helpers.h>
+#include <modulog/meta_lib/Helpers.hpp>
 
 #include <nlohmann/json.hpp>
 

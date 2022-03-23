@@ -22,7 +22,7 @@ namespace modulog::communication{
          * @param totalReceivedMsgs counting received messages
          */
         TcpServer(asio::io_context &io_context, std::mutex &messageMutex, std::condition_variable &messageConditionVariable,
-                  int &totalReceivedMsgs, std::shared_ptr<meta_lib::SharedSettings> sharedSettings)
+                  int &totalReceivedMsgs, const std::shared_ptr<meta_lib::SharedSettings>& sharedSettings)
                 : io_context_(io_context),
                   acceptor_(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), sharedSettings->ServerSettings.portNumber)),
                   messageMutex_(messageMutex), messageConditionVariable_(messageConditionVariable),
@@ -45,7 +45,7 @@ namespace modulog::communication{
          * @param new_connection made connection
          * @param error error flag
          */
-        void handleAccept(std::shared_ptr<TcpConnection> new_connection, const asio::error_code &error);
+        void handleAccept(const std::shared_ptr<TcpConnection>& new_connection, const asio::error_code &error);
 
         // ---- attributes
         asio::io_context &io_context_;

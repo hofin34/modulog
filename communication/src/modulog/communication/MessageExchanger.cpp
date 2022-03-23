@@ -1,7 +1,7 @@
 #include <modulog/communication/MessageExchanger.hpp>
 
 namespace modulog::communication{
-    MessageExchanger::MessageExchanger(std::shared_ptr<TcpConnection> connection) : connection_(connection){
+    MessageExchanger::MessageExchanger(const std::shared_ptr<TcpConnection>& connection) : connection_(connection){
         connection->startRead();
     }
 

@@ -22,7 +22,7 @@ namespace modulog::communication {
          * Parse string and init this class
          * @param toDeserialize message represented by string (usually after transport)
          */
-        MessageDeserializer(const std::string &toDeserialize);
+        explicit MessageDeserializer(const std::string &toDeserialize);
 
         /**
          * Checks if it is Control or Log message

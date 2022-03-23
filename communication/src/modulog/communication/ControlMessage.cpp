@@ -1,4 +1,5 @@
 #include <modulog/communication/ControlMessage.hpp>
+#include <utility>
 
 namespace modulog::communication{
     ControlMessage::ControlMessage(std::string jsonInit) {
@@ -11,7 +12,7 @@ namespace modulog::communication{
     ControlMessage::ControlMessage(ControlMessage::CONTROL_MSG_TYPE msgType, std::string value) {
         setTimestampNow();
         type_ = msgType;
-        value_ = value;
+        value_ = std::move(value);
     }
 
     std::string ControlMessage::serialize() {

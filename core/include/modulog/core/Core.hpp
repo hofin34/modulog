@@ -12,8 +12,8 @@ namespace modulog::core {
      */
     class Core {
     public:
-        Core(std::shared_ptr<asio::io_context> ioContext,
-             std::shared_ptr<meta_lib::SharedSettings> sharedSettings);
+        Core(const std::shared_ptr<asio::io_context>& ioContext,
+             const std::shared_ptr<meta_lib::SharedSettings>& sharedSettings);
 
         ~Core();
 
