@@ -1,6 +1,6 @@
 # space-agent
 
-This agent logs free and available space in folder specified by "folderToMonitor".
+This agent logs free and available space in specified folders or mounted partitions
 
 ## Config structure
 
@@ -8,4 +8,8 @@ This agent logs free and available space in folder specified by "folderToMonitor
 
 "logInterval": int, how often take log (in seconds)
 
-"folderToMonitor": string, which folder will be monitored like "/path/to/folder"
+"foldersToMonitor": array of strings, which folders will be monitored
+
+"partitionsToMonitor": array of strings, which partitions will be monitored - they must be mounted! (mount folder will be detected automatically)
+
+"availableNotSmallerThanPercent": float, if is available space smaller than X percents, then log error

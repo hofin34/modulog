@@ -4,117 +4,36 @@
 
 #include <modulog/agent_client/AgentClient.hpp>
 #include <modulog/agent_client/Helpers.hpp>
+#include <modulog/space_agent/SpaceInfo.hpp>
+#include <modulog/space_agent/DirInfo.hpp>
+#include <modulog/space_agent/MountInfo.hpp>
 
 #include <thread>
 #include <filesystem>
 #include <iostream>
 #include <mntent.h>
 
-class SpaceInfo {
-public:
-    virtual std::string getTotalSpaceLog() = 0;
-
-    virtual std::string getAvailableSpaceLog() = 0;
-
-    virtual float getAvailablePercents() = 0;
-
-    virtual std::string getId() = 0;
-
-protected:
-    int getAvailableSpaceMiB(std::filesystem::path path) {
-        auto spaceInfo = std::filesystem::space(path);
-        return spaceInfo.available / (1024 * 1024);
-    }
-
-    int getCapacityMiB(std::filesystem::path path) {
-        auto spaceInfo = std::filesystem::space(path);
-        return spaceInfo.capacity / (1024 * 1024);
-    }
-
-    float getAvailablePercents(std::filesystem::path path) {
-        return (float) getAvailableSpaceMiB(path) / getCapacityMiB(path) * 100;
-    }
 
 
-};
 
-class MountInfo : public SpaceInfo {
-public:
-    MountInfo(std::filesystem::path partitionPath, std::filesystem::path mountPath) : partitionPath_(partitionPath),
-                                                                                      mountPath_(mountPath) {};
-
-    std::string getId() {
-        return partitionPath_;
-    }
-
-    std::string getTotalSpaceLog() {
-        std::string toLog = partitionPath_.string() + " : " + mountPath_.string() + " : " +
-                            std::to_string(getCapacityMiB(mountPath_));
-        return toLog;
-    }
-
-    std::string getAvailableSpaceLog() {
-        std::string toLog = partitionPath_.string() + " : " + mountPath_.string() + " : " +
-                            std::to_string(getAvailableSpaceMiB(mountPath_));
-        return toLog;
-    }
-
-    float getAvailablePercents() {
-        return SpaceInfo::getAvailablePercents(mountPath_);
-    }
-
-
-private:
-    std::filesystem::path partitionPath_;
-    std::filesystem::path mountPath_;
-};
-
-class DirInfo : public SpaceInfo {
-public:
-    DirInfo(std::filesystem::path folderPath) : folderPath_(folderPath) {};
-
-    std::string getId() {
-        return folderPath_;
-    }
-
-    std::string getTotalSpaceLog() {
-        auto spaceInfo = std::filesystem::space(folderPath_);
-        std::string toLog = folderPath_.string() + " : " + std::to_string(getCapacityMiB(folderPath_));
-        return toLog;
-    }
-
-    std::string getAvailableSpaceLog() {
-        auto spaceInfo = std::filesystem::space(folderPath_);
-        std::string toLog = folderPath_.string() + " : " + std::to_string(getAvailableSpaceMiB(folderPath_));
-        return toLog;
-    }
-
-    float getAvailablePercents() {
-        return SpaceInfo::getAvailablePercents(folderPath_);
-    }
-
-private:
-    std::filesystem::path folderPath_;
-};
-
-std::vector<std::shared_ptr<SpaceInfo>> getDirsInfo(std::vector<std::filesystem::path> foldersVector) {
-    std::vector<std::shared_ptr<SpaceInfo>> mountInfoVec;
+std::vector<std::shared_ptr<modulog::space_agent::SpaceInfo>> getDirsInfo(const std::vector<std::filesystem::path> &foldersVector) {
+    std::vector<std::shared_ptr<modulog::space_agent::SpaceInfo>> mountInfoVec;
     for (auto &folder: foldersVector) {
-        auto dirInfo = std::make_shared<DirInfo>(folder);
+        auto dirInfo = std::make_shared<modulog::space_agent::DirInfo>(folder);
         mountInfoVec.push_back(dirInfo);
     }
     return mountInfoVec;
 }
 
-std::vector<std::shared_ptr<SpaceInfo>>
-getMountedDirs(const char *filename, std::vector<std::filesystem::path> devicesVector,
-               std::shared_ptr<modulog::agent_client::AgentClient> agentClient) {
-    std::vector<std::shared_ptr<SpaceInfo>> mountInfoVec;
+std::vector<std::shared_ptr<modulog::space_agent::SpaceInfo>>
+getMountedDirs(const char *filename, const std::vector<std::filesystem::path> &devicesVector,
+               const std::shared_ptr<modulog::agent_client::AgentClient> &agentClient) {
+    std::vector<std::shared_ptr<modulog::space_agent::SpaceInfo>> mountInfoVec;
     FILE *fp;
     struct mntent *fs;
 
     fp = setmntent(filename, "r");
-    if (fp == NULL) {
+    if (fp == nullptr) {
         auto errMsg = std::make_shared<modulog::communication::LogMessage>(
                 modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "errors", "setmntent function call error");
         agentClient->sendLog(errMsg);
@@ -123,9 +42,9 @@ getMountedDirs(const char *filename, std::vector<std::filesystem::path> devicesV
 
     for (auto &partition: devicesVector) {
         bool partitionMounted = false;
-        while ((fs = getmntent(fp)) != NULL) { // go through all mounted devices
+        while ((fs = getmntent(fp)) != nullptr) { // go through all mounted devices
             if (partition == fs->mnt_fsname) {
-                auto mountInfo = std::make_shared<MountInfo>(partition, fs->mnt_dir);
+                auto mountInfo = std::make_shared<modulog::space_agent::MountInfo>(partition, fs->mnt_dir);
                 mountInfoVec.push_back(mountInfo);
                 partitionMounted = true;
                 break;
@@ -178,7 +97,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     auto folderInfoVector = getDirsInfo(folders);
-    std::vector<std::shared_ptr<SpaceInfo>> allSpaceInfoVec(mountInfoVector);
+    std::vector<std::shared_ptr<modulog::space_agent::SpaceInfo>> allSpaceInfoVec(mountInfoVector);
     std::move(folderInfoVector.begin(), folderInfoVector.end(), std::back_inserter(allSpaceInfoVec));
     for (auto &spaceInfo: allSpaceInfoVec) {
         auto logMsg = std::make_shared<modulog::communication::LogMessage>(

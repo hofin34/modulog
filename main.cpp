@@ -13,9 +13,9 @@
 #include <iostream>
 #include <vector>
 
-void initLogger(const std::filesystem::path &logPath) {
+void initLogger(const std::filesystem::path &logPath, int maxFileSize) {
     bringauto::logging::FileSink::Params paramFileSink{logPath, "one-file-log.txt"};
-    paramFileSink.maxFileSize = 150;
+    paramFileSink.maxFileSize = maxFileSize;
     paramFileSink.numberOfRotatedFiles = 2;
     paramFileSink.verbosity = bringauto::logging::Logger::Verbosity::Debug;
 
@@ -69,9 +69,9 @@ std::shared_ptr<modulog::meta_lib::SharedSettings> parseArgs(std::shared_ptr<mod
     return sharedSettings;
 }
 
-int main(int argc, const char **argv) { //TODO --one-file not logging into file!
+int main(int argc, const char **argv) {
     auto sharedSettings = std::make_shared<modulog::meta_lib::SharedSettings>();
-    initLogger(sharedSettings->LogSettings.logsDestination);
+    initLogger(sharedSettings->LogSettings.logsDestination, sharedSettings->LogSettings.maxLogFileSize);
     try {
 #ifdef BRINGAUTO_TESTS
         sharedSettings->Testing.initTesting();

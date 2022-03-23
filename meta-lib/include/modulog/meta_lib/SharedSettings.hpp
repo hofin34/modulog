@@ -12,7 +12,6 @@ namespace modulog::meta_lib{
         struct ServerSettings{
             int portNumber = 1234; // Port number, where will be TCP server listening
             int connectionTimeoutSec = 3; // How many seconds has agent to connect to server before is killed
-            const int MAX_PACKET_SIZE = 512; // Packet size, which will be read in TcpConnection
         } ServerSettings;
         struct LogSettings{
             std::filesystem::path enabledAgentsPath = "./agents-enabled.conf";
@@ -21,7 +20,8 @@ namespace modulog::meta_lib{
             int isAliveTimeoutSec = 2; // How long wait for agents isAlive response
             int exitSendTimeoutSec = 2; // How many seconds will agent have to send remaining logs, when is whole program interrupted
             std::filesystem::path sharedAgentsConfig = ""; // Path to file - its content will be sent to all agents (if not using, leave this variable empty)
-            bool oneFileLog = false;
+            bool oneFileLog = false; // if true, all logs will be saved into one file (you can change this value through cmd switch)
+            int maxLogFileSize = 5 * 1024 * 1024; // what maximum size can have one log file in bytes
         } LogSettings;
 
         #ifdef BRINGAUTO_TESTS
