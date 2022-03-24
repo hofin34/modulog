@@ -98,6 +98,8 @@ TODO:
 1. Create agent template for better agent creation - when this done, split big agents into smaller parts
 2. Remove Core global variable and make it local 
 3. Agent client - sleep template (different units like seconds, minutes, etc.)
+4. Add to Readme Shared config
+5. Remove from Readme notes for thesis
 
 [agents folder link]: agents
 [agents-to-compile.json]: agents-to-compile.json
