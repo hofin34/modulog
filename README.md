@@ -1,10 +1,11 @@
 # Program documentation
 This program can be used to log GNU/Linux systems.
 Processes collecting logs are called agents.
-
+You can create your own agents with C++ library AgentClient.
 
 After start, enabled agents are created and they collect logs. They send these logs to the Core, which saves them in default folder `logs/`. 
-This folder and also other properties can be changed in file [SharedSettings.hpp] (in the future will be better config file)
+This folder and also other properties can be changed in file [SharedSettings.hpp] (in the future will be better config file).
+Modulog also monitors, if agents are not freezed or they didn't crashed. If this happened, it is logged. 
 
 ## How to use
 First, you must select, which agents will be compiled in file [agents-to-compile.json] (set "enabled" to true/false)
