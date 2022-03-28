@@ -6,6 +6,10 @@ You can create your own agents with C++ library AgentClient.
 After start, enabled agents are created and they collect logs. They send these logs to the Core, which saves them in default folder `logs/`. 
 This folder and also other properties can be changed in file [SharedSettings.hpp] (in the future will be better config file).
 Modulog also monitors, if agents are not freezed or they didn't crashed. If this happened, it is logged. 
+You can send custom config string to all agents - it can be useful, when you want to have some shared configs between all agents like same timeouts or something like this.
+You can set this file in [SharedSettings.hpp] variable `sharedAgentsConfig`. 
+To find available Modulog arguments, run `./modulog --help`
+
 
 ## How to use
 First, you must select, which agents will be compiled in file [agents-to-compile.json] (set "enabled" to true/false)

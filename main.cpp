@@ -53,7 +53,7 @@ std::shared_ptr<modulog::meta_lib::SharedSettings> parseArgs(std::shared_ptr<mod
     cxxopts::Options options("modulog", "Modular light-weighted logging program");
     options.add_options()
             ("h,help", "Print usage")
-            ("e,enabled-agents", "Enabled agents iifile - in this file can be just compiled agents!",
+            ("e,enabled-agents", "Enabled agents file - in this file can be just compiled agents!",
              cxxopts::value<std::string>())
             ("o,one-file", "All logs will be merged in one file", cxxopts::value<bool>());
     auto result = options.parse(argc, argv);
