@@ -51,6 +51,8 @@ namespace modulog::space_agent {
          */
         static float getAvailablePercents(const std::filesystem::path& path);
 
+        static constexpr int BYTES_IN_MIB = 1024 * 1024;
+
 
     };
 }

@@ -33,7 +33,7 @@ getMountedDirs(const char *filename, const std::vector<std::filesystem::path> &d
     struct mntent *fs;
 
     fp = setmntent(filename, "r");
-    if (fp == nullptr) {
+    if (!fp) {
         auto errMsg = std::make_shared<modulog::communication::LogMessage>(
                 modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "errors", "setmntent function call error");
         agentClient->sendLog(errMsg);

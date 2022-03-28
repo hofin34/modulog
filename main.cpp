@@ -71,7 +71,12 @@ std::shared_ptr<modulog::meta_lib::SharedSettings> parseArgs(std::shared_ptr<mod
 
 int main(int argc, const char **argv) {
     auto sharedSettings = std::make_shared<modulog::meta_lib::SharedSettings>();
-    initLogger(sharedSettings->LogSettings.logsDestination, sharedSettings->LogSettings.maxLogFileSize);
+    try{
+        initLogger(sharedSettings->LogSettings.logsDestination, sharedSettings->LogSettings.maxLogFileSize);
+    }catch(std::exception &e){
+        std::cerr << "Logger init exception: " << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
     try {
 #ifdef BRINGAUTO_TESTS
         sharedSettings->Testing.initTesting();

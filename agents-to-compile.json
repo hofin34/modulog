@@ -1,11 +1,11 @@
 {
   "agentsToCompile": [
     {
-      "agentPath": "agents/space-agent",
-      "enabled": false
+      "agentPath": "agents/uptime-agent",
+      "enabled": true
     },
     {
-      "agentPath": "agents/uptime-agent",
+      "agentPath": "agents/space-agent",
       "enabled": true
     },
     {

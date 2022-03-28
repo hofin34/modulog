@@ -10,15 +10,15 @@ namespace modulog::agent_client {
         bringauto::logging::Logger::LoggerSettings params{agentName_,
                                                           bringauto::logging::Logger::Verbosity::Debug};
         bringauto::logging::Logger::init(params);
-#ifdef AGENT_CLIENT_DEBUG
-        bringauto::logging::Logger::logWarning("AGENT_CLIENT_DEBUG macro is ON!");
+#ifdef AGENT_CLIENT_STANDALONE
+        bringauto::logging::Logger::logWarning("AGENT_CLIENT_STANDALONE macro is ON!");
 #endif
         shouldExit_ = false;
         msgProcessor_ = std::make_shared<communication::MessageProcessor>(totalMsgsReceived_, msgCondVar_, msgMutex_);
     }
 
     AgentClient::~AgentClient() {
-#ifndef AGENT_CLIENT_DEBUG
+#ifndef AGENT_CLIENT_STANDALONE
         responseHandleThread_.join();
         messageExchanger_->getConnection()->closeConnection();
         ioContext_->stop();
@@ -41,7 +41,7 @@ namespace modulog::agent_client {
         sigaction(SIGTERM, &sigAct, nullptr);
 
 
-#ifdef AGENT_CLIENT_DEBUG
+#ifdef AGENT_CLIENT_STANDALONE
         return;
 #endif
         auto connection = std::make_shared<communication::TcpConnection>(*ioContext_, agentName_, msgProcessor_);
@@ -49,16 +49,17 @@ namespace modulog::agent_client {
         connection->getSocket().connect(endpoint);
         messageExchanger_ = std::make_shared<communication::MessageExchanger>(connection);
         clientThread_ = std::thread{[this]() { ioContext_->run(); }};
+        constexpr int CONTROL_MSG_WAIT = 2000;
         auto configMessage = messageExchanger_->waitForControlMessage(
-                2000); // If small timeout (like 2 ms), app crashes in Valgrind
-        if (configMessage == nullptr)
+                CONTROL_MSG_WAIT); // If small timeout (like 2 ms), app crashes in Valgrind
+        if (!configMessage)
             throw std::runtime_error("Not received config!");
         bringauto::logging::Logger::logInfo("Received config: {}", configMessage->getValue());
         sharedConfig_ = configMessage->getValue();
         auto ackMessage = std::make_shared<communication::ControlMessage>(
                 modulog::communication::ControlMessage::CONTROL_MSG_TYPE::ACK, agentName_);
         messageExchanger_->sendControl(ackMessage);
-        auto canStartSending = messageExchanger_->waitForControlMessage(-1);
+        auto canStartSending = messageExchanger_->waitForControlMessage(communication::MessageExchanger::INFINITE_TIMEOUT);
         if (canStartSending == nullptr)
             throw std::runtime_error("Not received can start sending logs!");
         if (canStartSending->getType() != communication::ControlMessage::CONTROL_MSG_TYPE::ACK)
@@ -69,8 +70,8 @@ namespace modulog::agent_client {
 
     void AgentClient::handleResponses() {
         while (!shouldExit_.load()) {
-            auto controlMsg = messageExchanger_->waitForControlMessage(-1);
-            if (controlMsg == nullptr) { // This should not happen
+            auto controlMsg = messageExchanger_->waitForControlMessage(communication::MessageExchanger::INFINITE_TIMEOUT);
+            if (!controlMsg) { // This should not happen
                 bringauto::logging::Logger::logError("No control message!");
                 continue;
             }
@@ -100,7 +101,7 @@ namespace modulog::agent_client {
     }
 
     void AgentClient::sendLog(const std::shared_ptr<communication::LogMessage> &logMessage) {
-#ifdef AGENT_CLIENT_DEBUG
+#ifdef AGENT_CLIENT_STANDALONE
         bringauto::logging::Logger::logInfo("Simulated log send (just debug): {}", logMessage->serialize());
 #else
         messageExchanger_->sendLog(logMessage);
@@ -108,7 +109,7 @@ namespace modulog::agent_client {
     }
 
     void AgentClient::sendControl(const std::shared_ptr<communication::ControlMessage> &controlMessage) {
-#ifdef AGENT_CLIENT_DEBUG
+#ifdef AGENT_CLIENT_STANDALONE
         bringauto::logging::Logger::logInfo("Simulated log send (just debug): {}", controlMessage->serialize());
 #else
         messageExchanger_->sendControl(controlMessage);

@@ -3,12 +3,12 @@
 namespace modulog::space_agent{
     int SpaceInfo::getAvailableSpaceMiB(const std::filesystem::path& path) {
         auto spaceInfo = std::filesystem::space(path);
-        return spaceInfo.available / (1024 * 1024);
+        return spaceInfo.available / BYTES_IN_MIB;
     }
 
     int SpaceInfo::getCapacityMiB(const std::filesystem::path& path) {
         auto spaceInfo = std::filesystem::space(path);
-        return spaceInfo.capacity / (1024 * 1024);
+        return spaceInfo.capacity / BYTES_IN_MIB;
     }
 
     float SpaceInfo::getAvailablePercents(const std::filesystem::path& path) {

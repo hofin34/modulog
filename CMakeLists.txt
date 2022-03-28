@@ -1,5 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
 PROJECT(modulog)
+SET(CMAKE_CXX_STANDARD 17)
+SET(modulog_VERSION 1.0.0)
 
 # for linking .so after make install (we have ba_logger):
 SET(CMAKE_SKIP_BUILD_RPATH FALSE)
@@ -7,6 +9,7 @@ SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 SET(CMAKE_INSTALL_RPATH lib)
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+OPTION(BRINGAUTO_BUILD_DEP "Build all dependencies" ON)
 OPTION(BRINGAUTO_TESTS "Tests" OFF)
 OPTION(BRINGAUTO_INSTALL "Install" OFF)
 OPTION(BRINGAUTO_PACKAGE "Create package" OFF)
@@ -14,7 +17,7 @@ OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
 OPTION(STATESMURF_TESTS "Testing library StateSmurf" OFF)
 
 IF (BRINGAUTO_TESTS)
-    ADD_COMPILE_DEFINITIONS(BRINGAUTO_TESTS=1) # if this macro defined, SmurfState library included in modulog
+    ADD_COMPILE_DEFINITIONS(BRINGAUTO_TESTS=TRUE) # if this macro defined, SmurfState library included in modulog
     IF (BRINGAUTO_PACKAGE OR BRINGAUTO_INSTALL)
         MESSAGE(FATAL_ERROR "You cannot install or create package with BRINGAUTO_TESTS enabled")
     ENDIF ()
@@ -27,8 +30,6 @@ IF (BRINGAUTO_PACKAGE)
 ENDIF ()
 
 
-SET(CMAKE_CXX_STANDARD 17)
-SET(modulog_VERSION 1.0.0)
 SET(AG_BUILT_LIST ${CMAKE_BINARY_DIR}/agents-enabled.conf)
 
 INCLUDE(cmake/Dependencies.cmake)
@@ -47,7 +48,6 @@ TARGET_LINK_LIBRARIES(modulog CoreLib cxxopts::cxxopts)
 
 IF (BRINGAUTO_TESTS)
     ENABLE_TESTING()
-    FetchContent_MakeAvailable(statesmurf)
     ADD_SUBDIRECTORY(test)
 ENDIF ()
 

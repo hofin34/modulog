@@ -18,7 +18,7 @@ Then compile all with:
 
 `mkdir build && cd build`
 
-`cmake -DBRINGAUTO_SYSTEM_DEP=OFF -DBRINGAUTO_INSTALL=ON -DCMAKE_INSTALL_PREFIX="someDir" -DBRINGAUTO_PACKAGE=ON -DCMLIB_DIR=/home/martin/Work/cmakelib -DCMAKE_BUILD_TYPE=Release .. && make -j 8`
+`cmake -DBRINGAUTO_BUILD_DEP=ON -DCMAKE_BUILD_TYPE=Release .. && make -j 8`
 
 In build folder is now created file `agents-enabled.conf` - here, you can enable/disable agents, that will be used during runtime (simply delete line or comment with `#` character).
 All agents in this file must be already compiled!
@@ -27,18 +27,18 @@ Now you can run with `./modulog`.
 
 **CMake options:**
 
-BRINGAUTO_SYSTEM_DEP -
-if ON, then using FetchContent and compiling dependencies
-(not 100%, ba_logger using precompiled, will be fixed in the future).
-If OFF, then is used [cmakelib] for dependency management.
+BRINGAUTO_BUILD_DEP - 
+if ON, then all dependencies are downloaded and compiled. 
 
-BRINGAUTO_INSTALL - if on, then create install target (after `make`, you can type `make install`, which will install binaries to `CMAKE_INSTALL_PREFIX` folder)
+BRINGAUTO_SYSTEM_DEP - not yet 100% working.
+if ON, then using already installed dependencies. 
+If OFF, then is used [cmakelib] for dependency management - you have to alse specify path to [cmakelib] through switch -DCMLIB_DIR=/path/to/cmlib .
+
+BRINGAUTO_INSTALL - if ON, then create install target (after `make`, you can type `make install`, which will install binaries to `CMAKE_INSTALL_PREFIX` folder)
  
-BRINGAUTO_PACKAGE - if on, target for creating package is generated (after `make`, you can type `make install && make package`)
+BRINGAUTO_PACKAGE - if ON, target for creating package is generated (after `make`, you should type `make install && make package`)
 
-CMLIB_DIR - if you set BRINGAUTO_SYSTEM_DEP to OFF, then you have to set path to [cmakelib] in this variable
-
-BRINGAUTO_TESTS - if on, then test target is generated.
+BRINGAUTO_TESTS - if ON, then test target is generated.
 You can run them after `make` with `ctest --verbose`.
 Before testing, make sure, that you have got same values in [SharedSettings.hpp] as in github branch, where you pulled it from!
 (tests will not pass, if there will be different timeouts)
@@ -52,7 +52,7 @@ Agents have their dependencies inside their folder.
 You can look in [agents folder link] to find out, how to create agents.
 In CMake, just link it against `agent_client_lib`, then in code initialize client and start sending logs.
 Agent folder must have the same name as the executable inside.
-You can enable client debug mode when creating agent - just set AGENT_CLIENT_DEBUG macro by passing -DAGENT_CLIENT_DEBUG=ON to agent CMake.
+You can enable client debug mode when creating agent - just set AGENT_CLIENT_STANDALONE macro by passing -DAGENT_CLIENT_STANDALONE=ON to agent CMake.
 With this, you can use agent standalone without core (client will just print to output, what would be sent).
 
 When is agent ready to use, you can add path to directory to the file [agents-to-compile.json]. 
@@ -91,13 +91,14 @@ And also flowchart diagram:
 
 ## Pitfalls we will work on + TODO
 1. Not the most effective - like sending logs in json etc.
-2. Not rotating log files
-3. Not the best agent ending
+2. Not rotating log files when folder structure (when switch --one-file, then it's ok)
 
 TODO:
 1. Create agent template for better agent creation - when this done, split big agents into smaller parts
 2. Remove Core global variable and make it local 
 3. Agent client - sleep template (different units like seconds, minutes, etc.)
+4. Watchdog agent - not specified, what should do, when device not responding (maybe restart it or something like it?) + reset flags after
+5. Not fully supported switching between system deps / cmakelib
 
 [agents folder link]: agents
 [agents-to-compile.json]: agents-to-compile.json
@@ -107,77 +108,4 @@ TODO:
 [SharedSettings.hpp]: meta-lib/include/modulog/meta_lib/SharedSettings.hpp
 [cmakelib]: https://github.com/cmakelib/cmakelib
 
-# END PROGRAM DOCUMENTATION (continuing just some notes)
 
----
-
----
-
----
-
-
-# Already existing tools - research
-
-### Zabbix
-Cons:
-1. hard configuration - takes time to all setup - have to install and configure server, database and agents 
-1. hard to use - reviews tell, that documentation is bad and you have to use it for long time to understand it
-1. uses database to store configuration and data - more difficult to manipulate with it
-
-### Nagios
-Cons:
-1. Big system requirements: 20 GB of free hard drive space, 2 GB memory
-1. hard to configure
-
-### Munin
-Cons:
-1. set time interval between logs?
-1. key-value plugin?
-1. mainly for visualisation in graphs - cannot sort messages like DEBUG, INFO, ERR. and cannot set watchdogs (if is value > x - tell me about it in some general log file)
-
-### Datadog
-Cons:
-1. paid
-2. for observing cloud-scale applications
-
-
----
-
-# Which libraries to use - research
-
-### Process handling libraries
-**sheredom/subprocess.h**
-
-- Is header-only
-- No ability to send SIGTERM
-- No error if starting not existing script
-
-**eidheim/tiny-process-library**
-
-- Last commit 10 months ago - not too much updated
-- doesn't look too profi
-
-**boost, POCO**
-
-- too huge
-
-**DaanDeMeyer/reproc**
-
-- seems pretty good
-
-
----
-
-## Osnova BP
-# Teoretická část
-## Napsat požadavky firmy
-## Výběr technologií 
-## Proč existující nevyhovují + větší porovnání
-## Meziprocesní komunikace - výhody/nevýhody + proč TCP nejlepší
-## 
-
-# Praktická část
-## Diagramy + vysvětlení principu
-## Popis struktury projektu???
-## Testování - real + GTesty
-## Analýza výkonu

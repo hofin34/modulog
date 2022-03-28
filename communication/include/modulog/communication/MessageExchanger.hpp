@@ -2,7 +2,7 @@
 
 #include <modulog/communication/TcpConnection.hpp>
 
-namespace modulog::communication{
+namespace modulog::communication {
 /**
  * Class used to send and receive logs between Agent and Core
  */
@@ -11,12 +11,14 @@ namespace modulog::communication{
         /**
          * @param connection active connection with someone
          */
-        explicit MessageExchanger(const std::shared_ptr<TcpConnection>& connection);
+        explicit MessageExchanger(const std::shared_ptr<TcpConnection> &connection);
+
         /**
          * send log to the second side of connection
          * @param logMessage message to send
          */
         void sendLog(const std::shared_ptr<LogMessage> &logMessage);
+
         /**
          * send control message to the second side of connection
          * @param controlMessage message to send
@@ -28,11 +30,13 @@ namespace modulog::communication{
          * @return received log message
          */
         std::shared_ptr<ControlMessage> waitForControlMessage(int timeoutMillis);
+
         /**
          * Pops log message
          * @return log message or null if not received log message
          */
         std::shared_ptr<LogMessage> popLogMessage();
+
         /**
          * Pops control message
          * @return control message or null if not received control message
@@ -40,6 +44,9 @@ namespace modulog::communication{
         std::shared_ptr<ControlMessage> popControlMessage();
 
         std::shared_ptr<TcpConnection> getConnection();
+
+        static constexpr int INFINITE_TIMEOUT = -1;
+
     private:
         std::shared_ptr<TcpConnection> connection_ = nullptr;
     };

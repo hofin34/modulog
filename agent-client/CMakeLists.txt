@@ -1,9 +1,9 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
 SET(CMAKE_CXX_STANDARD 17)
 
-OPTION(AGENT_CLIENT_DEBUG "If ON, then client tries to connect to Core, if OFF, then client just prints when it should send message to the Core" OFF)
-IF(AGENT_CLIENT_DEBUG)
-    ADD_COMPILE_DEFINITIONS(AGENT_CLIENT_DEBUG)
+OPTION(AGENT_CLIENT_STANDALONE "If ON, then client tries to connect to Core, if OFF, then client just prints when it should send message to the Core" OFF)
+IF(AGENT_CLIENT_STANDALONE)
+    ADD_COMPILE_DEFINITIONS(AGENT_CLIENT_STANDALONE)
 ENDIF()
 
 FILE(GLOB_RECURSE source_files "src/*")

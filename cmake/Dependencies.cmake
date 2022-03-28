@@ -1,34 +1,56 @@
 INCLUDE(FetchContent)
-FIND_PACKAGE(CMLIB REQUIRED)
+IF (NOT BRINGAUTO_SYSTEM_DEP AND NOT BRINGAUTO_BUILD_DEP)
+    FIND_PACKAGE(CMLIB REQUIRED)
+ENDIF ()
 
 LIST(APPEND CMAKE_FIND_ROOT_PATH ${CMAKE_BINARY_DIR}) #TODO if all with cmlib/system dep -> append depending to it
 LIST(APPEND CMAKE_FIND_ROOT_PATH ${CMLIB_REQUIRED_ENV_TMP_PATH})
 
 
 FUNCTION(ADD_DEP_BRINGAUTO_LOGGER)
-    # TODO cmlib not working with crosscompile - wait for fix and then integrate + in the future integrate with fetchContent
-    SET(BALOGGER_ZIP none)
-    IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
-        message("Architecture: aarch ${CMAKE_SYSTEM_PROCESSOR}")
-        SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_aarch64-ubuntu-1804.zip)
-    ELSE()
-        message("Architecture: else ${CMAKE_SYSTEM_PROCESSOR}")
-        SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_x86-64-ubuntu-2004.zip)
-    ENDIF()
-    EXECUTE_PROCESS(
-            COMMAND ${CMAKE_COMMAND} -E tar xzf  ${BALOGGER_ZIP}
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    )
-    FIND_PACKAGE(libbringauto_logger PATHS ${CMAKE_BINARY_DIR})
+    # if using FetContent, then we are linking against bringauto_logger, otherwise bringauto_logger::bringauto_logger
+    SET(BRINGAUTO_LOGGER_TO_LINK bringauto_logger::bringauto_logger PARENT_SCOPE)
+    IF (BRINGAUTO_BUILD_DEP)
+        SET(BRINGAUTO_LOGGER_TO_LINK bringauto_logger PARENT_SCOPE)
+        SET(BRINGAUTO_SYSTEM_DEP_SAVED ${BRINGAUTO_SYSTEM_DEP})
+        SET(BRINGAUTO_SYSTEM_DEP ON)
+        FetchContent_Declare(
+                spdlog
+                GIT_REPOSITORY https://github.com/gabime/spdlog.git
+                GIT_TAG v1.8.5
+        )
+        FetchContent_MakeAvailable(spdlog)
+        FetchContent_Declare(
+                balogger
+                GIT_REPOSITORY ssh://git@gitlab.bringauto.com:1999/bring-auto/host-platform/bringauto-logger.git
+                GIT_TAG v1.1.0
+        )
+        FetchContent_MakeAvailable(balogger)
+        SET(BRINGAUTO_SYSTEM_DEP ${BRINGAUTO_SYSTEM_DEP_SAVED})
+    ELSEIF (BRINGAUTO_SYSTEM_DEP)
+        FIND_PACKAGE(libbringauto_logger)
+    ELSE () # simulates using cmakelib
+        SET(BALOGGER_ZIP none)
+        IF (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
+            SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_aarch64-ubuntu-1804.zip)
+        ELSE ()
+            SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_x86-64-ubuntu-2004.zip)
+        ENDIF ()
+        EXECUTE_PROCESS(
+                COMMAND ${CMAKE_COMMAND} -E tar xzf ${BALOGGER_ZIP}
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        )
+        FIND_PACKAGE(libbringauto_logger PATHS ${CMAKE_BINARY_DIR})
+    ENDIF ()
 
-    IF(BRINGAUTO_INSTALL)
-        INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger::bringauto_logger_spdlog DESTINATION lib)
-    ENDIF()
+    IF (BRINGAUTO_INSTALL)
+        #INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger::bringauto_logger_spdlog DESTINATION lib)
+        INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger_spdlog DESTINATION lib)
+    ENDIF ()
 ENDFUNCTION()
 
 FUNCTION(ADD_DEP_NLOHMANN_JSON)
-    # ----------- nlohmann json library
-    IF(BRINGAUTO_SYSTEM_DEP)
+    IF (BRINGAUTO_BUILD_DEP)
         FetchContent_Declare(json
                 URL https://github.com/nlohmann/json/archive/refs/tags/v3.9.1.tar.gz
                 )
@@ -38,7 +60,9 @@ FUNCTION(ADD_DEP_NLOHMANN_JSON)
             FetchContent_Populate(json)
             ADD_SUBDIRECTORY(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
         ENDIF ()
-    ELSE()
+    ELSEIF (BRINGAUTO_SYSTEM_DEP)
+        FIND_PACKAGE(nlohmann_json)
+    ELSE ()
         CMLIB_DEPENDENCY(
                 URI "https://github.com/bringauto/nlohmann_json-package.git"
                 URI_TYPE GIT
@@ -47,7 +71,7 @@ FUNCTION(ADD_DEP_NLOHMANN_JSON)
         )
         FIND_PACKAGE(nlohmann_json_package REQUIRED)
         FIND_PACKAGE(nlohmann_json)
-    ENDIF()
+    ENDIF ()
 ENDFUNCTION()
 
 
@@ -69,40 +93,54 @@ FUNCTION(ADD_DEP_ASIO)
 ENDFUNCTION()
 
 FUNCTION(ADD_DEP_REPROC)
-    SET(REPROC++ ON)
-    FetchContent_Declare(
-            reproc++
-            GIT_REPOSITORY https://github.com/DaanDeMeyer/reproc.git #https://github.com/hofin34/reproc.git
-            GIT_TAG v14.2.4 #  0bce0977bc3fa9ae10193607f3e27ad04e8aab94
-    )
-    FetchContent_MakeAvailable(reproc++)
+    IF(BRINGAUTO_BUILD_DEP)
+        SET(REPROC++ ON)
+        FetchContent_Declare(
+                reproc++
+                GIT_REPOSITORY https://github.com/DaanDeMeyer/reproc.git
+                GIT_TAG v14.2.4
+        )
+        FetchContent_MakeAvailable(reproc++)
+    ELSEIF(BRINGAUTO_SYSTEM_DEP)
+        FIND_PACKAGE(reproc++)
+    ELSE()
+        MESSAGE(FATAL_ERROR "reproc++ not available through cmakelib yet")
+    ENDIF()
 ENDFUNCTION()
 
 FUNCTION(ADD_DEP_STATE_SMURF)
     # used just when testing enabled
-    FetchContent_Declare(
-            statesmurf
-            GIT_REPOSITORY git@github.com:Melky-Phoe/StateSmurf.git # TODO https
-            GIT_TAG v0.1.0
-    )
+    IF(BRINGAUTO_BUILD_DEP)
+        FetchContent_Declare(
+                statesmurf
+                GIT_REPOSITORY https://github.com/Melky-Phoe/StateSmurf.git
+                GIT_TAG v0.1.0
+        )
+        FetchContent_MakeAvailable(statesmurf)
+    ELSEIF(BRINGAUTO_SYSTEM_DEP)
+        MESSAGE(FATAL_ERROR "StateSmurf not yet supported through system dep")
+    ELSE()
+        MESSAGE(FATAL_ERROR "StateSmurf not yet supported through cmake lib")
+    ENDIF()
 ENDFUNCTION()
 
 
-
 FUNCTION(ADD_DEP_CXXOPTS)
-    IF(BRINGAUTO_SYSTEM_DEP)
+    IF(BRINGAUTO_BUILD_DEP)
         FetchContent_Declare(
                 cxxopts
                 GIT_REPOSITORY https://github.com/jarro2783/cxxopts.git
-                GIT_TAG        v3.0.0
-                GIT_SHALLOW    TRUE
+                GIT_TAG v3.0.0
+                GIT_SHALLOW TRUE
         )
         SET(CXXOPTS_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
         SET(CXXOPTS_BUILD_TESTS OFF CACHE BOOL "" FORCE)
         SET(CXXOPTS_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
         SET(CXXOPTS_ENABLE_WARNINGS OFF CACHE BOOL "" FORCE)
         FetchContent_MakeAvailable(cxxopts)
-    ELSE()
+    ELSEIF(BRINGAUTO_SYSTEM_DEP)
+        FIND_PACKAGE(cxxopts)
+    ELSE ()
         CMLIB_DEPENDENCY(
                 URI "https://github.com/bringauto/cxxopts-package.git"
                 URI_TYPE GIT
@@ -111,12 +149,14 @@ FUNCTION(ADD_DEP_CXXOPTS)
         )
         FIND_PACKAGE(cxxopts_package 3.0.0 REQUIRED)
         FIND_PACKAGE(cxxopts)
-    ENDIF()
+    ENDIF ()
 ENDFUNCTION()
 
 ADD_DEP_BRINGAUTO_LOGGER()
 ADD_DEP_NLOHMANN_JSON()
 ADD_DEP_ASIO()
 ADD_DEP_REPROC()
-ADD_DEP_STATE_SMURF()
 ADD_DEP_CXXOPTS()
+IF (BRINGAUTO_TESTS)
+    ADD_DEP_STATE_SMURF()
+ENDIF ()
