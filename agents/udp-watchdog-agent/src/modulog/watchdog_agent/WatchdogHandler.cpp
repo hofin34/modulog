@@ -15,11 +15,8 @@ namespace modulog::watchdog_agent {
         std::string delimiter = "_";
         int delimPos = message.find(delimiter);
         std::string deviceName = message.substr(0, delimPos);
-        std::cout << "name msg: " << deviceName << std::endl;
         std::string timestampStr = message.substr(delimPos + delimiter.length());
-        std::cout << "timestamp msg: " << timestampStr << std::endl;
         uint64_t timestamp = std::stoi(timestampStr);
-        std::cout << "timestamp  " << timestamp << std::endl;
         for (auto &dev: deviceInfoVector_) {
             if (dev.getName() == deviceName) {
                 dev.setSentMessage(true);
@@ -39,7 +36,6 @@ namespace modulog::watchdog_agent {
     }
 
     void WatchdogHandler::checkAllDevices(const asio::error_code &) {
-        std::cout << "Checking.." << std::endl;
         std::lock_guard<std::mutex> lock(mtx_);
         for (auto &device: deviceInfoVector_) {
             if (device.getSentMessage() == false) {

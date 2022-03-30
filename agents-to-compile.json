@@ -10,23 +10,23 @@
     },
     {
       "agentPath": "agents/linux-system-monitoring-lib-agent",
-      "enabled": false
+      "enabled": true
     },
     {
       "agentPath": "agents/udp-watchdog-agent",
-      "enabled": false
+      "enabled": true
     },
     {
       "agentPath": "agents/temperature-agent",
-      "enabled": false
+      "enabled": true
     },
     {
       "agentPath": "agents/net-connectivity-agent",
-      "enabled": false
+      "enabled": true
     },
     {
       "agentPath": "agents/test-random-agent",
-      "enabled": false
+      "enabled": true
     }
   ]
 }

@@ -3,15 +3,19 @@ IF (NOT BRINGAUTO_SYSTEM_DEP AND NOT BRINGAUTO_BUILD_DEP)
     FIND_PACKAGE(CMLIB REQUIRED)
 ENDIF ()
 
-LIST(APPEND CMAKE_FIND_ROOT_PATH ${CMAKE_BINARY_DIR}) #TODO if all with cmlib/system dep -> append depending to it
+# where to search for libs (there was problem when crosscompiling):
+LIST(APPEND CMAKE_FIND_ROOT_PATH ${CMAKE_BINARY_DIR})
 LIST(APPEND CMAKE_FIND_ROOT_PATH ${CMLIB_REQUIRED_ENV_TMP_PATH})
 
 
 FUNCTION(ADD_DEP_BRINGAUTO_LOGGER)
+    MESSAGE("Adding ba-logger...")
     # if using FetContent, then we are linking against bringauto_logger, otherwise bringauto_logger::bringauto_logger
     SET(BRINGAUTO_LOGGER_TO_LINK bringauto_logger::bringauto_logger PARENT_SCOPE)
+    SET(BRINGAUTO_LOGGER_TO_INSTALL bringauto_logger::bringauto_logger_spdlog)
     IF (BRINGAUTO_BUILD_DEP)
         SET(BRINGAUTO_LOGGER_TO_LINK bringauto_logger PARENT_SCOPE)
+        SET(BRINGAUTO_LOGGER_TO_INSTALL bringauto_logger_spdlog)
         SET(BRINGAUTO_SYSTEM_DEP_SAVED ${BRINGAUTO_SYSTEM_DEP})
         SET(BRINGAUTO_SYSTEM_DEP ON)
         FetchContent_Declare(
@@ -44,12 +48,13 @@ FUNCTION(ADD_DEP_BRINGAUTO_LOGGER)
     ENDIF ()
 
     IF (BRINGAUTO_INSTALL)
-        #INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger::bringauto_logger_spdlog DESTINATION lib)
-        INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger_spdlog DESTINATION lib)
+        INSTALL(IMPORTED_RUNTIME_ARTIFACTS ${BRINGAUTO_LOGGER_TO_INSTALL} DESTINATION lib)
     ENDIF ()
 ENDFUNCTION()
 
 FUNCTION(ADD_DEP_NLOHMANN_JSON)
+    MESSAGE("Adding nlohmann json...")
+    set(JSON_BuildTests OFF CACHE INTERNAL "")
     IF (BRINGAUTO_BUILD_DEP)
         FetchContent_Declare(json
                 URL https://github.com/nlohmann/json/archive/refs/tags/v3.9.1.tar.gz
@@ -76,6 +81,7 @@ ENDFUNCTION()
 
 
 FUNCTION(ADD_DEP_ASIO)
+    MESSAGE("Adding asio...")
     FetchContent_Declare(asio
             GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
             GIT_TAG asio-1-20-0
@@ -93,8 +99,11 @@ FUNCTION(ADD_DEP_ASIO)
 ENDFUNCTION()
 
 FUNCTION(ADD_DEP_REPROC)
+    MESSAGE("Adding reproc...")
     IF(BRINGAUTO_BUILD_DEP)
         SET(REPROC++ ON)
+        SET(REPROC_TEST OFF)
+        SET(REPROC_EXAMPLES OFF)
         FetchContent_Declare(
                 reproc++
                 GIT_REPOSITORY https://github.com/DaanDeMeyer/reproc.git
@@ -109,14 +118,15 @@ FUNCTION(ADD_DEP_REPROC)
 ENDFUNCTION()
 
 FUNCTION(ADD_DEP_STATE_SMURF)
+    MESSAGE("Adding StateSmurf...")
     # used just when testing enabled
+    SET(STATESMURF_TESTS OFF)
     IF(BRINGAUTO_BUILD_DEP)
         FetchContent_Declare(
                 statesmurf
                 GIT_REPOSITORY https://github.com/Melky-Phoe/StateSmurf.git
                 GIT_TAG v0.1.0
         )
-        FetchContent_MakeAvailable(statesmurf)
     ELSEIF(BRINGAUTO_SYSTEM_DEP)
         MESSAGE(FATAL_ERROR "StateSmurf not yet supported through system dep")
     ELSE()
@@ -126,6 +136,7 @@ ENDFUNCTION()
 
 
 FUNCTION(ADD_DEP_CXXOPTS)
+    MESSAGE("Adding cxxopts...")
     IF(BRINGAUTO_BUILD_DEP)
         FetchContent_Declare(
                 cxxopts

@@ -20,8 +20,8 @@ namespace modulog::communication {
         TcpConnection(asio::io_context &io_context, std::string &connectionName,
                       std::shared_ptr<MessageProcessor> messageProcessor) : socket_(io_context),
                                                                             connectionName_(connectionName),
-                                                                            messageProcessor_(
-                                                                                    std::move(messageProcessor)){
+                                                                            messageProcessor_(messageProcessor)
+                                                                                    {
             msgBuffer_ = std::make_shared<asio::streambuf>();
         }
 

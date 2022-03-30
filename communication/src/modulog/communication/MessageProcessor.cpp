@@ -15,8 +15,10 @@ namespace modulog::communication{
         }
         MessageDeserializer messageDeserializer(msg);
         if (messageDeserializer.getMsgType() == MSG_TYPE::CONTROL_MSG) {
+            std::lock_guard<std::mutex> lck(controlMessageVectorMtx_);
             controlMessageVector.push_back(messageDeserializer.getControlMessage());
         } else if (messageDeserializer.getMsgType() == MSG_TYPE::LOG_MSG) {
+            std::lock_guard<std::mutex> lck(logMessageVectorMtx_);
             logMessagesVector.push_back(messageDeserializer.getLogMessage());
         }
         conditionVariable_.notify_one();
@@ -57,6 +59,7 @@ namespace modulog::communication{
 
 
     std::shared_ptr<LogMessage> MessageProcessor::popLogMessage() {
+        std::lock_guard<std::mutex> lck(logMessageVectorMtx_);
         if (logMessagesVector.empty())
             return nullptr;
         auto msgToReturn = logMessagesVector.front();
@@ -65,6 +68,7 @@ namespace modulog::communication{
     }
 
     std::shared_ptr<ControlMessage> MessageProcessor::popControlMessage() {
+        std::lock_guard<std::mutex> lck(controlMessageVectorMtx_);
         if (controlMessageVector.empty())
             return nullptr;
         auto msgToReturn = controlMessageVector.front();

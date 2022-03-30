@@ -8,27 +8,27 @@
 int main(int argc, char **argv) {
     nlohmann::json jsonConfig = modulog::agent_client::Helpers::parseConfig(argv[0]);
 
-    if (!jsonConfig.contains("id")){
+    if (!jsonConfig.contains("id")) {
         std::cerr << "No id in json config!" << std::endl;
         return EXIT_FAILURE;
     }
     std::string agentId = jsonConfig["id"];
 
-    if (!jsonConfig.contains("port")){
+    if (!jsonConfig.contains("port")) {
         std::cerr << "No port in json config!" << std::endl;
         return EXIT_FAILURE;
     }
     int port = jsonConfig["port"];
 
-    if (!jsonConfig.contains("devices")){
+    if (!jsonConfig.contains("devices")) {
         std::cerr << "No devices key in json config!" << std::endl;
         return EXIT_FAILURE;
     }
-    if (jsonConfig["devices"].empty()){
+    if (jsonConfig["devices"].empty()) {
         std::cerr << "No devices in json config!" << std::endl;
         return EXIT_FAILURE;
     }
-    if (!jsonConfig.contains("checkoutInterval")){
+    if (!jsonConfig.contains("checkoutInterval")) {
         std::cerr << "No checkoutInterval in json config!" << std::endl;
         return EXIT_FAILURE;
     }
@@ -43,7 +43,8 @@ int main(int argc, char **argv) {
         auto ioContext = std::make_shared<asio::io_context>();
         auto agentClient = std::make_shared<modulog::agent_client::AgentClient>(ioContext, agentId);
         agentClient->initClient();
-        auto watchdogHandler = std::make_shared<modulog::watchdog_agent::WatchdogHandler>(ioContext, checkoutInterval, agentClient);
+        auto watchdogHandler = std::make_shared<modulog::watchdog_agent::WatchdogHandler>(ioContext, checkoutInterval,
+                                                                                          agentClient);
         watchdogHandler->init(deviceVector);
         modulog::watchdog_agent::UdpServer server(ioContext, 6127, watchdogHandler);
         ioContext->run();

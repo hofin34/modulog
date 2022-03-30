@@ -50,7 +50,9 @@ namespace modulog::communication {
 
     private:
         std::vector<std::shared_ptr<ControlMessage>> controlMessageVector;
+        std::mutex controlMessageVectorMtx_;
         std::vector<std::shared_ptr<LogMessage>> logMessagesVector;
+        std::mutex logMessageVectorMtx_;
 
         std::mutex &mutex_;
         std::condition_variable &conditionVariable_;

@@ -27,7 +27,7 @@ bool hostnameToIp(std::string &ip, const std::string &hostname) {
     }
 }
 
-bool isInternet() {
+bool isInternet(modulog::agent_client::AgentClient &agentClient) {
     int sock;
     struct sockaddr_in serv_addr{};
     if ((sock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0)) < 0) {
@@ -50,7 +50,8 @@ bool isInternet() {
     // tries to connect_
     int connectRes = connect(sock, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
     if (connectRes == -1 && errno == EINPROGRESS) {
-        std::cout << "Connected: OK" << std::endl;
+        auto log = modulog::agent_client::Helpers::createInfoLog("info", "Connected: OK");
+        agentClient.sendLog(log);
     }
     // ---Trying to read data---
     // setting select():
@@ -58,7 +59,8 @@ bool isInternet() {
     std::this_thread::sleep_for(std::chrono::seconds(2));
     const int sendRes = send(sock, msg.c_str(), strlen(msg.c_str()), 0);
     if (sendRes == -1) {
-        std::cerr << "Cannot send data." << std::endl;
+        auto log = modulog::agent_client::Helpers::createErrLog("errors", "Cannot send data");
+        agentClient.sendLog(log);
         return false;
     }
 
@@ -73,10 +75,12 @@ bool isInternet() {
 
     ret_val_select = select(sock + 1, &set, nullptr, nullptr, &timeout);
     if (ret_val_select == -1) {
-        std::cerr << "select() error" << std::endl;
+        auto log = modulog::agent_client::Helpers::createErrLog("errors", "select() error");
+        agentClient.sendLog(log);
         return false;
     } else if (ret_val_select == 0) {
-        std::cerr << "Read data: TIMEOUT" << std::endl;
+        auto log = modulog::agent_client::Helpers::createErrLog("errors", "Read data: TIMEOUT");
+        agentClient.sendLog(log);
         return false;
     } else {
         const int BUFFER_SIZE = 128;
@@ -84,10 +88,12 @@ bool isInternet() {
         ssize_t valread = read(sock, buffer,
                                BUFFER_SIZE); // We want to read just some bytes to see if connection is ok
         if (valread > 0) {
-            std::cout << "Read data: OK" << std::endl;
+            auto log = modulog::agent_client::Helpers::createInfoLog("info", "Read data: OK");
+            agentClient.sendLog(log);
             return true;
         } else {
-            std::cerr << "Read data: ERR" << std::endl;
+            auto log = modulog::agent_client::Helpers::createErrLog("errors", "Read data: ERR");
+            agentClient.sendLog(log);
             return false;
         }
     }
@@ -123,12 +129,12 @@ int main(int argc, char **argv) {
     auto ioContext = std::make_shared<asio::io_context>();
     modulog::agent_client::AgentClient agentClient(ioContext, configJson["id"]);
     agentClient.initClient();
-    auto lastNetState = isInternet();
+    auto lastNetState = isInternet(agentClient);
     logNetState(lastNetState, agentClient);
 
     while (agentClient.canLog()) {
         agentClient.sleepFor(std::chrono::seconds(checkInterval));
-        auto newNetState = isInternet();
+        auto newNetState = isInternet(agentClient);
         if (newNetState != lastNetState) {
             logNetState(newNetState, agentClient);
             lastNetState = newNetState;

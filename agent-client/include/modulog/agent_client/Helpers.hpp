@@ -2,6 +2,7 @@
 
 #include <nlohmann/json.hpp>
 #include <bringauto/logging/ConsoleSink.hpp>
+#include <modulog/communication/LogMessage.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -28,6 +29,22 @@ namespace modulog::agent_client {
          * @return parsed nlohmann::json object
          */
         static nlohmann::json parseConfig(const std::filesystem::path &execPath);
+
+        /**
+         * Simplifies creating info logs
+         * @param key to be logged
+         * @param toLog message to be logged
+         * @return log to be logged
+         */
+        static std::shared_ptr<communication::LogMessage> createInfoLog(std::string key, std::string toLog);
+
+        /**
+         * Simplifies creating error logs
+         * @param key key to be logged
+         * @param toLog error message to be logged
+         * @return
+         */
+        static std::shared_ptr<communication::LogMessage> createErrLog(std::string key, std::string toLog);
 
     };
 

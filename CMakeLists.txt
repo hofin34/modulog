@@ -14,7 +14,6 @@ OPTION(BRINGAUTO_TESTS "Tests" OFF)
 OPTION(BRINGAUTO_INSTALL "Install" OFF)
 OPTION(BRINGAUTO_PACKAGE "Create package" OFF)
 OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
-OPTION(STATESMURF_TESTS "Testing library StateSmurf" OFF)
 
 IF (BRINGAUTO_TESTS)
     ADD_COMPILE_DEFINITIONS(BRINGAUTO_TESTS=TRUE) # if this macro defined, SmurfState library included in modulog
@@ -48,6 +47,7 @@ TARGET_LINK_LIBRARIES(modulog CoreLib cxxopts::cxxopts)
 
 IF (BRINGAUTO_TESTS)
     ENABLE_TESTING()
+    FetchContent_MakeAvailable(statesmurf)
     ADD_SUBDIRECTORY(test)
 ENDIF ()
 

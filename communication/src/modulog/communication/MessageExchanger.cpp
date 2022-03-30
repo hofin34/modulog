@@ -30,10 +30,18 @@ namespace modulog::communication{
     }
 
     std::shared_ptr<LogMessage> MessageExchanger::popLogMessage() {
+        if(!connection_->getMessageProcessor()){
+            std::cerr << "Log msg proc null!!!!!" << std::endl;
+            return nullptr;
+        }
         return connection_->getMessageProcessor()->popLogMessage();
     }
 
     std::shared_ptr<ControlMessage> MessageExchanger::popControlMessage() {
+        if(!connection_->getMessageProcessor()){
+            std::cerr << "Control msg proc null!!!!!" << std::endl;
+            return nullptr;
+        }
         return connection_->getMessageProcessor()->popControlMessage();
     }
 
