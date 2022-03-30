@@ -11,29 +11,33 @@ LIST(APPEND CMAKE_FIND_ROOT_PATH ${CMLIB_REQUIRED_ENV_TMP_PATH})
 FUNCTION(ADD_DEP_BRINGAUTO_LOGGER)
     MESSAGE("Adding ba-logger...")
     # if using FetContent, then we are linking against bringauto_logger, otherwise bringauto_logger::bringauto_logger
-    #SET(BRINGAUTO_LOGGER_TO_LINK bringauto_logger::bringauto_logger PARENT_SCOPE)
-    #SET(BRINGAUTO_LOGGER_TO_INSTALL bringauto_logger::bringauto_logger_spdlog)
-    #IF (BRINGAUTO_BUILD_DEP)
-    #    SET(BRINGAUTO_LOGGER_TO_LINK bringauto_logger PARENT_SCOPE)
-    #    SET(BRINGAUTO_LOGGER_TO_INSTALL bringauto_logger_spdlog)
-    #    SET(BRINGAUTO_SYSTEM_DEP_SAVED ${BRINGAUTO_SYSTEM_DEP})
-    #    SET(BRINGAUTO_SYSTEM_DEP ON)
-    #    FetchContent_Declare(
-    #            spdlog
-    #            GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    #            GIT_TAG v1.8.5
-    #    )
-    #    FetchContent_MakeAvailable(spdlog)
-    #    FetchContent_Declare(
-    #            balogger
-    #            GIT_REPOSITORY ssh://git@gitlab.bringauto.com:1999/bring-auto/host-platform/bringauto-logger.git
-    #            GIT_TAG v1.1.0
-    #    )
-    #    FetchContent_MakeAvailable(balogger)
-    #    SET(BRINGAUTO_SYSTEM_DEP ${BRINGAUTO_SYSTEM_DEP_SAVED})
-    #ELSEIF (BRINGAUTO_SYSTEM_DEP)
-    #    FIND_PACKAGE(libbringauto_logger)
-    #ELSE () # simulates using cmakelib
+    SET(BRINGAUTO_LOGGER_TO_LINK bringauto_logger::bringauto_logger PARENT_SCOPE)
+    SET(BRINGAUTO_LOGGER_TO_INSTALL bringauto_logger::bringauto_logger_spdlog)
+    IF (BRINGAUTO_BUILD_DEP)
+        SET(BRINGAUTO_LOGGER_TO_LINK bringauto_logger PARENT_SCOPE)
+        SET(BRINGAUTO_LOGGER_TO_INSTALL bringauto_logger_spdlog)
+        SET(BRINGAUTO_SYSTEM_DEP_SAVED ${BRINGAUTO_SYSTEM_DEP})
+        SET(BRINGAUTO_SYSTEM_DEP ON)
+        SET(BRINGAUTO_INSTALL_SAVED ${BRINGAUTO_INSTALL})
+        SET(BRINGAUTO_INSTALL ON) # has to be turned on, ba logger without this will not generate everything necessary
+        FetchContent_Declare(
+                spdlog
+                GIT_REPOSITORY https://github.com/gabime/spdlog.git
+                GIT_TAG v1.8.5
+        )
+        FetchContent_MakeAvailable(spdlog)
+        SET(LIB_TYPE SPDLOG)
+        FetchContent_Declare(
+                balogger
+                GIT_REPOSITORY https://github.com/bringauto/ba-logger.git
+                GIT_TAG v1.1.0 # TODO maybe change version?
+        )
+        FetchContent_MakeAvailable(balogger)
+        SET(BRINGAUTO_SYSTEM_DEP ${BRINGAUTO_SYSTEM_DEP_SAVED})
+        SET(BRINGAUTO_INSTALL ${BRINGAUTO_INSTALL_SAVED})
+    ELSEIF (BRINGAUTO_SYSTEM_DEP)
+        FIND_PACKAGE(libbringauto_logger)
+    ELSE () # simulates using cmakelib
         SET(BALOGGER_ZIP none)
         IF (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
             SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_aarch64-ubuntu-1804.zip)
@@ -45,7 +49,7 @@ FUNCTION(ADD_DEP_BRINGAUTO_LOGGER)
                 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
         FIND_PACKAGE(libbringauto_logger PATHS ${CMAKE_BINARY_DIR})
-    #ENDIF ()
+    ENDIF ()
 
     IF (BRINGAUTO_INSTALL)
         INSTALL(IMPORTED_RUNTIME_ARTIFACTS ${BRINGAUTO_LOGGER_TO_INSTALL} DESTINATION lib)

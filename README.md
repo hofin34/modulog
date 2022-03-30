@@ -104,7 +104,6 @@ TODO:
 3. Agent client - sleep template (different units like seconds, minutes, etc.)
 4. Watchdog agent - not specified, what should do, when device not responding (maybe restart it or something like it?) + reset flags after
 5. Not fully supported switching between system deps / cmakelib
-4. Add to Readme Shared config
 
 [agents folder link]: agents
 [agents-to-compile.json]: agents-to-compile.json
