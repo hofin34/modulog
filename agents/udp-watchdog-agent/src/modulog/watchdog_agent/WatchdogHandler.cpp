@@ -27,6 +27,7 @@ namespace modulog::watchdog_agent {
     }
 
     void WatchdogHandler::init(std::vector<std::string> devices) {
+        std::lock_guard<std::mutex> lock(mtx_);
         for (auto &deviceName: devices) {
             DeviceInfo deviceInfo{deviceName, agentClient_};
             deviceInfoVector_.push_back(deviceInfo);

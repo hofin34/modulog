@@ -3,6 +3,11 @@ PROJECT(modulog)
 SET(CMAKE_CXX_STANDARD 17)
 SET(modulog_VERSION 1.0.0)
 
+IF(CMAKE_BUILD_TYPE MATCHES DEBUG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -O1 -fno-omit-frame-pointer -g")
+ENDIF()
+
+
 # for linking .so after make install (we have ba_logger):
 SET(CMAKE_SKIP_BUILD_RPATH FALSE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
