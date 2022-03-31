@@ -25,7 +25,7 @@ namespace modulog::core {
         notifyAllAgentsToSendLogs();
         startSendAlive();
         LogSaver logSaver(sharedSettings_);
-        bringauto::logging::Logger::logInfo("Modulog is now logging... For termination, press CTRL+C");
+        bringauto::logging::Logger::logInfo("Modulog is now logging into folder {} \nFor termination, press CTRL+C", sharedSettings_->LogSettings.logsDestination.string());
         bool shouldExit = false, exitMessagesSent = false;
         auto exitTime = std::chrono::system_clock::now(); // will be changed on interrupt
         while (!shouldExit && !agentHandler_->getRunningAgents().empty()) {
