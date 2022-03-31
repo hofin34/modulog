@@ -30,7 +30,7 @@ FUNCTION(ADD_DEP_BRINGAUTO_LOGGER)
         FetchContent_Declare(
                 balogger
                 GIT_REPOSITORY https://github.com/bringauto/ba-logger.git
-                GIT_TAG v1.1.0 # TODO maybe change version?
+                GIT_TAG v1.1.1
         )
         FetchContent_MakeAvailable(balogger)
         SET(BRINGAUTO_SYSTEM_DEP ${BRINGAUTO_SYSTEM_DEP_SAVED})
