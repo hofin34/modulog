@@ -4,6 +4,7 @@
 
 #include <modulog/agent_client/Helpers.hpp>
 #include <modulog/agent_client/AgentClient.hpp>
+#include <modulog/agent_client/ClientFactory.hpp>
 
 #include <iostream>
 #include <thread>
@@ -56,18 +57,18 @@ int main(int argc, char** argv){
     }
 
     auto ioContext = std::make_shared<asio::io_context>();
-    modulog::agent_client::AgentClient agentClient(ioContext, configJson["id"] );
-    agentClient.initClient();
-    while(agentClient.canLog()){
+    auto agentClient = modulog::agent_client::ClientFactory::createClient(ioContext, configJson["id"]);
+    agentClient->initClient();
+    while(agentClient->canLog()){
         int temperature = getTemperature(tempSource);
         if(temperatureNotSmallerThan > temperature || temperatureNotBiggerThan < temperature){
             auto errMsg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "temperature", std::to_string(temperature));
-            agentClient.sendLog(errMsg);
+            agentClient->sendLog(errMsg);
         }else{
             auto logMsg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "temperature", std::to_string(temperature));
-            agentClient.sendLog(logMsg);
+            agentClient->sendLog(logMsg);
         }
-        agentClient.sleepFor(std::chrono::seconds(logInterval));
+        agentClient->sleepFor(std::chrono::seconds(logInterval));
     }
 
     return 0;

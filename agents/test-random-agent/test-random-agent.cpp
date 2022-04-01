@@ -4,6 +4,7 @@
 
 #include <modulog/agent_client/Helpers.hpp>
 #include <modulog/agent_client/AgentClient.hpp>
+#include <modulog/agent_client/ClientFactory.hpp>
 
 #include <random>
 
@@ -30,16 +31,16 @@ int main(int argc, char** argv){
     }
 
     auto ioContext = std::make_shared<asio::io_context>();
-    modulog::agent_client::AgentClient agentClient(ioContext, configJson["id"]);
-    agentClient.initClient();
+    auto agentClient = modulog::agent_client::ClientFactory::createClient(ioContext, configJson["id"]);
+    agentClient->initClient();
 
     std::random_device rd;
     std::default_random_engine eng(rd());
     std::uniform_int_distribution<int> distr(logIntervalMin, logIntervalMax);
-    while(agentClient.canLog()){
+    while(agentClient->canLog()){
         int newRandom = distr(eng);
         auto logMsg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "randomTime", std::to_string(newRandom));
-        agentClient.sendLog(logMsg);
+        agentClient->sendLog(logMsg);
         std::this_thread::sleep_for(std::chrono::milliseconds (newRandom));
     }
 

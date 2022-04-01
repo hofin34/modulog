@@ -4,6 +4,7 @@
 
 #include <modulog/agent_client/AgentClient.hpp>
 #include <modulog/agent_client/Helpers.hpp>
+#include <modulog/agent_client/ClientFactory.hpp>
 
 #include <linux_monitoring/linux_memoryload.hpp>
 #include <linux_monitoring/linux_cpuload.hpp>
@@ -34,8 +35,8 @@ int main(int argc, char **argv) {
 
 
     auto ioContext = std::make_shared<asio::io_context>();
-    modulog::agent_client::AgentClient agentClient(ioContext, configJson["id"]);
-    agentClient.initClient();
+    auto agentClient = modulog::agent_client::ClientFactory::createClient(ioContext, configJson["id"]);
+    agentClient->initClient();
 
     auto processes = std::make_unique<linux_monitoring::linuxProcessLoad>();
     auto cpuMonitoring = std::make_unique<linux_monitoring::cpuLoad>(configJson["statLocation"]);
@@ -45,7 +46,7 @@ int main(int argc, char **argv) {
     auto maxRamToSend = std::make_shared<modulog::communication::LogMessage>(
             modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "deviceRamCapacityKb",
             std::to_string(memoryMonitoring->getTotalMemoryInKB()));
-    agentClient.sendLog(maxRamToSend);
+    agentClient->sendLog(maxRamToSend);
 
     // print cpu usage of all cpu cores
     linux_monitoring::util::Timer::periodicShot([&] {
@@ -57,11 +58,11 @@ int main(int argc, char **argv) {
         else
             ramToSend = std::make_shared<modulog::communication::LogMessage>(
                     modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "usedRamPercent", std::to_string(currRam));
-        agentClient.sendLog(ramToSend);
+        agentClient->sendLog(ramToSend);
         auto usedRamToSendKb = std::make_shared<modulog::communication::LogMessage>(
                 modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "usedRamKb",
                 std::to_string(memoryMonitoring->getCurrentMemUsageInKB()));
-        agentClient.sendLog(usedRamToSendKb);
+        agentClient->sendLog(usedRamToSendKb);
 
 
         auto currCpu = cpuMonitoring->getCurrentCpuUsage();
@@ -72,14 +73,14 @@ int main(int argc, char **argv) {
         else
             toSend = std::make_shared<modulog::communication::LogMessage>(
                     modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "usedAvgCpu", std::to_string(currCpu));
-        agentClient.sendLog(toSend);
+        agentClient->sendLog(toSend);
 
         auto cpus = cpuMonitoring->getCurrentMultiCoreUsage();
         for (int i = 0; i < cpus.size(); i++) {
             auto cpuId = std::string("usedCpu" + std::to_string(i));
             auto cpuX = std::make_shared<modulog::communication::LogMessage>(
                     modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, cpuId, std::to_string(cpus.at(i)));
-            agentClient.sendLog(cpuX);
+            agentClient->sendLog(cpuX);
         }
     }, std::chrono::seconds(logInterval));
 

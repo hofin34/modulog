@@ -1,9 +1,10 @@
-#include <iostream>
 #include <modulog/agent_client/AgentClient.hpp>
+#include <modulog/agent_client/ClientFactory.hpp>
 #include <modulog/agent_client/Helpers.hpp>
 #include <modulog/watchdog_agent/UdpServer.hpp>
 #include <modulog/watchdog_agent/WatchdogHandler.hpp>
 
+#include <iostream>
 
 int main(int argc, char **argv) {
     nlohmann::json jsonConfig = modulog::agent_client::Helpers::parseConfig(argv[0]);
@@ -41,7 +42,7 @@ int main(int argc, char **argv) {
     }
     try {
         auto ioContext = std::make_shared<asio::io_context>();
-        auto agentClient = std::make_shared<modulog::agent_client::AgentClient>(ioContext, agentId);
+        auto agentClient = modulog::agent_client::ClientFactory::createClient(ioContext, agentId);
         agentClient->initClient();
         auto watchdogHandler = std::make_shared<modulog::watchdog_agent::WatchdogHandler>(ioContext, checkoutInterval,
                                                                                           agentClient);

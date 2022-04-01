@@ -3,6 +3,7 @@
  */
 
 #include <modulog/agent_client/AgentClient.hpp>
+#include <modulog/agent_client/ClientFactory.hpp>
 #include <modulog/agent_client/Helpers.hpp>
 #include <modulog/space_agent/SpaceInfo.hpp>
 #include <modulog/space_agent/DirInfo.hpp>
@@ -87,7 +88,7 @@ int main(int argc, char **argv) {
     if (configJson.contains("availableNotSmallerThanPercent"))
         percentTreshold = configJson["availableNotSmallerThanPercent"];
     auto ioContext = std::make_shared<asio::io_context>();
-    auto agentClient = std::make_shared<modulog::agent_client::AgentClient>(ioContext, configJson["id"]);
+    auto agentClient = modulog::agent_client::ClientFactory::createClient(ioContext, configJson["id"]);
     agentClient->initClient();
 
     std::string file = "/etc/mtab";
