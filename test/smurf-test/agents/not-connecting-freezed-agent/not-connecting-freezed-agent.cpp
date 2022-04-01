@@ -1,4 +1,5 @@
 #include <modulog/agent_client/AgentClient.hpp>
+#include <thread>
 
 int main(int argc, char** argv){
     while (true)

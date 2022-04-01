@@ -35,10 +35,10 @@ namespace modulog::core {
                     const auto time_point = std::chrono::system_clock::now() +
                                             std::chrono::seconds(sharedSettings_->LogSettings.exitSendTimeoutSec);
                     for (const auto &agent: agentHandler_->getRunningAgents()) {
+                        agent->setExpectedExit(true);
                         auto exitMsg = std::make_shared<communication::ControlMessage>(
                                 communication::ControlMessage::CONTROL_MSG_TYPE::EXIT, "");
                         agent->getMessageExchanger()->sendControl(exitMsg);
-                        agent->setExpectedExit(true);
                     }
                     exitMessagesSent = true;
                 }else{

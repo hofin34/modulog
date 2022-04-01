@@ -4,7 +4,7 @@ Processes collecting logs are called agents.
 You can create your own agents with C++ library AgentClient.
 
 After start, enabled agents are created and they collect logs. They send these logs to the Core, which saves them in default folder `logs/`. 
-This folder and also other properties can be changed in file [SharedSettings.hpp] (in the future will be better config file).
+This folder and also other properties can be changed in file [SharedSettings.hpp]
 Modulog also monitors, if agents are not freezed or they didn't crashed. If this happened, it is logged. 
 You can send custom config string to all agents - it can be useful, when you want to have some shared configs between all agents like same timeouts or something like this.
 You can set this file in [SharedSettings.hpp] variable `sharedAgentsConfig`. 
@@ -104,6 +104,7 @@ TODO:
 3. Agent client - sleep template (different units like seconds, minutes, etc.)
 4. Watchdog agent - not specified, what should do, when device not responding (maybe restart it or something like it?) + reset flags after
 5. Not fully supported switching between system deps / cmakelib
+6. Better SharedSettings - change to json or something, that can be changed without re-compilation
 
 [agents folder link]: agents
 [agents-to-compile.json]: agents-to-compile.json

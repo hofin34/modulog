@@ -18,15 +18,14 @@ namespace modulog::agent_client {
     void TcpAgentClient::signalHandler(const std::error_code &error,
                                        int signum) {
         // reproc++ sending kill signal to all subprocesses, we want to just catch it and do nothing.
-        // Core will kill all subprocesses.
+        // Core will kill all subprocesses on its own
     }
 
     void TcpAgentClient::initClient() {
         generalInit(agentName_);
 
-
-        asio::signal_set signals(*ioContext_, SIGINT, SIGTERM);
-        signals.async_wait(signalHandler);
+        interruptSignals = std::make_shared<asio::signal_set>(*ioContext_, SIGINT, SIGTERM);
+        interruptSignals->async_wait(signalHandler);
 
         auto connection = std::make_shared<communication::TcpConnection>(*ioContext_, agentName_, msgProcessor_);
         asio::ip::tcp::endpoint endpoint(asio::ip::address::from_string(coreIp_), corePort_);

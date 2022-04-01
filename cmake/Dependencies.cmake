@@ -35,21 +35,11 @@ FUNCTION(ADD_DEP_BRINGAUTO_LOGGER)
         FetchContent_MakeAvailable(balogger)
         SET(BRINGAUTO_SYSTEM_DEP ${BRINGAUTO_SYSTEM_DEP_SAVED})
         SET(BRINGAUTO_INSTALL ${BRINGAUTO_INSTALL_SAVED})
-    ELSEIF (BRINGAUTO_SYSTEM_DEP)
+    ELSEIF(BRINGAUTO_SYSTEM_DEP)
         FIND_PACKAGE(libbringauto_logger)
-    ELSE () # simulates using cmakelib
-        SET(BALOGGER_ZIP none)
-        IF (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
-            SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_aarch64-ubuntu-1804.zip)
-        ELSE ()
-            SET(BALOGGER_ZIP ${CMAKE_SOURCE_DIR}/lib/ba-logger/libbringauto_logger-dev_v1.1.0_x86-64-ubuntu-2004.zip)
-        ENDIF ()
-        EXECUTE_PROCESS(
-                COMMAND ${CMAKE_COMMAND} -E tar xzf ${BALOGGER_ZIP}
-                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        FIND_PACKAGE(libbringauto_logger PATHS ${CMAKE_BINARY_DIR})
-    ENDIF ()
+    ELSE()
+        MESSAGE(FATAL_ERROR "ba-logger not yet supported through cmakelib")
+    ENDIF()
 
     IF (BRINGAUTO_INSTALL)
         INSTALL(IMPORTED_RUNTIME_ARTIFACTS ${BRINGAUTO_LOGGER_TO_INSTALL} DESTINATION lib)
@@ -86,20 +76,26 @@ ENDFUNCTION()
 
 FUNCTION(ADD_DEP_ASIO)
     MESSAGE("Adding asio...")
-    FetchContent_Declare(asio
-            GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
-            GIT_TAG asio-1-20-0
-            CONFIGURE_COMMAND ""
-            BUILD_COMMAND ""
-            )
-    FetchContent_GetProperties(asio)
-    IF (NOT asio_POPULATED)
-        FetchContent_Populate(asio)
-    ENDIF ()
-    ADD_LIBRARY(asio INTERFACE)
-    TARGET_INCLUDE_DIRECTORIES(asio INTERFACE ${asio_SOURCE_DIR}/asio/include)
-    FIND_PACKAGE(Threads)
-    TARGET_LINK_LIBRARIES(asio INTERFACE Threads::Threads)
+    IF(BRINGAUTO_BUILD_DEP)
+        FetchContent_Declare(asio
+                GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
+                GIT_TAG asio-1-20-0
+                CONFIGURE_COMMAND ""
+                BUILD_COMMAND ""
+                )
+        FetchContent_GetProperties(asio)
+        IF (NOT asio_POPULATED)
+            FetchContent_Populate(asio)
+        ENDIF ()
+        ADD_LIBRARY(asio INTERFACE)
+        TARGET_INCLUDE_DIRECTORIES(asio INTERFACE ${asio_SOURCE_DIR}/asio/include)
+        FIND_PACKAGE(Threads)
+        TARGET_LINK_LIBRARIES(asio INTERFACE Threads::Threads)
+    ELSEIF(BRINGAUTO_SYSTEM_DEP)
+        MESSAGE(FATAL_ERROR "Asio not yet supported through system dep")
+    ELSE()
+        MESSAGE(FATAL_ERROR "Asio not yet supported through cmakelib")
+    ENDIF()
 ENDFUNCTION()
 
 FUNCTION(ADD_DEP_REPROC)
@@ -118,23 +114,6 @@ FUNCTION(ADD_DEP_REPROC)
         FIND_PACKAGE(reproc++)
     ELSE()
         MESSAGE(FATAL_ERROR "reproc++ not available through cmakelib yet")
-    ENDIF()
-ENDFUNCTION()
-
-FUNCTION(ADD_DEP_STATE_SMURF)
-    MESSAGE("Adding StateSmurf...")
-    # used just when testing enabled
-    SET(STATESMURF_TESTS OFF)
-    IF(BRINGAUTO_BUILD_DEP)
-        FetchContent_Declare(
-                statesmurf
-                GIT_REPOSITORY https://github.com/Melky-Phoe/StateSmurf.git
-                GIT_TAG v0.1.0
-        )
-    ELSEIF(BRINGAUTO_SYSTEM_DEP)
-        MESSAGE(FATAL_ERROR "StateSmurf not yet supported through system dep")
-    ELSE()
-        MESSAGE(FATAL_ERROR "StateSmurf not yet supported through cmake lib")
     ENDIF()
 ENDFUNCTION()
 
@@ -166,6 +145,26 @@ FUNCTION(ADD_DEP_CXXOPTS)
         FIND_PACKAGE(cxxopts)
     ENDIF ()
 ENDFUNCTION()
+
+FUNCTION(ADD_DEP_STATE_SMURF)
+    MESSAGE("Adding StateSmurf...")
+    # used just when testing enabled
+    SET(BRINGAUTO_SYSTEM_DEP_SAVED BRINGAUTO_SYSTEM_DEP)
+    IF(BRINGAUTO_BUILD_DEP)
+        SET(BRINGAUTO_SYSTEM_DEP OFF) # StateSmurf using just ba-logger, which was already added via fetchContent
+        FetchContent_Declare( #TODO not working
+                statesmurf
+                GIT_REPOSITORY https://github.com/Melky-Phoe/StateSmurf.git
+                GIT_TAG v1.0.1
+        )
+    ELSEIF(BRINGAUTO_SYSTEM_DEP)
+        MESSAGE(FATAL_ERROR "StateSmurf not yet supported through system dep")
+    ELSE()
+        MESSAGE(FATAL_ERROR "StateSmurf not yet supported through cmake lib")
+    ENDIF()
+    SET(BRINGAUTO_SYSTEM_DEP BRINGAUTO_SYSTEM_DEP_SAVED)
+ENDFUNCTION()
+
 
 ADD_DEP_BRINGAUTO_LOGGER()
 ADD_DEP_NLOHMANN_JSON()

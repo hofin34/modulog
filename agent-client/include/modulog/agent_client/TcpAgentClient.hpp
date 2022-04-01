@@ -80,6 +80,7 @@ namespace modulog::agent_client {
         std::string sharedConfig_;
         std::string coreIp_ = "127.0.0.1";
         int corePort_ = 1234;
+        std::shared_ptr<asio::signal_set> interruptSignals;
         // Sync vars waiting:
         std::condition_variable waitCondVar_;
         std::mutex waitMutex_;

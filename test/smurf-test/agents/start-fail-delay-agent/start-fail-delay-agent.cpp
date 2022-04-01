@@ -1,3 +1,4 @@
+#include <thread>
 #include "modulog/agent_client/AgentClient.hpp"
 
 int main(int argc, char** argv){
