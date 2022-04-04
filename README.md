@@ -30,6 +30,9 @@ All agents in this file must be already compiled!
 
 Now you can run with `./modulog`.
 
+To run tests, compile and run like this:
+`cmake -DBRINGAUTO_TESTS=ON -DCMLIB_DIR=/home/martin/Work/cmakelib -DCMAKE_BUILD_TYPE=Release .. && make -j 8 && ctest --verbose`
+
 **CMake options:**
 
 BRINGAUTO_BUILD_DEP - 
@@ -103,7 +106,7 @@ TODO:
 2. Remove Core global variable and make it local 
 3. Agent client - sleep template (different units like seconds, minutes, etc.)
 4. Watchdog agent - not specified, what should do, when device not responding (maybe restart it or something like it?) + reset flags after
-5. Not fully supported switching between system deps / cmakelib
+5. Do better dependency management - not fully supported switching between system deps / cmakelib
 6. Better SharedSettings - change to json or something, that can be changed without re-compilation
 
 [agents folder link]: agents

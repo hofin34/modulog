@@ -38,7 +38,15 @@ FUNCTION(ADD_DEP_BRINGAUTO_LOGGER)
     ELSEIF(BRINGAUTO_SYSTEM_DEP)
         FIND_PACKAGE(libbringauto_logger)
     ELSE()
-        MESSAGE(FATAL_ERROR "ba-logger not yet supported through cmakelib")
+        SET(BRINGAUTO_LOGGER_TO_LINK bringauto_logger PARENT_SCOPE)
+        SET(BRINGAUTO_LOGGER_TO_INSTALL bringauto_logger_spdlog)
+        CMLIB_DEPENDENCY(
+                URI "https://github.com/bringauto/balogger-package.git"
+                URI_TYPE GIT
+                GIT_TAG v1.1.0
+                TYPE MODULE
+        )
+        FIND_PACKAGE(balogger_package REQUIRED)
     ENDIF()
 
     IF (BRINGAUTO_INSTALL)
@@ -75,46 +83,34 @@ ENDFUNCTION()
 
 
 FUNCTION(ADD_DEP_ASIO)
-    MESSAGE("Adding asio...")
-    IF(BRINGAUTO_BUILD_DEP)
-        FetchContent_Declare(asio
-                GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
-                GIT_TAG asio-1-20-0
-                CONFIGURE_COMMAND ""
-                BUILD_COMMAND ""
-                )
-        FetchContent_GetProperties(asio)
-        IF (NOT asio_POPULATED)
-            FetchContent_Populate(asio)
-        ENDIF ()
-        ADD_LIBRARY(asio INTERFACE)
-        TARGET_INCLUDE_DIRECTORIES(asio INTERFACE ${asio_SOURCE_DIR}/asio/include)
-        FIND_PACKAGE(Threads)
-        TARGET_LINK_LIBRARIES(asio INTERFACE Threads::Threads)
-    ELSEIF(BRINGAUTO_SYSTEM_DEP)
-        MESSAGE(FATAL_ERROR "Asio not yet supported through system dep")
-    ELSE()
-        MESSAGE(FATAL_ERROR "Asio not yet supported through cmakelib")
-    ENDIF()
+    MESSAGE("Adding asio... - adding through FetchContent")
+    FetchContent_Declare(asio
+            GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
+            GIT_TAG asio-1-20-0
+            CONFIGURE_COMMAND ""
+            BUILD_COMMAND ""
+            )
+    FetchContent_GetProperties(asio)
+    IF (NOT asio_POPULATED)
+        FetchContent_Populate(asio)
+    ENDIF ()
+    ADD_LIBRARY(asio INTERFACE)
+    TARGET_INCLUDE_DIRECTORIES(asio INTERFACE ${asio_SOURCE_DIR}/asio/include)
+    FIND_PACKAGE(Threads)
+    TARGET_LINK_LIBRARIES(asio INTERFACE Threads::Threads)
 ENDFUNCTION()
 
 FUNCTION(ADD_DEP_REPROC)
-    MESSAGE("Adding reproc...")
-    IF(BRINGAUTO_BUILD_DEP)
-        SET(REPROC++ ON)
-        SET(REPROC_TEST OFF)
-        SET(REPROC_EXAMPLES OFF)
-        FetchContent_Declare(
-                reproc++
-                GIT_REPOSITORY https://github.com/DaanDeMeyer/reproc.git
-                GIT_TAG v14.2.4
-        )
-        FetchContent_MakeAvailable(reproc++)
-    ELSEIF(BRINGAUTO_SYSTEM_DEP)
-        FIND_PACKAGE(reproc++)
-    ELSE()
-        MESSAGE(FATAL_ERROR "reproc++ not available through cmakelib yet")
-    ENDIF()
+    MESSAGE("Adding reproc...- through FetchContent")
+    SET(REPROC++ ON)
+    SET(REPROC_TEST OFF)
+    SET(REPROC_EXAMPLES OFF)
+    FetchContent_Declare(
+            reproc++
+            GIT_REPOSITORY https://github.com/DaanDeMeyer/reproc.git
+            GIT_TAG v14.2.4
+    )
+    FetchContent_MakeAvailable(reproc++)
 ENDFUNCTION()
 
 
@@ -148,21 +144,11 @@ ENDFUNCTION()
 
 FUNCTION(ADD_DEP_STATE_SMURF)
     MESSAGE("Adding StateSmurf...")
-    # used just when testing enabled
-    SET(BRINGAUTO_SYSTEM_DEP_SAVED BRINGAUTO_SYSTEM_DEP)
-    IF(BRINGAUTO_BUILD_DEP)
-        SET(BRINGAUTO_SYSTEM_DEP OFF) # StateSmurf using just ba-logger, which was already added via fetchContent
-        FetchContent_Declare( #TODO not working
-                statesmurf
-                GIT_REPOSITORY https://github.com/Melky-Phoe/StateSmurf.git
-                GIT_TAG v1.0.1
-        )
-    ELSEIF(BRINGAUTO_SYSTEM_DEP)
-        MESSAGE(FATAL_ERROR "StateSmurf not yet supported through system dep")
-    ELSE()
-        MESSAGE(FATAL_ERROR "StateSmurf not yet supported through cmake lib")
-    ENDIF()
-    SET(BRINGAUTO_SYSTEM_DEP BRINGAUTO_SYSTEM_DEP_SAVED)
+    FetchContent_Declare(
+            statesmurf
+            GIT_REPOSITORY https://github.com/Melky-Phoe/StateSmurf.git
+            GIT_TAG v0.1.0
+            )
 ENDFUNCTION()
 
 
