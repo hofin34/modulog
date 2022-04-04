@@ -10,7 +10,7 @@ namespace modulog::agent_client{
     }
 
     std::string Helpers::execCommand(const std::string& cmd) {
-        std::array<char, 128> buffer;
+        std::array<char, 128> buffer{};
         std::string result;
         std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.c_str(), "r"), pclose);
         if (!pipe) {
@@ -21,4 +21,18 @@ namespace modulog::agent_client{
         }
         return result;
     }
+
+    std::shared_ptr<communication::LogMessage> Helpers::createInfoLog(std::string key, std::string toLog) {
+        return std::make_shared<modulog::communication::LogMessage>(
+                modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, key,
+                toLog);
+    }
+
+    std::shared_ptr<communication::LogMessage> Helpers::createErrLog(std::string key, std::string toLog) {
+        return std::make_shared<modulog::communication::LogMessage>(
+                modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, key,
+                toLog);
+    }
+
+
 }

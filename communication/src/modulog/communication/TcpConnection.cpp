@@ -1,10 +1,6 @@
 #include <modulog/communication/TcpConnection.hpp>
 
 namespace modulog::communication {
-    TcpConnection::pointer TcpConnection::create(asio::io_context &io_context, std::string &connectionName,
-                                                 std::shared_ptr<MessageProcessor> messageProcessor) {
-        return pointer(new TcpConnection(io_context, connectionName, messageProcessor)); //TODO refactor creation...
-    }
 
     asio::ip::tcp::socket &TcpConnection::getSocket() {
         return socket_;
@@ -22,11 +18,11 @@ namespace modulog::communication {
     void TcpConnection::handleReadMsgSize(const asio::error_code &error,
                                           size_t bytes_transferred) {
         if (!error) {
-            std::cout << "Msg size on conn. " << connectionName_ << ": " << msgLength << std::endl;
             msgBuffer_ = std::make_shared<asio::streambuf>(msgLength);
             readMsgContent();
         } else {
-            signalErrExit();
+            if(!connectionClosed_.load())
+                signalErrExit();
             return;
         }
     }
@@ -49,7 +45,6 @@ namespace modulog::communication {
     void TcpConnection::handleReadMsgContent(const asio::error_code &error, size_t bytes_transferred) {
         if (!error) {
             alreadyRead_ += bytes_transferred;
-            std::cout << "Content bytes read: " << alreadyRead_ << "/" << msgLength << std::endl;
             std::istream istream(&(*msgBuffer_));
             std::string msgPart(std::istreambuf_iterator<char>(istream), {});
             finalMessage_ += msgPart;
@@ -58,14 +53,14 @@ namespace modulog::communication {
                 readMsgContent();
             } else {
                 alreadyRead_ = 0;
-                std::cout << connectionName_ << " received: " << finalMessage_ << std::endl;
                 messageProcessor_->processMessage(finalMessage_);
                 finalMessage_ = "";
                 startRead();
             }
         } else {
-            std::cerr << connectionName_ << ": error in reading msg content: " << error.message() << std::endl;
-            signalErrExit();
+            bringauto::logging::Logger::logError("{} :error in reading msg content: {}", connectionName_, error.message());
+            if(!connectionClosed_.load())
+                signalErrExit();
             return;
         }
     }
@@ -79,8 +74,9 @@ namespace modulog::communication {
         };
         asio::write(socket_, buffToSend, errorWrite);
         if (errorWrite) {
-            signalErrExit();
-            std::cerr << connectionName_ << ": error in sending." << errorWrite.message() << std::endl;
+            if(!connectionClosed_.load())
+                signalErrExit();
+            bringauto::logging::Logger::logError("{}: error in sending: {}", connectionName_, errorWrite.message());
         }
     }
 
@@ -93,16 +89,17 @@ namespace modulog::communication {
         auto exitControlMsg = std::make_shared<ControlMessage>(ControlMessage::CONTROL_MSG_TYPE::EXIT_ERR, "");
         MessageSerializer messageSerializer(exitControlMsg);
         messageProcessor_->processMessage(messageSerializer.serialize());
-        //closeConnection();
     }
 
     void TcpConnection::closeConnection() {
+        bringauto::logging::Logger::logDebug("Closing connection");
         asio::error_code ec;
         socket_.shutdown(asio::ip::tcp::socket::shutdown_both, ec);
         if (ec)
-            std::cerr << "Closing conn err.:" << ec.message() << std::endl;
+            bringauto::logging::Logger::logError("Closing connection error: {}", ec.message());
+            //std::cerr << "Closing connection error: " << ec.message() << std::endl;
         else{
-            std::cout << "Closing connection socket." << std::endl;
+            connectionClosed_ = true;
             socket_.close();
         }
     }

@@ -3,17 +3,30 @@
 #include <modulog/communication/ControlMessage.hpp>
 #include <modulog/communication/MessageSerializer.hpp>
 #include <modulog/communication/MessageProcessor.hpp>
+#include <modulog/meta_lib/SharedSettings.hpp>
 
+#include <bringauto/logging/Logger.hpp>
 #include <asio.hpp>
 
 #include <iostream>
 #include <utility>
 
-namespace modulog::communication{
+namespace modulog::communication {
+    /**
+     * This class represents TcpConnection - it is used between Core and AgentClient for communication
+     */
     class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     public:
-        const int MAX_PACKET_SIZE = 512; // how big packets are read
-        typedef std::shared_ptr<TcpConnection> pointer;
+        TcpConnection(asio::io_context &io_context, std::string &connectionName,
+                      std::shared_ptr<MessageProcessor> messageProcessor) : socket_(io_context),
+                                                                            connectionName_(connectionName),
+                                                                            messageProcessor_(messageProcessor)
+                                                                                    {
+            msgBuffer_ = std::make_shared<asio::streambuf>();
+        }
+
+        const int MAX_PACKET_SIZE = 512;
+
 
         /**
          * Sends message msg
@@ -33,9 +46,6 @@ namespace modulog::communication{
          */
         asio::ip::tcp::socket &getSocket();
 
-        static pointer create(asio::io_context &io_context, std::string &connectionName,
-                              std::shared_ptr<MessageProcessor> messageProcessor);
-
         /**
          * shutdowns socket
          */
@@ -48,12 +58,6 @@ namespace modulog::communication{
         std::shared_ptr<MessageProcessor> getMessageProcessor();
 
     private:
-        TcpConnection(asio::io_context &io_context, std::string &connectionName,
-                      std::shared_ptr<MessageProcessor> messageProcessor) : socket_(io_context),
-                                                                            connectionName_(connectionName),
-                                                                            messageProcessor_(std::move(messageProcessor)) {
-            msgBuffer_ = std::make_shared<asio::streambuf>();
-        }
 
         void handleReadMsgSize(const asio::error_code &error, size_t bytes_transferred);
 
@@ -72,5 +76,6 @@ namespace modulog::communication{
         std::string finalMessage_;
         std::string connectionName_;
         std::shared_ptr<MessageProcessor> messageProcessor_;
+        std::atomic<bool>connectionClosed_ = false;
     };
 }

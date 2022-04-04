@@ -17,7 +17,7 @@ namespace modulog::core{
 
 
     void Agent::deleteSelf() {
-        std::cout << "Agent " << agentProcess_->getAgentId() << " is deleting..." << std::endl;
+        bringauto::logging::Logger::logInfo("Agent {} is stopping...", agentProcess_->getAgentId());
         messageExchanger_->getConnection()->closeConnection();
         agentProcess_->stopAgent();
     }
@@ -26,7 +26,13 @@ namespace modulog::core{
         return messageExchanger_;
     }
 
+    bool Agent::getExpectedExit() {
+        return expectedExit_;
+    }
 
+    void Agent::setExpectedExit(bool expectedExit) {
+        expectedExit_ = expectedExit;
+    }
 
 
 }

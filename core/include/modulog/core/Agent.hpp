@@ -12,7 +12,7 @@
 #include <filesystem>
 #include <utility>
 
-namespace modulog::core{
+namespace modulog::core {
 /**
  * Class representing agent - contains running instance of agent in AgentInfo and contains also
  * meta information about agent, like if he confirmed isAlive message etc.
@@ -24,8 +24,9 @@ namespace modulog::core{
          * @param agentInfo representing running agent process
          * @param messageExchanger for sending and receiving messages from/to agent
          */
-        Agent(const std::shared_ptr<AgentProcess> &agentInfo, const std::shared_ptr<communication::MessageExchanger> &messageExchanger) :
-                agentProcess_(agentInfo), messageExchanger_(messageExchanger) {}
+        Agent(std::shared_ptr<AgentProcess> agentInfo,
+              std::shared_ptr<communication::MessageExchanger> messageExchanger) :
+                agentProcess_(std::move(agentInfo)), messageExchanger_(std::move(messageExchanger)) {}
 
         /**
          * Gets agent's id - when is agent process created, he sends message with this id and then is set.
@@ -56,7 +57,21 @@ namespace modulog::core{
          */
         std::shared_ptr<communication::MessageExchanger> getMessageExchanger();
 
+        /**
+         * When is core exiting agent, this must be marked as true - if it is marked as false (which is default),
+         * then agent exit is logged as error
+         * @param expectedExit
+         */
+        void setExpectedExit(bool expectedExit);
+
+        /**
+         * Default value is false - use this function just if agent exited to get status of exit
+         * @return true if agent had clean exit, false if error occured in agent.
+         */
+        bool getExpectedExit();
+
     private:
+        bool expectedExit_ = false;
         bool confirmedAlive_ = false;
         std::shared_ptr<communication::MessageExchanger> messageExchanger_;
         std::shared_ptr<AgentProcess> agentProcess_;

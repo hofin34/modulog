@@ -1,7 +1,7 @@
 {
   "agentsToCompile": [
     {
-      "agentPath": "agents/ram-agent",
+      "agentPath": "agents/uptime-agent",
       "enabled": true
     },
     {
@@ -9,7 +9,11 @@
       "enabled": true
     },
     {
-      "agentPath": "agents/uptime-agent",
+      "agentPath": "agents/linux-system-monitoring-lib-agent",
+      "enabled": true
+    },
+    {
+      "agentPath": "agents/udp-watchdog-agent",
       "enabled": true
     },
     {

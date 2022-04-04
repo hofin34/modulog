@@ -11,10 +11,10 @@ namespace modulog::communication {
     class ControlMessage : public Message {
     public:
         enum class CONTROL_MSG_TYPE {
-            CONFIG, ACK, IS_ALIVE, EXIT, EXIT_ERR, EXIT_ACK
+            CONFIG, ACK, IS_ALIVE, EXIT, EXIT_ERR
         };
 
-        ControlMessage(std::string jsonInit);
+        explicit ControlMessage(std::string jsonInit);
 
         ControlMessage(CONTROL_MSG_TYPE msgType, std::string value);
 

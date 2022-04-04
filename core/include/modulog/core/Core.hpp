@@ -2,23 +2,29 @@
 
 #include <modulog/communication/TcpServer.hpp>
 #include <modulog/communication/MessageDeserializer.hpp>
-#include <modulog/communication/SharedSettings.hpp>
+#include <modulog/meta_lib/SharedSettings.hpp>
 #include <modulog/core/LogSaver.hpp>
 #include <modulog/core/AgentHandler.hpp>
 
-namespace modulog::core{
-/**
- * Core class - takes care of creating agents, connecting to them, checking if they are alive and collecting their logs
- */
+namespace modulog::core {
+    /**
+     * Core class - takes care of creating agents, connecting to them, checking if they are alive and collecting their logs
+     */
     class Core {
     public:
-        Core(const std::filesystem::path& pathToEnabledAgentsList, std::shared_ptr<asio::io_context> ioContext,
-             std::shared_ptr<communication::SharedSettings>);
+        Core(const std::shared_ptr<asio::io_context>& ioContext,
+             const std::shared_ptr<meta_lib::SharedSettings>& sharedSettings);
+
+        ~Core();
+
         /**
          * Start core functionality after creating instance of this class
          */
         void start();
 
+        /**
+         * Function used to stop receiving messages in the Core
+         */
         void stop();
 
     private:
@@ -36,6 +42,7 @@ namespace modulog::core{
          * Check all agents, if they responded to isAlive. If not, they are killed and removed
          */
         void checkIfAgentsAlive();
+
         /**
          * Run all agents and init connection with them
          */
@@ -54,7 +61,7 @@ namespace modulog::core{
         std::shared_ptr<asio::io_context> ioContext_;
         communication::TcpServer server_;
         std::thread serverThread_;
-        std::shared_ptr<communication::SharedSettings> sharedSettings_;
+        std::shared_ptr<meta_lib::SharedSettings> sharedSettings_;
         //sync vars:
         int totalReceivedMessages_ = 0;
         std::mutex messageMutex_;

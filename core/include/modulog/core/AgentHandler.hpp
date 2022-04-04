@@ -19,7 +19,7 @@ namespace modulog::core{
         /**
          * @param pathToEnabledAgentsList path to file, where is specified, which agents will be created
          */
-        AgentHandler(const std::filesystem::path& pathToEnabledAgentsList);
+        explicit AgentHandler(const std::filesystem::path& pathToEnabledAgentsList);
         /**
          * Run next agent process (it is getting agents from pathToEnabledAgentsList)
          * @return running process included in AgentInfo

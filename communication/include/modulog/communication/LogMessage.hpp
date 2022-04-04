@@ -12,19 +12,19 @@ namespace modulog::communication{
          * Message types - in future can be more (like in syslog)
          */
         enum class LOG_MSG_TYPE {
-            LOG, ERROR, DEBUG
+            LOG, ERROR, DEBUG, WARNING
         };
 
         /**
          * Constructor, if you want to init this class with json (useful when deserializing)
          * @param jsonInit
          */
-        LogMessage(std::string jsonInit);
+        explicit LogMessage(std::string jsonInit);
 
         /**
          * Init this class with all attributes (if you want to create instance from code)
          * @param logMsgType  what is message type (like LOG, ERROR, ...)
-         * @param key key of log - must be json key, like "logTemperature" //TODO check if user pass everywhere json key
+         * @param key key of log - must be json key, like "logTemperature"
          * @param value value of log
          */
         LogMessage(LOG_MSG_TYPE logMsgType, std::string key, std::string value);

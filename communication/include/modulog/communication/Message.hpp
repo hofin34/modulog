@@ -1,5 +1,7 @@
 #pragma once
 
+#include <modulog/meta_lib/Helpers.hpp>
+
 #include <nlohmann/json.hpp>
 
 #include <string>
@@ -15,9 +17,9 @@ namespace modulog::communication {
         LOG_MSG, CONTROL_MSG
     };
 
-/**
- * Parent class of LogMessage and ControlMessage - used for communication between Agent and Core
- */
+    /**
+     * Parent class of LogMessage and ControlMessage - used for communication between Agent and Core
+     */
     class Message {
     public:
 
@@ -37,6 +39,7 @@ namespace modulog::communication {
          * @return timestamp string
          */
         std::string getTimestamp();
+
     private:
         std::string timestamp_ = "notDefinedTimestamp";
     };

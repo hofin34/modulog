@@ -6,8 +6,10 @@ SET(CMAKE_SYSTEM_PROCESSOR arm)
 SET(CMAKE_C_COMPILER   arm-linux-gnueabihf-gcc)
 SET(CMAKE_CXX_COMPILER arm-linux-gnueabihf-g++)
 
-SET(CMAKE_FIND_ROOT_PATH /home/martin/Work/proofs-of-concepts/hello-world-cross-compile/raspberry-fs)
-SET(CMAKE_SYSROOT /home/martin/Work/proofs-of-concepts/hello-world-cross-compile/raspberry-fs)
+IF(NOT DEFINED CMAKE_SYSROOT)
+    message(FATAL_ERROR "Specify CMAKE_SYSROOT variable!")
+ENDIF()
+SET(CMAKE_FIND_ROOT_PATH ${CMAKE_SYSROOT})
 
 # if never -> searching programs just in host
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)

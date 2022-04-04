@@ -1,45 +1,71 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
-INCLUDE(FetchContent)
-PROJECT(bachelor_hofbauer)
-
+PROJECT(modulog)
 SET(CMAKE_CXX_STANDARD 17)
+SET(modulog_VERSION 1.0.0)
+
+IF (CMAKE_BUILD_TYPE MATCHES DEBUG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -O1 -fno-omit-frame-pointer -g")
+ENDIF ()
+
+
+# for linking .so after make install (we have ba_logger):
+SET(CMAKE_SKIP_BUILD_RPATH FALSE)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+SET(CMAKE_INSTALL_RPATH lib)
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+OPTION(BRINGAUTO_BUILD_DEP "Build all dependencies" ON)
+OPTION(BRINGAUTO_TESTS "Tests" OFF)
+OPTION(BRINGAUTO_INSTALL "Install" OFF)
+OPTION(BRINGAUTO_PACKAGE "Create package" OFF)
+OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
+
+
+IF (BRINGAUTO_TESTS)
+    ADD_COMPILE_DEFINITIONS(BRINGAUTO_TESTS=TRUE) # if this macro defined, SmurfState library included in modulog
+    IF (BRINGAUTO_PACKAGE OR BRINGAUTO_INSTALL)
+        MESSAGE(FATAL_ERROR "You cannot install or create package with BRINGAUTO_TESTS enabled")
+    ENDIF ()
+ENDIF ()
+IF (BRINGAUTO_PACKAGE)
+    IF (NOT BRINGAUTO_INSTALL)
+        MESSAGE(WARNING "BRINGAUTO_PACKAGE is ON, so BRINGAUTO_INSTALL is also ON")
+        SET(BRINGAUTO_INSTALL ON)
+    ENDIF ()
+ENDIF ()
+
+
 SET(AG_BUILT_LIST ${CMAKE_BINARY_DIR}/agents-enabled.conf)
 
-if (NOT TARGET CommunicationLib)
-    ADD_SUBDIRECTORY(communication)
-endif ()
+INCLUDE(cmake/Dependencies.cmake)
 
-FILE(GLOB_RECURSE source_files "core/src/*")
-ADD_EXECUTABLE(modulog main.cpp ${source_files})
-TARGET_INCLUDE_DIRECTORIES(modulog PUBLIC "core/include/")
-TARGET_LINK_LIBRARIES(modulog CommunicationLib)
+ADD_EXECUTABLE(modulog main.cpp)
 
-# What will be compiled:
-FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/agents-to-compile.json TO_COMPILE_JSON)
-STRING(JSON AGENTS_COUNT LENGTH ${TO_COMPILE_JSON} agentsToCompile)
-MATH(EXPR AGENTS_COUNT "${AGENTS_COUNT}-1") # Decrementing by one - foreach needs number (count-1)
-FILE(REMOVE ${AG_BUILT_LIST}) # list of built agents is deleted - now we can start appending
-FOREACH (IDX RANGE ${AGENTS_COUNT})
-    # Get the name from the current JSON element.
-    STRING(JSON AG_PATH GET ${TO_COMPILE_JSON} agentsToCompile ${IDX} agentPath)
-    STRING(JSON AG_ENABLED GET ${TO_COMPILE_JSON} agentsToCompile ${IDX} enabled)
-    IF (${AG_ENABLED})
-        #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output-pack/agents/${AG_NAME})
-        GET_FILENAME_COMPONENT(AG_NAME ${AG_PATH} NAME)
-        ADD_SUBDIRECTORY(${AG_PATH})
-        ADD_DEPENDENCIES(modulog ${AG_NAME}) # Agent target has same name as its folder
-        FILE(APPEND ${AG_BUILT_LIST} ${AG_PATH} "\n")
 
-        SET(AG_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/agents/${AG_NAME})
-        INSTALL(TARGETS ${AG_NAME} DESTINATION ${AG_INSTALL_DIR})
-        INSTALL(FILES ${AG_PATH}/config.json DESTINATION ${AG_INSTALL_DIR})
-    ENDIF ()
-ENDFOREACH ()
-# ------------ linking
-TARGET_LINK_LIBRARIES(modulog reproc++ asio nlohmann_json::nlohmann_json)
+ADD_SUBDIRECTORY(core)
+ADD_SUBDIRECTORY(communication)
+ADD_SUBDIRECTORY(meta-lib)
+ADD_SUBDIRECTORY(agent-client)
+ADD_SUBDIRECTORY(agents)
 
-#ADD_SUBDIRECTORY(test)
-##
 
-INSTALL(TARGETS modulog DESTINATION ".")
-INSTALL(FILES ${AG_BUILT_LIST} DESTINATION ".")
+TARGET_LINK_LIBRARIES(modulog CoreLib cxxopts::cxxopts)
+
+IF (BRINGAUTO_TESTS)
+    ENABLE_TESTING()
+    FetchContent_MakeAvailable(statesmurf)
+    ADD_SUBDIRECTORY(test)
+ENDIF ()
+
+IF (BRINGAUTO_INSTALL)
+    INSTALL(TARGETS modulog DESTINATION .)
+    INSTALL(FILES ${AG_BUILT_LIST} DESTINATION .)
+ENDIF ()
+
+IF (BRINGAUTO_PACKAGE)
+    SET(CPACK_GENERATOR ZIP)
+    SET(CPACK_PACKAGE_CONTACT "Martin Hofbauer <martin.hofbauer@bringauto.com>")
+    SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Hofbauer <martin.hofbauer@bringauto.com>")
+    SET(CPACK_PACKAGE_VERSION ${modulog_VERSION})
+    INCLUDE(CPack)
+ENDIF ()

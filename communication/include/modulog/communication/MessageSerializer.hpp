@@ -14,13 +14,13 @@ namespace modulog::communication{
          * Constructor for log message
          * @param logMessage log message to serialize
          */
-        MessageSerializer(std::shared_ptr<LogMessage> logMessage);
+        explicit MessageSerializer(const std::shared_ptr<LogMessage>& logMessage);
 
         /**
          * Constructor for control message
          * @param controlMessage control message to serialize
          */
-        MessageSerializer(std::shared_ptr<ControlMessage> controlMessage);
+        explicit MessageSerializer(const std::shared_ptr<ControlMessage>& controlMessage);
 
         /**
          * Serialize message passed to constructor and adding envelope for transport marking msg type

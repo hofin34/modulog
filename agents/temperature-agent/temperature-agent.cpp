@@ -1,9 +1,13 @@
+/*
+ * modulog agent, that monitors hardware temperature (look at README.md for more info)
+ */
+
 #include <modulog/agent_client/Helpers.hpp>
 #include <modulog/agent_client/AgentClient.hpp>
+#include <modulog/agent_client/ClientFactory.hpp>
 
 #include <iostream>
 #include <thread>
-#include <fstream>
 
 
 
@@ -24,13 +28,13 @@ int main(int argc, char** argv){
 
     if(!configJson.contains("id")){
         std::cerr << "Include config with id defined." << std::endl;
-        throw std::runtime_error("...");
+        return EXIT_FAILURE;
     }
-    int temperatureNotSmallerThan = INT_MIN;
+    int temperatureNotSmallerThan = std::numeric_limits<int>::min();
     if(configJson.contains("temperatureNotSmallerThan")){
         temperatureNotSmallerThan = configJson["temperatureNotSmallerThan"];
     }
-    int temperatureNotBiggerThan = INT_MAX;
+    int temperatureNotBiggerThan = std::numeric_limits<int>::max();
     if(configJson.contains("temperatureNotBiggerThan")){
         temperatureNotBiggerThan = configJson["temperatureNotBiggerThan"];
     }
@@ -41,31 +45,30 @@ int main(int argc, char** argv){
 
     if(!configJson.contains("temperatureSource")){
         std::cerr << "Specify temperatureSource!" << std::endl;
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
-    std::cout << configJson["temp"] << std::endl;
     std::filesystem::path src = configJson["temperatureSource"];
     std::ifstream tempSource(src);
 
     if(!tempSource.is_open()){
         std::cerr << "Cannot open file temperature source." << std::endl;
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
     auto ioContext = std::make_shared<asio::io_context>();
-    modulog::agent_client::AgentClient agentClient(ioContext, false, configJson["id"] );
-    agentClient.initClient();
-    while(true){
+    auto agentClient = modulog::agent_client::ClientFactory::createClient(ioContext, configJson["id"]);
+    agentClient->initClient();
+    while(agentClient->canLog()){
         int temperature = getTemperature(tempSource);
         if(temperatureNotSmallerThan > temperature || temperatureNotBiggerThan < temperature){
             auto errMsg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::ERROR, "temperature", std::to_string(temperature));
-            agentClient.sendLog(errMsg);
+            agentClient->sendLog(errMsg);
         }else{
             auto logMsg = std::make_shared<modulog::communication::LogMessage>(modulog::communication::LogMessage::LOG_MSG_TYPE::LOG, "temperature", std::to_string(temperature));
-            agentClient.sendLog(logMsg);
+            agentClient->sendLog(logMsg);
         }
-        std::this_thread::sleep_for(std::chrono::seconds(logInterval));
+        agentClient->sleepFor(std::chrono::seconds(logInterval));
     }
 
     return 0;

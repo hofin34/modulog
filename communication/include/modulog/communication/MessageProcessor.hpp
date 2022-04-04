@@ -39,7 +39,7 @@ namespace modulog::communication {
          * Pops log message from vector
          * @return log message or nullptr if vector empty
          */
-        std::shared_ptr<LogMessage> popLogMessage(); //TODO maybe locking message vectors?
+        std::shared_ptr<LogMessage> popLogMessage();
 
         /**
         * Pops control message from vector
@@ -50,7 +50,9 @@ namespace modulog::communication {
 
     private:
         std::vector<std::shared_ptr<ControlMessage>> controlMessageVector;
+        std::mutex controlMessageVectorMtx_;
         std::vector<std::shared_ptr<LogMessage>> logMessagesVector;
+        std::mutex logMessageVectorMtx_;
 
         std::mutex &mutex_;
         std::condition_variable &conditionVariable_;

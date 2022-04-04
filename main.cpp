@@ -1,42 +1,100 @@
-#include <iostream>
+/*
+ * Begin of modulog program. Look at README.md, how to use.
+ */
+#include <modulog/meta_lib/SharedSettings.hpp>
 #include <modulog/core/Core.hpp>
-#include <vector>
-#include <asio.hpp>
-#include <modulog/communication/SharedSettings.hpp>
 
-// Just for debug, TODO remove later:
-std::string ver_string(int a, int b, int c) {
-    std::ostringstream ss;
-    ss << a << '.' << b << '.' << c;
-    return ss.str();
+#include <bringauto/logging/Logger.hpp>
+#include <bringauto/logging/ConsoleSink.hpp>
+#include <bringauto/logging/FileSink.hpp>
+#include <asio.hpp>
+#include <cxxopts.hpp>
+
+#include <iostream>
+#include <vector>
+
+void initLogger(const std::filesystem::path &logPath, int maxFileSize) {
+    bringauto::logging::FileSink::Params paramFileSink{logPath, "one-file-log.txt"};
+    paramFileSink.maxFileSize = maxFileSize;
+    paramFileSink.numberOfRotatedFiles = 2;
+    paramFileSink.verbosity = bringauto::logging::Logger::Verbosity::Debug;
+
+    bringauto::logging::Logger::addSink<bringauto::logging::FileSink>(paramFileSink);
+    bringauto::logging::Logger::addSink<bringauto::logging::ConsoleSink>();
+
+    bringauto::logging::Logger::LoggerSettings params{"modulog",
+                                                      bringauto::logging::Logger::Verbosity::Debug};
+    bringauto::logging::Logger::init(params);
 }
+
 
 std::unique_ptr<modulog::core::Core> core;
 
-void signalHandler(int signum) {
-    std::cout << "Interrupt signal (" << signum << ") received.\n";
-    core->stop();
+/**
+ * When is modulog interrupted by SIGINT/SIGTERM signal, this function is called - it will stop the core
+ * @param error
+ * @param signum
+ */
+void signalHandler(const std::error_code &error,
+                   int signum) {
+    if (!error) {
+        bringauto::logging::Logger::logInfo("Interrupt signal {} received", signum);
+        core->stop();
+    }
 }
 
+/**
+ * Function parsing cmd line arguments - in SharedSettings will override default values from cmd line
+ * @param argc argument count
+ * @param argv pointer to arguments
+ * @return returns nullptr if --help argument contained, if error occured, then throwing exception, if parsed successfully, returned shared pointer to SharedSettings
+ */
+std::shared_ptr<modulog::meta_lib::SharedSettings> parseArgs(std::shared_ptr<modulog::meta_lib::SharedSettings> sharedSettings, int argc, const char **argv) {
+    cxxopts::Options options("modulog", "Modular light-weighted logging program");
+    options.add_options()
+            ("h,help", "Print usage")
+            ("e,enabled-agents", "Enabled agents file - in this file can be just compiled agents!",
+             cxxopts::value<std::string>())
+            ("o,one-file", "All logs will be merged in one file", cxxopts::value<bool>());
+    auto result = options.parse(argc, argv);
+    if (result.count("help")) {
+        std::cout << options.help() << std::endl;
+        return nullptr;
+    }
+    if (result.count("enabled-agents"))
+        sharedSettings->LogSettings.enabledAgentsPath = result["enabled-agents"].as<std::string>();
+    if(result.count("one-file"))
+        sharedSettings->LogSettings.oneFileLog = true;
+
+    return sharedSettings;
+}
 
 int main(int argc, const char **argv) {
-    struct sigaction sigAct{};
-    memset(&sigAct, 0, sizeof(sigAct));
-    sigAct.sa_handler = signalHandler;
-    sigaction(SIGINT,  &sigAct, nullptr);
-    sigaction(SIGTERM, &sigAct, nullptr);
-
-    auto sharedSettings = std::make_shared<modulog::communication::SharedSettings>();
-    std::filesystem::path agentsList = sharedSettings->LogSettings.agentListPath;
-
-    try {
-        auto ioContext = std::make_shared<asio::io_context>();
-        core = std::make_unique<modulog::core::Core>(std::filesystem::absolute(agentsList), ioContext, sharedSettings);
-        core->start();
-    } catch (std::exception &e) {
-        std::cerr << "Exception in main.cpp: " <<  e.what() << std::endl;
+    auto sharedSettings = std::make_shared<modulog::meta_lib::SharedSettings>();
+    try{
+        initLogger(sharedSettings->LogSettings.logsDestination, sharedSettings->LogSettings.maxLogFileSize);
+    }catch(std::exception &e){
+        std::cerr << "Logger init exception: " << e.what() << std::endl;
         return EXIT_FAILURE;
     }
-    std::cout << "---- END -----" << std::endl;
+    try {
+#ifdef BRINGAUTO_TESTS
+        sharedSettings->Testing.initTesting();
+#endif
+        sharedSettings = parseArgs(sharedSettings, argc, argv);
+        if (!sharedSettings) // if --help arg
+            return EXIT_SUCCESS;
+        auto ioContext = std::make_shared<asio::io_context>();
+        asio::signal_set signals(*ioContext, SIGINT, SIGTERM);
+        signals.async_wait(signalHandler);
+        core = std::make_unique<modulog::core::Core>(ioContext, sharedSettings);
+        core->start();
+    } catch (std::exception &e) {
+        bringauto::logging::Logger::logError("Exception in main.cpp: {}", e.what());
+        core.reset();
+        return EXIT_FAILURE;
+    }
+    core.reset();
+    bringauto::logging::Logger::logInfo("---- END ----");
     return EXIT_SUCCESS;
 }

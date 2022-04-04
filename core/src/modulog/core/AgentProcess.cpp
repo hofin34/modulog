@@ -1,11 +1,10 @@
 #include <modulog/core/AgentProcess.hpp>
-#include <iostream>
+#include <utility>
 
 namespace modulog::core{
-//TODO if in agents list not existing agent - tell and end with cleaning
-    AgentProcess::AgentProcess(const std::string &agentId, const std::filesystem::path &agentPath, const std::shared_ptr<reproc::process>& agentProcess,
-                               const std::shared_ptr<reproc::options> &agentProcessOptions):
-            agentId_(agentId), agentPath_(agentPath), agentProcess_(agentProcess), agentProcessOptions_(agentProcessOptions){
+    AgentProcess::AgentProcess(std::string agentId, std::filesystem::path agentPath, std::shared_ptr<reproc::process>  agentProcess,
+                               std::shared_ptr<reproc::options> agentProcessOptions):
+            agentId_(std::move(agentId)), agentPath_(std::move(agentPath)), agentProcess_(std::move(agentProcess)), agentProcessOptions_(std::move(agentProcessOptions)){
 
     }
     void AgentProcess::setAgentId(std::string id) {
@@ -18,8 +17,7 @@ namespace modulog::core{
 
 
     void AgentProcess::stopAgent() {
-        std::cout << "Killing: " << agentProcess_->pid().first << std::endl;
-        agentProcess_->stop(agentProcessOptions_->stop); //TODO if stop not set?
+        agentProcess_->stop(agentProcessOptions_->stop);
     }
 
 
