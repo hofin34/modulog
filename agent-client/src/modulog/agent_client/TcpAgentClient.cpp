@@ -19,6 +19,7 @@ namespace modulog::agent_client {
                                        int signum) {
         // reproc++ sending kill signal to all subprocesses, we want to just catch it and do nothing.
         // Core will kill all subprocesses on its own
+        bringauto::logging::Logger::logDebug("Cought signal no. {}", signum);
     }
 
     void TcpAgentClient::initClient() {

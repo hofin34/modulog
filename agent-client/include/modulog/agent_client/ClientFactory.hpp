@@ -7,7 +7,7 @@
 namespace modulog::agent_client{
     class ClientFactory {
     public:
-        static std::shared_ptr<AgentClient> createClient(std::shared_ptr<asio::io_context> &ioContext, std::string agentName);
+        static std::shared_ptr<AgentClient> createClient(std::shared_ptr<asio::io_context> &ioContext, const std::string& agentName);
     };
 }
 
