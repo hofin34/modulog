@@ -86,7 +86,7 @@ And also flowchart diagram:
 * now you can build:
    * `mkdir build`
    * `cd build`
-   * `cmake -DCMAKE_TOOLCHAIN_FILE=../toolchains/raspberry_toolchain.cmake -DCMAKE_SYSROOT=/path/to/sysroot -DCMAKE_INSTALL_PREFIX="someDir" ..`
+   * `cmake -DCMAKE_TOOLCHAIN_FILE=../toolchains/raspberry_toolchain.cmake -DCMAKE_SYSROOT=/path/to/sysroot -DBRINGAUTO_INSTALL=ON -DCMAKE_INSTALL_PREFIX="someDir" ..`
    * `make -j 8 install`
    * output in `someDir` can be moved to RPI
 
