@@ -1,5 +1,5 @@
 # What will be compiled:
-FILE(READ ${CMAKE_SOURCE_DIR}/agents-to-compile.json TO_COMPILE_JSON)
+FILE(READ ../agents-to-compile.json TO_COMPILE_JSON) # do not change to CMAKE_SOURCE_DIR, modulog is built by external CMAKE projects and it doesnt work
 STRING(JSON AGENTS_COUNT LENGTH ${TO_COMPILE_JSON} agentsToCompile)
 MATH(EXPR AGENTS_COUNT "${AGENTS_COUNT}-1") # Decrementing by one - foreach needs number (count-1)
 FILE(REMOVE ${AG_BUILT_LIST}) # list of built agents is deleted - now we can start appending
