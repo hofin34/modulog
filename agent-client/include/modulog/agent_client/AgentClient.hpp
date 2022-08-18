@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <filesystem>
+#include <thread>
 
 namespace modulog::agent_client {
     /**

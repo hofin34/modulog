@@ -6,6 +6,8 @@
 #include <modulog/core/LogSaver.hpp>
 #include <modulog/core/AgentHandler.hpp>
 
+#include <thread>
+
 namespace modulog::core {
     /**
      * Core class - takes care of creating agents, connecting to them, checking if they are alive and collecting their logs
