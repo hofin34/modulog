@@ -35,7 +35,7 @@ IF (BRINGAUTO_PACKAGE)
 ENDIF ()
 
 
-SET(AG_BUILT_LIST ${CMAKE_BINARY_DIR}/agents-enabled.conf)
+SET(AG_BUILT_LIST ${CMAKE_CURRENT_BINARY_DIR}/agents-enabled.conf)
 
 INCLUDE(cmake/Dependencies.cmake)
 
