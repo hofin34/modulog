@@ -1,5 +1,7 @@
 #include <modulog/core/Core.hpp>
 
+#include <thread>
+
 namespace modulog::core {
     Core::Core(const std::shared_ptr<asio::io_context>& ioContext,
                const std::shared_ptr<meta_lib::SharedSettings>& sharedSettings) :

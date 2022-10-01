@@ -2,31 +2,31 @@
   "agentsToCompile": [
     {
       "agentPath": "agents/uptime-agent",
-      "enabled": true
+      "enabled": false
     },
     {
       "agentPath": "agents/space-agent",
-      "enabled": true
+      "enabled": false
     },
     {
       "agentPath": "agents/linux-system-monitoring-lib-agent",
-      "enabled": true
+      "enabled": false
     },
     {
       "agentPath": "agents/udp-watchdog-agent",
-      "enabled": true
+      "enabled": false
     },
     {
       "agentPath": "agents/temperature-agent",
-      "enabled": true
+      "enabled": false
     },
     {
       "agentPath": "agents/net-connectivity-agent",
-      "enabled": true
+      "enabled": false
     },
     {
       "agentPath": "agents/test-random-agent",
-      "enabled": true
+      "enabled": false
     }
   ]
 }

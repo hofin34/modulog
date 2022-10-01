@@ -1,5 +1,7 @@
 #include <modulog/agent_client/TcpAgentClient.hpp>
 
+#include <thread>
+
 
 namespace modulog::agent_client {
     TcpAgentClient::TcpAgentClient(std::shared_ptr<asio::io_context> &ioContext, std::string agentName)
